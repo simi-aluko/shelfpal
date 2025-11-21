@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719274260919",
+    "project_id": "shelfpal",
+    "storage_bucket": "shelfpal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719274260919:android:f752d7b3cfb0636865d032",
+        "android_client_info": {
+          "package_name": "com.simi.shelfpal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvlN93TH74sqW2J0Je49HDaeI2KJZCQMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

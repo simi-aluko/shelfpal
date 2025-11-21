@@ -1,0 +1,153 @@
+package com.simi.shelfpal.home.composables
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import com.simi.shelfpal.home.models.Filter
+import com.simi.shelfpal.home.models.Filter.Category
+import com.simi.shelfpal.home.models.Filter.Month
+import com.simi.shelfpal.home.models.Filter.Year
+import com.simi.shelfpal.theme.Dimens
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.all_items
+import shelfpal.composeapp.generated.resources.apps
+
+@Composable
+fun TopRowFilter(
+    filters: Set<Filter>,
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmallMedium),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        filters.forEach { item ->
+            item {
+                when (item) {
+                    is Category -> CategoryFilter(category = item)
+                    is Month -> MonthFilter(month = item)
+                    is Year -> YearFilter(year = item)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CategoryFilter(
+    category: Category
+) {
+    FilterCard(
+        title = category.title.toString(),
+        leftIcon = category.leftIcon,
+        rightIcon = category.rightIcon,
+        onClick = category.onClick
+    )
+}
+
+@Composable
+private fun MonthFilter(
+    month: Month
+) {
+    FilterCard(
+        title = month.title,
+        leftIcon = null,
+        rightIcon = month.rightIcon,
+        onClick = month.onClick
+    )
+}
+
+@Composable
+private fun YearFilter(
+    year: Year
+) {
+    FilterCard(
+        title = year.title,
+        leftIcon = null,
+        rightIcon = year.rightIcon,
+        onClick = year.onClick
+    )
+}
+
+@Composable
+private fun FilterCard(
+    title: String,
+    leftIcon: DrawableResource?,
+    rightIcon: DrawableResource?,
+    onClick: () -> Unit
+) {
+    ElevatedCard(
+        shape = RoundedCornerShape(Dimens.radiusExtraLarge),
+        modifier = Modifier
+            .clickable(
+                enabled = true,
+                onClick = onClick
+            )
+    ) {
+        Row (
+            modifier = Modifier.padding(horizontal = Dimens.spacingSmallMedium, vertical = Dimens.spacingSmall),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+        ) {
+            leftIcon?.let {
+                Image(
+                    painter = painterResource(it),
+                    contentDescription = null,
+                    modifier = Modifier.height(Dimens.iconSizeSmall)
+                )
+            }
+            Text(
+                text = title,
+                fontSize = Dimens.textSizeSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            rightIcon?.let {
+                Icon(
+                    painter = painterResource(rightIcon),
+                    contentDescription = null,
+                    modifier = Modifier.height(Dimens.iconSizeSmall)
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun HomeFilterPreview() {
+    MaterialTheme {
+        TopRowFilter(
+            filters = setOf(
+                Category(
+                    title = stringResource(Res.string.all_items),
+                    leftIcon = Res.drawable.apps,
+                    onClick = { }
+                ),
+                Filter.Month(
+                    title = "January",
+                    onClick = { }
+                ),
+                Filter.Year(
+                    title = "2025",
+                    onClick = { }
+                )
+            )
+        )
+    }
+}

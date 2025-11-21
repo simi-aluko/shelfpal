@@ -1,0 +1,90 @@
+<resources>
+   <!-- Home Screen -->
+    <string name="shelfpal">ShelfPal</string>
+    <string name="settings">Settings</string>
+    <string name="add_item">Add item</string>
+
+    <!-- Welcome carousel -->
+    <string name="carousel_title_1">Welcome to ShelfPal</string>
+    <string name="carousel_subtitle_1">Stop throwing money and products in the bin</string>
+    <string name="carousel_body_1">We help you track every expiry date—from food to medicine to cosmetics—so you never lose track or waste an item again. Start saving today.</string>
+    <string name="carousel_cta_1">Next</string>
+
+    <string name="carousel_title_2">Scan &amp; Forget</string>
+    <string name="carousel_subtitle_2">The fastest way to log your items</string>
+    <string name="carousel_body_2">Simply point your camera at the packaging or receipt. Our Auto-Capture detects the product and expiry date instantly.</string>
+    <string name="carousel_cta_2">Next</string>
+
+    <string name="carousel_title_3">Always Know What's Next</string>
+    <string name="carousel_subtitle_3">Stay organized and get reminders—even without signal</string>
+    <string name="carousel_body_3">See all items color-coded by urgency on your Dashboard. Get customizable alerts 🔔 right before they expire. Your data is safe and accessible 100% offline.</string>
+    <string name="carousel_cta_3">Continue</string>
+
+    <string name="carousel_title_4">Ready to Get Started?</string>
+    <string name="carousel_subtitle_4">We just need two quick permissions</string>
+    <string name="carousel_body_4">To enable instant scanning and reminders, please grant Camera and Notification access on the next screen. You can change these later.</string>
+    <string name="carousel_cta_4">Start Tracking Now</string>
+
+    <string name="carousel_header_image">Carousel header image</string>
+    <string name="skip">Skip</string>
+    
+    <!-- Categories -->
+    <string name="category_fresh_fruits_and_vegetables">Fresh fruits and vegetables</string>
+    <string name="category_meats_dairy_and_frozen_foods">Meats, dairy and frozen foods</string>
+    <string name="category_pastry_and_staples">Pastry and Staples</string>
+    <string name="category_canned_foods_oils_sauces_and_spices">Canned foods, oils, sauces and spices</string>
+    <string name="category_beverages">Beverages</string>
+    <string name="category_prepared_meals">Prepared meals</string>
+    <string name="category_medications_and_vitamins">Medications and vitamins</string>
+    <string name="category_personal_care_and_beauty">Personal care and beauty</string>
+    <string name="category_cleaning_and_household">Cleaning and household</string>
+    <string name="category_infant_and_pet_care">Infant and pet care</string>
+    <string name="all_items">All items</string>
+    <string name="other">Other</string>
+
+    <string-array name="categories">
+        <item>Fresh fruits and vegetables</item>
+        <item>Meats, dairy and frozen foods</item>
+        <item>Pastry and Staples</item>
+        <item>Canned foods, oils, sauces and spices</item>
+        <item>Beverages</item>
+        <item>Prepared meals</item>
+        <item>Medications and vitamins</item>
+        <item>Personal care and beauty</item>
+        <item>Cleaning and household</item>
+        <item>Infant and pet care</item>
+        <item>Other</item>
+    </string-array>
+    
+    <!-- Months -->
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <!-- Add Item Screen -->
+    <string name="close">Close</string>
+    <string name="basic_info">Basic info</string>
+    <string name="product_name">Product name</string>
+    <string name="product_category">Product category</string>
+    <string name="enter_the_product_name">Enter the product name</string>
+    <string name="select_product_category">Select product category</string>
+    <string name="launch_camera_to_capture_product">Launch camera to capture product</string>
+    <string name="expiry_info">Expiry info</string>
+    <string name="month">Month</string>
+    <string name="select_expiry_month">Select expiry month</string>
+    <string name="year">Year</string>
+    <string name="select_expiry_year">Select expiry year</string>
+    <string name="save_item">Save item</string>
+    <string name="cancel">Cancel</string>
+</resources>
