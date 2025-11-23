@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.simi.shelfpal.additem.AddItemBottomSheetType.CATEGORY
+import com.simi.shelfpal.additem.AddItemBottomSheetType.DAY
 import com.simi.shelfpal.additem.AddItemBottomSheetType.MONTH
 import com.simi.shelfpal.additem.AddItemBottomSheetType.YEAR
 import com.simi.shelfpal.additem.composables.AddItemBottomSheet
@@ -35,6 +36,7 @@ import shelfpal.composeapp.generated.resources.add_item
 import shelfpal.composeapp.generated.resources.camera
 import shelfpal.composeapp.generated.resources.categories
 import shelfpal.composeapp.generated.resources.close
+import shelfpal.composeapp.generated.resources.select_expiry_day
 import shelfpal.composeapp.generated.resources.select_expiry_month
 import shelfpal.composeapp.generated.resources.select_expiry_year
 import shelfpal.composeapp.generated.resources.select_product_category
@@ -42,18 +44,21 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddItemScreen(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToImageCapture: () -> Unit
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var bottomSheetItems by remember { mutableStateOf(listOf<String>())}
     var bottomSheetType by remember { mutableStateOf(CATEGORY) }
     var bottomSheetTitle by remember { mutableStateOf("") }
 
+    val dayBottomSheetTitle = stringResource(Res.string.select_expiry_day)
     val categoryBottomSheetTitle = stringResource(Res.string.select_product_category)
     val monthBottomSheetTitle = stringResource(Res.string.select_expiry_month)
     val yearBottomSheetTitle = stringResource(Res.string.select_expiry_year)
     val categories = stringArrayResource(Res.array.categories)
 
+    var selectedDay by remember { mutableStateOf("") }
     var selectedMonth by remember { mutableStateOf("") }
     var selectedYear by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
@@ -86,9 +91,11 @@ fun AddItemScreen(
                         bottomSheetTitle = categoryBottomSheetTitle
                         bottomSheetItems = categories
                         showBottomSheet = true
-                    }
+                    },
+                    onCameraClick = navigateToImageCapture
                 )
                 ExpiryForm(
+                    expiryDay = selectedDay,
                     expiryMonth = selectedMonth,
                     expiryYear = selectedYear,
                     onExpiryMonthClick = {
@@ -102,7 +109,14 @@ fun AddItemScreen(
                         bottomSheetTitle = yearBottomSheetTitle
                         bottomSheetItems = (2023..2030).map { it.toString() }
                         showBottomSheet = true
-                    }
+                    },
+                    onExpiryDayClick = {
+                        bottomSheetType = DAY
+                        bottomSheetTitle = dayBottomSheetTitle
+                        bottomSheetItems = (1..31).map { it.toString() }
+                        showBottomSheet = true
+                    },
+                    onCameraClick = navigateToImageCapture
                 )
                 AddItemBottomSheet(
                     bottomSheetTitle = bottomSheetTitle,
@@ -113,6 +127,7 @@ fun AddItemScreen(
                             MONTH -> selectedMonth = it
                             YEAR -> selectedYear = it
                             CATEGORY -> selectedCategory = it
+                            DAY -> selectedDay = it
                         }
                         showBottomSheet = false
                     },
@@ -132,10 +147,13 @@ fun AddItemScreen(
 @Composable
 private fun AddItemScreenPreview() {
     MaterialTheme {
-        AddItemScreen {}
+        AddItemScreen(
+            navigateBack = {},
+            navigateToImageCapture = {}
+        )
     }
 }
 
 enum class AddItemBottomSheetType {
-    CATEGORY, MONTH, YEAR
+    CATEGORY, DAY, MONTH, YEAR
 }

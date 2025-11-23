@@ -55,7 +55,7 @@ object Dimens {
     val spacingLarge: Dp = 24.dp
 
     /** 32.dp - Extra large spacing. */
-    val spacingExtraLarge: Dp = 32.dp
+    val spacingXLarge: Dp = 32.dp
 
     /** 40.dp - Double Extra large spacing. */
     val spacingXXLarge: Dp = 40.dp
@@ -98,6 +98,12 @@ object Dimens {
 
     /** 48.dp - Standard height for most interactive buttons. */
     val buttonHeight: Dp = 48.dp
+
+    /** 64.dp - Medium height for buttons. */
+    val buttonHeightMedium: Dp = 64.dp
+
+    /** 80.dp - Large height for buttons. */
+    val buttonHeightLarge: Dp = 80.dp
 
     /** 32.dp - Height for small/compact buttons or chips. */
     val buttonHeightCompact: Dp = 32.dp

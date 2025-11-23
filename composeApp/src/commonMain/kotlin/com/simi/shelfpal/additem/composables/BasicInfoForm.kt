@@ -38,12 +38,13 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @Composable
 fun BasicInfoForm(
     selectedCategory: String,
-    onCategoryClick: () -> Unit
+    onCategoryClick: () -> Unit,
+    onCameraClick: () -> Unit
 ) {
     Column {
         FormHeader(
             title = stringResource(Res.string.basic_info),
-            onCameraClick = {}
+            onCameraClick = onCameraClick
         )
         ProductNameTextField()
         Spacer(modifier = Modifier.padding(Dimens.spacingSmall))

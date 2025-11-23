@@ -30,7 +30,10 @@ fun BottomCTA(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
-        modifier = Modifier.padding(vertical = Dimens.spacingSmall)
+        modifier = Modifier.padding(
+            top = Dimens.spacingMediumLarge,
+            bottom = Dimens.spacingSmall
+        )
     ) {
         CTA(
             title = stringResource(Res.string.save_item),

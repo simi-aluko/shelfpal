@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.cameraK)
+            implementation(libs.image.saver.plugin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

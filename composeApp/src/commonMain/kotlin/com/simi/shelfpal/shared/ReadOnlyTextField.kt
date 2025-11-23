@@ -27,10 +27,16 @@ fun ReadOnlyTextField(
             value = value,
             onValueChange = { },
             label = {
-                Text(text = label)
+                Text(
+                    text = label,
+                    maxLines = 1
+                )
             },
             placeholder = {
-                Text(text = placeholder)
+                Text(
+                    text = placeholder,
+                    maxLines = 1
+                )
             },
             singleLine = true,
             trailingIcon = {

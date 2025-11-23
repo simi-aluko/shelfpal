@@ -82,9 +82,21 @@
     <string name="launch_camera_to_capture_product">Launch camera to capture product</string>
     <string name="expiry_info">Expiry info</string>
     <string name="month">Month</string>
+    <string name="day">Day</string>
     <string name="select_expiry_month">Select expiry month</string>
+    <string name="select_expiry_day">Select expiry day</string>
     <string name="year">Year</string>
     <string name="select_expiry_year">Select expiry year</string>
     <string name="save_item">Save item</string>
     <string name="cancel">Cancel</string>
+    <string name="add_expiry_day">Add expiry day</string>
+
+    <!-- Image capture screen -->
+    <string name="camera_permission_denied_message">Camera Permission Denied. Please grant camera permission in settings</string>
+    <string name="storage_permission_denied_message">Storage Permission Denied. Please grant storage permission in settings</string>
+    <string name="capture">Capture</string>
+    <string name="turn_on_torch">Turn on torch</string>
+    <string name="turn_off_torch">Turn off torch</string>
+    <string name="turn_on_flash">Turn on flash</string>
+    <string name="turn_off_flash">Turn off flash</string>
 </resources>
