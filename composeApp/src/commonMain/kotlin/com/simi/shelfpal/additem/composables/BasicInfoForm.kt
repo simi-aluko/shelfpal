@@ -19,7 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
+import com.simi.shelfpal.shared.ImageThumbnail
 import com.simi.shelfpal.theme.Dimens
 import com.simi.shelfpal.theme.onPrimaryContainerLight
 import org.jetbrains.compose.resources.stringResource
@@ -38,6 +40,7 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @Composable
 fun BasicInfoForm(
     selectedCategory: String,
+    imageBitmap: ImageBitmap? = null,
     onCategoryClick: () -> Unit,
     onCameraClick: () -> Unit
 ) {
@@ -52,6 +55,10 @@ fun BasicInfoForm(
             selectedCategory = selectedCategory,
             onClick = onCategoryClick
         )
+        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+        imageBitmap?.let {
+            ImageThumbnail(it)
+        }
     }
 }
 

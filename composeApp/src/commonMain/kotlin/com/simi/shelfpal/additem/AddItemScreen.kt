@@ -3,7 +3,6 @@ package com.simi.shelfpal.additem
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,11 +11,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.decodeToImageBitmap
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.simi.shelfpal.additem.AddItemBottomSheetType.CATEGORY
 import com.simi.shelfpal.additem.AddItemBottomSheetType.DAY
 import com.simi.shelfpal.additem.AddItemBottomSheetType.MONTH
@@ -25,6 +30,7 @@ import com.simi.shelfpal.additem.composables.AddItemBottomSheet
 import com.simi.shelfpal.additem.composables.BasicInfoForm
 import com.simi.shelfpal.additem.composables.BottomCTA
 import com.simi.shelfpal.additem.composables.ExpiryForm
+import com.simi.shelfpal.shared.IMAGE_CAPTURE_RESULT
 import com.simi.shelfpal.shared.TopBar
 import com.simi.shelfpal.theme.Dimens
 import kotlinx.datetime.Month
@@ -33,7 +39,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.add_item
-import shelfpal.composeapp.generated.resources.camera
 import shelfpal.composeapp.generated.resources.categories
 import shelfpal.composeapp.generated.resources.close
 import shelfpal.composeapp.generated.resources.select_expiry_day
@@ -45,8 +50,23 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @Composable
 fun AddItemScreen(
     navigateBack: () -> Unit,
-    navigateToImageCapture: () -> Unit
+    navigateToImageCapture: () -> Unit,
+    navController: NavController
 ) {
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val imageCaptureResult by savedStateHandle?.getStateFlow<ByteArray?>(IMAGE_CAPTURE_RESULT,  null)
+        ?.collectAsState(initial = null) ?: mutableStateOf(null)
+    var image by remember { mutableStateOf<ByteArray?>(null) }
+
+    LaunchedEffect(imageCaptureResult) {
+        val result = imageCaptureResult
+        println("imageCaptureResult - add Item screen: $result")
+        if (result != null) {
+            image = result
+            savedStateHandle?.remove<ByteArray>(IMAGE_CAPTURE_RESULT)
+        }
+    }
+
     var showBottomSheet by remember { mutableStateOf(false) }
     var bottomSheetItems by remember { mutableStateOf(listOf<String>())}
     var bottomSheetType by remember { mutableStateOf(CATEGORY) }
@@ -92,7 +112,8 @@ fun AddItemScreen(
                         bottomSheetItems = categories
                         showBottomSheet = true
                     },
-                    onCameraClick = navigateToImageCapture
+                    onCameraClick = navigateToImageCapture,
+                    imageBitmap = image?.decodeToImageBitmap()
                 )
                 ExpiryForm(
                     expiryDay = selectedDay,
@@ -149,7 +170,8 @@ private fun AddItemScreenPreview() {
     MaterialTheme {
         AddItemScreen(
             navigateBack = {},
-            navigateToImageCapture = {}
+            navigateToImageCapture = {},
+            navController = rememberNavController()
         )
     }
 }

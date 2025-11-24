@@ -52,12 +52,13 @@ fun ShelfPalApp(
         composable<Routes.AddItem> {
             AddItemScreen(
                 navigateBack = { navHostController.popBackStack() },
-                navigateToImageCapture = { navHostController.navigate(Routes.ImageCapture) }
+                navigateToImageCapture = { navHostController.navigate(Routes.ImageCapture) },
+                navController = navHostController
             )
         }
         composable<Routes.ImageCapture> {
             ImageCaptureScreen(
-                navigateBack = { navHostController.popBackStack() }
+                navController = navHostController
             )
         }
     }

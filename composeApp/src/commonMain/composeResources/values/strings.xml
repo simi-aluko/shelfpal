@@ -99,4 +99,5 @@
     <string name="turn_off_torch">Turn off torch</string>
     <string name="turn_on_flash">Turn on flash</string>
     <string name="turn_off_flash">Turn off flash</string>
+    <string name="generic_error">An error occurred. Please try again later.</string>
 </resources>

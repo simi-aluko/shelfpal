@@ -17,6 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import com.simi.shelfpal.shared.ImageThumbnail
 import com.simi.shelfpal.shared.ReadOnlyTextField
 import com.simi.shelfpal.theme.Dimens
 import org.jetbrains.compose.resources.stringResource
@@ -36,6 +38,7 @@ fun ExpiryForm(
     expiryDay: String = "",
     expiryMonth: String = "",
     expiryYear: String = "",
+    imageBitmap: ImageBitmap? = null,
     onExpiryDayClick: () -> Unit = {},
     onExpiryMonthClick: () -> Unit,
     onExpiryYearClick: () -> Unit,
@@ -64,6 +67,9 @@ fun ExpiryForm(
             onCheckChanged = { addDay = it }
         )
         Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+        imageBitmap?.let {
+            ImageThumbnail(it)
+        }
     }
 }
 
