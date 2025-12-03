@@ -3,6 +3,7 @@ package com.simi.shelfpal.additem
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,16 +17,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.simi.shelfpal.additem.AddItemBottomSheetType.CATEGORY
 import com.simi.shelfpal.additem.AddItemBottomSheetType.DAY
 import com.simi.shelfpal.additem.AddItemBottomSheetType.MONTH
 import com.simi.shelfpal.additem.AddItemBottomSheetType.YEAR
+import com.simi.shelfpal.additem.CameraEntry.*
 import com.simi.shelfpal.additem.composables.AddItemBottomSheet
 import com.simi.shelfpal.additem.composables.BasicInfoForm
 import com.simi.shelfpal.additem.composables.BottomCTA
@@ -45,27 +50,27 @@ import shelfpal.composeapp.generated.resources.select_expiry_day
 import shelfpal.composeapp.generated.resources.select_expiry_month
 import shelfpal.composeapp.generated.resources.select_expiry_year
 import shelfpal.composeapp.generated.resources.select_product_category
+import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddItemScreen(
     navigateBack: () -> Unit,
     navigateToImageCapture: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    viewModel: AddItemViewModel = viewModel { AddItemViewModel() }
 ) {
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val imageCaptureResult by savedStateHandle?.getStateFlow<ByteArray?>(IMAGE_CAPTURE_RESULT,  null)
         ?.collectAsState(initial = null) ?: mutableStateOf(null)
-    var image by remember { mutableStateOf<ByteArray?>(null) }
+    var basicInfoImage by rememberSaveable { mutableStateOf<ByteArray?>(null) }
+    var expiryInfoImage by rememberSaveable { mutableStateOf<ByteArray?>(null) }
+    var cameraEntry by rememberSaveable { mutableStateOf<CameraEntry?>(null) }
 
-    LaunchedEffect(imageCaptureResult) {
-        val result = imageCaptureResult
-        println("imageCaptureResult - add Item screen: $result")
-        if (result != null) {
-            image = result
-            savedStateHandle?.remove<ByteArray>(IMAGE_CAPTURE_RESULT)
-        }
-    }
+    val aiProductBasicInfo by viewModel.aiProductBasicInfo.collectAsState()
+    val aiProductExpiryInfo by viewModel.aiProductExpiryInfo.collectAsState()
+
+    val categories = stringArrayResource(Res.array.categories)
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var bottomSheetItems by remember { mutableStateOf(listOf<String>())}
@@ -76,12 +81,60 @@ fun AddItemScreen(
     val categoryBottomSheetTitle = stringResource(Res.string.select_product_category)
     val monthBottomSheetTitle = stringResource(Res.string.select_expiry_month)
     val yearBottomSheetTitle = stringResource(Res.string.select_expiry_year)
-    val categories = stringArrayResource(Res.array.categories)
 
-    var selectedDay by remember { mutableStateOf("") }
-    var selectedMonth by remember { mutableStateOf("") }
-    var selectedYear by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("") }
+    var selectedCategory by rememberSaveable { mutableStateOf("") }
+    var productName by rememberSaveable { mutableStateOf("") }
+
+    var selectedDay by rememberSaveable { mutableStateOf("") }
+    var selectedMonth by rememberSaveable { mutableStateOf("") }
+    var selectedYear by rememberSaveable { mutableStateOf("") }
+    var hasDay by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(imageCaptureResult) {
+        val result = imageCaptureResult
+        if (result != null) {
+            when (cameraEntry) {
+                BASIC_INFO -> {
+                    basicInfoImage = result
+                    viewModel.getBasicInfoFromImage(
+                        image = result,
+                        categories = categories
+                    )
+                }
+                EXPIRY_INFO -> {
+                    expiryInfoImage = result
+                    viewModel.getExpiryInfoFromImage(result)
+                }
+                null -> Unit
+            }
+            savedStateHandle?.remove<ByteArray>(IMAGE_CAPTURE_RESULT)
+        }
+    }
+
+    LaunchedEffect(aiProductBasicInfo) {
+        if (aiProductBasicInfo.productName.isNotEmpty()) {
+            productName = aiProductBasicInfo.productName
+        }
+        if (aiProductBasicInfo.category.isNotEmpty()) {
+            selectedCategory = aiProductBasicInfo.category
+        }
+    }
+
+    LaunchedEffect(aiProductExpiryInfo) {
+        val expiryDay = aiProductExpiryInfo.expiryDay
+        val expiryMonth = aiProductExpiryInfo.expiryMonth
+        val expiryYear = aiProductExpiryInfo.expiryYear
+
+        selectedDay = expiryDay.toString().takeIf { aiProductExpiryInfo.hasDay && expiryDay != null } ?: ""
+        selectedYear = expiryYear.toString().takeIf { expiryYear != null } ?: ""
+
+        selectedMonth = if (expiryMonth != null && expiryMonth in 1..12) {
+            Month.entries[expiryMonth - 1].name
+        } else {
+            ""
+        }
+        hasDay = aiProductExpiryInfo.hasDay
+    }
 
     Scaffold(
         topBar = {
@@ -105,6 +158,7 @@ fun AddItemScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 BasicInfoForm(
+                    productName = productName,
                     selectedCategory = selectedCategory,
                     onCategoryClick = {
                         bottomSheetType = CATEGORY
@@ -112,9 +166,13 @@ fun AddItemScreen(
                         bottomSheetItems = categories
                         showBottomSheet = true
                     },
-                    onCameraClick = navigateToImageCapture,
-                    imageBitmap = image?.decodeToImageBitmap()
+                    onCameraClick = {
+                        cameraEntry = BASIC_INFO
+                        navigateToImageCapture()
+                    },
+                    imageBitmap = basicInfoImage?.decodeToImageBitmap()
                 )
+                Spacer(modifier = Modifier.height(Dimens.spacingLarge))
                 ExpiryForm(
                     expiryDay = selectedDay,
                     expiryMonth = selectedMonth,
@@ -137,7 +195,12 @@ fun AddItemScreen(
                         bottomSheetItems = (1..31).map { it.toString() }
                         showBottomSheet = true
                     },
-                    onCameraClick = navigateToImageCapture
+                    onCameraClick = {
+                        cameraEntry = EXPIRY_INFO
+                        navigateToImageCapture()
+                    },
+                    imageBitmap = expiryInfoImage?.decodeToImageBitmap(),
+                    hasDay = hasDay
                 )
                 AddItemBottomSheet(
                     bottomSheetTitle = bottomSheetTitle,
@@ -178,4 +241,9 @@ private fun AddItemScreenPreview() {
 
 enum class AddItemBottomSheetType {
     CATEGORY, DAY, MONTH, YEAR
+}
+
+enum class CameraEntry {
+    BASIC_INFO,
+    EXPIRY_INFO
 }

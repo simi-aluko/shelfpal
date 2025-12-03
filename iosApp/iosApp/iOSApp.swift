@@ -21,8 +21,7 @@ struct iOSApp: App {
 
 
     init() {
-        KoinInitHelper().doInitKoin(
-            logger: IosLogger(),
+        KoinModules().doInitKoin(
             firebaseConnector: IosFirebaseConnector()
         )
     }

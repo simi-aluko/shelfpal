@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -17,13 +18,14 @@ fun ReadOnlyTextField(
     value: String,
     label: String,
     placeholder: String,
+    showTrailingIcon: Boolean = true,
     onClick: () -> Unit,
     modifier: Modifier
 ) {
     Box(
         modifier = modifier
     ) {
-        TextField(
+        OutlinedTextField(
             value = value,
             onValueChange = { },
             label = {
@@ -39,11 +41,15 @@ fun ReadOnlyTextField(
                 )
             },
             singleLine = true,
-            trailingIcon = {
-                Icon(
-                    imageVector = vectorResource(Res.drawable.chevrondown),
-                    contentDescription = null
-                )
+            trailingIcon = if (showTrailingIcon){
+                {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.chevrondown),
+                        contentDescription = null
+                    )
+                }
+            } else {
+                null
             },
             readOnly = true
         )

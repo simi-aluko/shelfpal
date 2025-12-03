@@ -178,6 +178,9 @@ object Dimens {
     /** 40.dp - Standard size for circular avatars/profile pictures in lists. */
     val imageSizeAvatarMedium: Dp = 40.dp
 
+    /** 64.dp - Standard size for circular avatars/profile pictures in lists. */
+    val imageSizeAvatarMediumLarge: Dp = 64.dp
+
     /** 72.dp - Larger size for profile headers or detailed views. */
     val imageSizeAvatarLarge: Dp = 72.dp
 

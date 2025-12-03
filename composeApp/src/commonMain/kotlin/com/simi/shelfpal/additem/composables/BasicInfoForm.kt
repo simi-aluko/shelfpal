@@ -1,5 +1,6 @@
 package com.simi.shelfpal.additem.composables
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,9 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -21,11 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.shared.ImageThumbnail
 import com.simi.shelfpal.theme.Dimens
 import com.simi.shelfpal.theme.onPrimaryContainerLight
+import com.simi.shelfpal.theme.primaryContainerLight
+import com.simi.shelfpal.theme.primaryLight
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.basic_info
 import shelfpal.composeapp.generated.resources.camera
@@ -39,34 +49,46 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicInfoForm(
+    productName: String,
     selectedCategory: String,
     imageBitmap: ImageBitmap? = null,
     onCategoryClick: () -> Unit,
     onCameraClick: () -> Unit
 ) {
-    Column {
-        FormHeader(
-            title = stringResource(Res.string.basic_info),
-            onCameraClick = onCameraClick
-        )
-        ProductNameTextField()
-        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-        ProductCategory(
-            selectedCategory = selectedCategory,
-            onClick = onCategoryClick
-        )
-        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-        imageBitmap?.let {
-            ImageThumbnail(it)
+    OutlinedCard(
+        border = BorderStroke(2.dp, primaryContainerLight)
+    ) {
+        Column(
+            modifier = Modifier.padding(Dimens.spacingMedium)
+        ) {
+            FormHeader(
+                title = stringResource(Res.string.basic_info),
+                onCameraClick = onCameraClick
+            )
+            ProductNameTextField(productName)
+            Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+            ProductCategory(
+                selectedCategory = selectedCategory,
+                onClick = onCategoryClick
+            )
+            Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+            imageBitmap?.let {
+                ImageThumbnail(it)
+            }
         }
     }
 }
 
 @Composable
-private fun ProductNameTextField() {
+private fun ProductNameTextField(
+    productName: String
+) {
     var value by remember { mutableStateOf("") }
+    if (productName.isNotEmpty()) {
+        value = productName
+    }
 
-    TextField(
+    OutlinedTextField(
         value = value,
         onValueChange = { value = it },
         label = {
@@ -86,7 +108,7 @@ private fun ProductCategory(
     onClick: () -> Unit
 ) {
     Box {
-        TextField(
+        OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = selectedCategory,
             onValueChange = { },
@@ -114,3 +136,21 @@ private fun ProductCategory(
     }
 }
 
+@Composable
+@Preview
+private fun BasicInfoFormPreview() {
+    MaterialTheme(
+
+    ) {
+        Column(
+            modifier = Modifier.padding(Dimens.spacingMedium)
+        ) {
+            BasicInfoForm(
+                selectedCategory = "Category",
+                onCategoryClick = {},
+                onCameraClick = {},
+                productName = ""
+            )
+        }
+    }
+}

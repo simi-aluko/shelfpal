@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import co.touchlab.kermit.Logger.Companion.i
 import com.kashif.cameraK.controller.CameraController
 import com.kashif.cameraK.enums.CameraLens
 import com.kashif.cameraK.enums.Directory
@@ -26,30 +25,20 @@ import com.kashif.cameraK.permissions.Permissions
 import com.kashif.cameraK.permissions.providePermissions
 import com.kashif.cameraK.result.ImageCaptureResult
 import com.kashif.cameraK.ui.CameraPreview
-import com.kashif.imagesaverplugin.ImageSaverConfig
-import com.kashif.imagesaverplugin.ImageSaverPlugin
-import com.kashif.imagesaverplugin.rememberImageSaverPlugin
 import com.simi.shelfpal.imagecapture.composables.CameraControls
 import com.simi.shelfpal.imagecapture.composables.PermissionDenied
 import com.simi.shelfpal.shared.IMAGE_CAPTURE_RESULT
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.resources.stringResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.camera_permission_denied_message
 import shelfpal.composeapp.generated.resources.camerapermission
 import shelfpal.composeapp.generated.resources.generic_error
-import shelfpal.composeapp.generated.resources.shelfpal
 import shelfpal.composeapp.generated.resources.storage_permission_denied_message
 import shelfpal.composeapp.generated.resources.storagesettings
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
-
-private const val IMAGE_PREFIX = "ShelfPal"
 
 @Composable
 fun ImageCaptureScreen(
@@ -80,15 +69,6 @@ fun ImageCaptureScreen(
             )
         }
 
-        val imageSaverPlugin = rememberImageSaverPlugin(
-            config = ImageSaverConfig(
-                isAutoSave = false,
-                prefix = stringResource(Res.string.shelfpal),
-                directory = Directory.DCIM,
-                customFolderName = stringResource(Res.string.shelfpal)
-            )
-        )
-
         CameraPermissionHandler(
             permissions = permissions,
             cameraPermissionState = cameraPermissionState,
@@ -114,7 +94,6 @@ fun ImageCaptureScreen(
         savedStateHandle?.let {
             ScreenContent(
                 cameraController = cameraController,
-                imageSaverPlugin = imageSaverPlugin,
                 cameraPermissionState = cameraPermissionState.value,
                 storagePermissionState = storagePermissionState.value,
                 permissionDeniedDrawable = permissionDeniedDrawable.value,
@@ -129,7 +108,6 @@ fun ImageCaptureScreen(
 @Composable
 private fun ScreenContent(
     cameraController: MutableState<CameraController?>,
-    imageSaverPlugin: ImageSaverPlugin,
     cameraPermissionState: Boolean,
     storagePermissionState: Boolean,
     permissionDeniedDrawable: DrawableResource,
@@ -140,7 +118,6 @@ private fun ScreenContent(
     if (cameraPermissionState && storagePermissionState) {
         CameraContent(
             cameraController = cameraController,
-            imageSaverPlugin = imageSaverPlugin,
             snackBarHostState = snackBarHostState,
             savedStateHandle = savedStateHandle,
             navigateBack = {
@@ -157,7 +134,6 @@ private fun ScreenContent(
 @Composable
 private fun CameraContent(
     cameraController: MutableState<CameraController?>,
-    imageSaverPlugin: ImageSaverPlugin,
     snackBarHostState: SnackbarHostState,
     savedStateHandle: SavedStateHandle,
     navigateBack: () -> Unit
@@ -176,7 +152,6 @@ private fun CameraContent(
                 setDirectory(Directory.PICTURES)
                 setTorchMode(TorchMode.OFF)
                 setQualityPrioritization(QualityPrioritization.QUALITY)
-                addPlugin(imageSaverPlugin)
             },
             onCameraControllerReady = {
                 cameraController.value = it
@@ -199,7 +174,6 @@ private fun CameraContent(
                             },
                             onCaptureImageSuccess = {
                                 savedStateHandle[IMAGE_CAPTURE_RESULT] = it.byteArray
-                                println("imageCaptureResult - Imagecapturescreen: ${it.byteArray}")
                                 navigateBack()
                             }
                         )

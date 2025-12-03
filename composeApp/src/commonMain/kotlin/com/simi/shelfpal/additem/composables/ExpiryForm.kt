@@ -1,5 +1,6 @@
 package com.simi.shelfpal.additem.composables
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,9 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.shared.ImageThumbnail
 import com.simi.shelfpal.shared.ReadOnlyTextField
 import com.simi.shelfpal.theme.Dimens
+import com.simi.shelfpal.theme.primaryContainerLight
+import com.simi.shelfpal.theme.primaryLight
 import org.jetbrains.compose.resources.stringResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.add_expiry_day
@@ -38,6 +43,7 @@ fun ExpiryForm(
     expiryDay: String = "",
     expiryMonth: String = "",
     expiryYear: String = "",
+    hasDay: Boolean = false,
     imageBitmap: ImageBitmap? = null,
     onExpiryDayClick: () -> Unit = {},
     onExpiryMonthClick: () -> Unit,
@@ -45,30 +51,32 @@ fun ExpiryForm(
     onCameraClick: () -> Unit
 ) {
     var addDay by remember { mutableStateOf(false) }
-    Column {
-        Spacer(
-            modifier = Modifier.size(Dimens.spacingMediumLarge)
-        )
-        FormHeader(
-            title = stringResource(Res.string.expiry_info),
-            onCameraClick = onCameraClick
-        )
-        ExpirySection(
-            expiryDay = expiryDay,
-            expiryMonth = expiryMonth,
-            expiryYear = expiryYear,
-            addDay = addDay,
-            onExpiryDayClick = onExpiryDayClick,
-            onExpiryMonthClick = onExpiryMonthClick,
-            onExpiryYearClick = onExpiryYearClick
-        )
-        AddDayCheckBox(
-            checked = addDay,
-            onCheckChanged = { addDay = it }
-        )
-        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-        imageBitmap?.let {
-            ImageThumbnail(it)
+    OutlinedCard(
+        border = BorderStroke(2.dp, primaryContainerLight)
+    ) {
+        Column(
+            modifier = Modifier.padding(Dimens.spacingMedium)
+        ) {
+            FormHeader(
+                title = stringResource(Res.string.expiry_info),
+                onCameraClick = onCameraClick
+            )
+            ExpirySection(
+                expiryDay = expiryDay,
+                expiryMonth = expiryMonth,
+                expiryYear = expiryYear,
+                showDay = addDay || hasDay,
+                onExpiryDayClick = onExpiryDayClick,
+                onExpiryMonthClick = onExpiryMonthClick,
+                onExpiryYearClick = onExpiryYearClick
+            )
+            AddDayCheckBox(
+                checked = addDay || hasDay,
+                onCheckChanged = { addDay = it || hasDay }
+            )
+            imageBitmap?.let {
+                ImageThumbnail(it)
+            }
         }
     }
 }
@@ -78,7 +86,7 @@ private fun ExpirySection(
     expiryDay: String,
     expiryMonth: String,
     expiryYear: String,
-    addDay: Boolean,
+    showDay: Boolean,
     onExpiryMonthClick: () -> Unit,
     onExpiryYearClick: () -> Unit,
     onExpiryDayClick: () -> Unit = {}
@@ -86,13 +94,14 @@ private fun ExpirySection(
     Row(
         horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
     ) {
-        if (addDay) {
+        if (showDay) {
             ReadOnlyTextField(
                 value = expiryDay,
                 label = stringResource(Res.string.day),
                 placeholder = stringResource(Res.string.select_expiry_day),
                 onClick = onExpiryDayClick,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                showTrailingIcon = !showDay
             )
         }
         ReadOnlyTextField(
@@ -100,14 +109,16 @@ private fun ExpirySection(
             label = stringResource(Res.string.month),
             placeholder = stringResource(Res.string.select_expiry_month),
             onClick = onExpiryMonthClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            showTrailingIcon = !showDay
         )
         ReadOnlyTextField(
             value = expiryYear,
             label = stringResource(Res.string.year),
             placeholder = stringResource(Res.string.select_expiry_year),
             onClick = onExpiryYearClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            showTrailingIcon = !showDay
         )
     }
 }

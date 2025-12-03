@@ -89,7 +89,7 @@
     <string name="select_expiry_year">Select expiry year</string>
     <string name="save_item">Save item</string>
     <string name="cancel">Cancel</string>
-    <string name="add_expiry_day">Add expiry day</string>
+    <string name="add_expiry_day">Add day</string>
 
     <!-- Image capture screen -->
     <string name="camera_permission_denied_message">Camera Permission Denied. Please grant camera permission in settings</string>

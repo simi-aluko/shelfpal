@@ -4,18 +4,71 @@
 
 import ComposeApp
 import FirebaseAILogic
+import UIKit
 
 final class IosFirebaseConnector: FirebaseConnector {
-    func generateContent() async throws {
+    private lazy var ai = FirebaseAI.firebaseAI(backend: .googleAI())
+    private lazy var model = ai.generativeModel(modelName: FirebaseConnectorKt.GEMINI_MODEL)
+    
+    private let basicInfoResponseSchema = Schema.object(
+        properties: [
+            FirebaseConnectorKt.PRODUCT_NAME : .string(),
+            FirebaseConnectorKt.CATEGORY : .string()
+        ]
+    )
+    
+    private let expiryInfoResponseSchema = Schema.object(
+        properties: [
+            FirebaseConnectorKt.EXPIRY_DAY : .integer(nullable: true),
+            FirebaseConnectorKt.EXPIRY_MONTH : .integer(nullable: true),
+            FirebaseConnectorKt.EXPIRY_YEAR : .integer(nullable: true),
+            FirebaseConnectorKt.HAS_DAY : .boolean()
+        ]
+    )
+    
+    func getProductBasicInfoFromImage(image: KotlinByteArray, prompt: String) async throws -> String? {
+        let model = ai.generativeModel(
+            modelName: FirebaseConnectorKt.GEMINI_MODEL,
+            generationConfig: GenerationConfig(
+                responseMIMEType: FirebaseConnectorKt.JSON_RESPONSE_MIMETYPE,
+                responseSchema: basicInfoResponseSchema
+            )
+        )
+        
+        guard let image = UIImage(data: image.toNSData()) else {
+            throw ImageDecodingError.invalidImageData
+        }
+        
         do {
-            let ai = FirebaseAI.firebaseAI(backend: .googleAI())
-            let model = ai.generativeModel(modelName: FirebaseConnectorKt.GEMINI_MODEL)
-            let prompt = "Write a story about a magic backpack."
-            let response = try await model.generateContent(prompt)
-            print(response.text ?? "No text in response.")
+            let response = try await model.generateContent(image, prompt)
+            return response.text
         } catch {
-            print("An error occured: \(error)")
             throw error
         }
+    }
+    
+    func getProductExpiryInfoFromImage(image: KotlinByteArray, prompt: String) async throws -> String? {
+        let model = ai.generativeModel(
+            modelName: FirebaseConnectorKt.GEMINI_MODEL,
+            generationConfig: GenerationConfig(
+                responseMIMEType: FirebaseConnectorKt.JSON_RESPONSE_MIMETYPE,
+                responseSchema: expiryInfoResponseSchema
+            )
+        )
+        
+        guard let image = UIImage(data: image.toNSData()) else {
+            throw ImageDecodingError.invalidImageData
+        }
+        
+        do {
+            let response = try await model.generateContent(image, prompt)
+            return response.text
+        } catch {
+            throw error
+        }
+    }
+
+    enum ImageDecodingError: Error {
+        case invalidImageData
     }
 }
