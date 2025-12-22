@@ -5,11 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simi.shelfpal.additem.AddItemScreen
-import com.simi.shelfpal.home.HomeScreen
-import com.simi.shelfpal.imagecapture.ImageCaptureScreen
-import com.simi.shelfpal.welcome.WelcomeScreen
-import com.simi.shelfpal.welcome.carouselContent
+import com.simi.shelfpal.ui.additem.AddItemScreen
+import com.simi.shelfpal.ui.home.HomeScreen
+import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
+import com.simi.shelfpal.ui.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
 
 sealed class Routes {
@@ -37,7 +36,7 @@ fun ShelfPalApp(
     ) {
         composable<Routes.Welcome> {
             WelcomeScreen(
-                content = carouselContent,
+                content = _root_ide_package_.com.simi.shelfpal.ui.welcome.carouselContent,
                 navigateToHome = {
                     navHostController.navigate(Routes.Home)
                 }

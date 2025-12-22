@@ -7,6 +7,12 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias { libs.plugins.googleServices }
     kotlin("plugin.serialization") version libs.versions.kotlin
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
@@ -48,6 +54,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.cameraK)
             implementation(libs.image.saver.plugin)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -83,6 +91,9 @@ android {
 }
 
 dependencies {
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
     debugImplementation(compose.uiTooling)
     "androidMainImplementation"(platform("com.google.firebase:firebase-bom:34.5.0"))
     "androidMainImplementation"("com.google.firebase:firebase-ai")

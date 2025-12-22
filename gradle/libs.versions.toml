@@ -21,6 +21,9 @@ googleServices = "4.4.4"
 koin = "4.1.0"
 kotlinxDateTime = "0.7.1"
 cameraK = "0.0.12"
+room = "2.8.4"
+sqlite = "2.6.2"
+ksp = "2.3.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -42,6 +45,9 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDateTime"}
 cameraK = { group = "io.github.kashif-mehmood-km", name = "camerak", version.ref = "cameraK"}
 image_saver_plugin = { module = "io.github.kashif-mehmood-km:image_saver_plugin", version.ref = "image_saver_plugin" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -50,3 +56,5 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices"}
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
