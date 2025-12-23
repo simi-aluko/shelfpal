@@ -90,6 +90,11 @@
     <string name="save_item">Save item</string>
     <string name="cancel">Cancel</string>
     <string name="add_expiry_day">Add day</string>
+    <string name="enter_product_name">"Enter product name"</string>
+    <string name="select_category">Select product category</string>
+    <string name="select_day">Select day</string>
+    <string name="select_month">Select month</string>
+    <string name="select_year">Select year</string>
 
     <!-- Image capture screen -->
     <string name="camera_permission_denied_message">Camera Permission Denied. Please grant camera permission in settings</string>

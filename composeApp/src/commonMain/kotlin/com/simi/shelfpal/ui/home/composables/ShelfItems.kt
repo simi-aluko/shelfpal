@@ -39,8 +39,30 @@ import com.simi.shelfpal.ui.theme.secondaryLight
 import com.simi.shelfpal.ui.theme.tertiaryLight
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.bread
+import shelfpal.composeapp.generated.resources.category_beverages
+import shelfpal.composeapp.generated.resources.category_canned_foods_oils_sauces_and_spices
+import shelfpal.composeapp.generated.resources.category_cleaning_and_household
+import shelfpal.composeapp.generated.resources.category_fresh_fruits_and_vegetables
+import shelfpal.composeapp.generated.resources.category_infant_and_pet_care
+import shelfpal.composeapp.generated.resources.category_meats_dairy_and_frozen_foods
+import shelfpal.composeapp.generated.resources.category_medications_and_vitamins
+import shelfpal.composeapp.generated.resources.category_pastry_and_staples
+import shelfpal.composeapp.generated.resources.category_personal_care_and_beauty
+import shelfpal.composeapp.generated.resources.category_prepared_meals
+import shelfpal.composeapp.generated.resources.cleaningtools
+import shelfpal.composeapp.generated.resources.drinks
+import shelfpal.composeapp.generated.resources.food
+import shelfpal.composeapp.generated.resources.medicine
+import shelfpal.composeapp.generated.resources.other
+import shelfpal.composeapp.generated.resources.personalcare
+import shelfpal.composeapp.generated.resources.petcare
+import shelfpal.composeapp.generated.resources.seafood
+import shelfpal.composeapp.generated.resources.selectall
+import shelfpal.composeapp.generated.resources.spices
 import shelfpal.composeapp.generated.resources.vegetable
 
 @Composable
@@ -72,7 +94,7 @@ private fun ShelfItem(
         ) {
             ProductImage(
                 expired = homeShelfItem.expired,
-                icon = homeShelfItem.productImage
+                icon = getProductCategoryImage(homeShelfItem.category)
             )
             Spacer(modifier = Modifier.width(Dimens.spacingSmall))
             ProductInfo(
@@ -174,6 +196,21 @@ private fun ExpiredLabel(
     }
 }
 
+@Composable
+fun getProductCategoryImage(category: String) = when (category) {
+    stringResource(Res.string.category_fresh_fruits_and_vegetables) -> Res.drawable.vegetable
+    stringResource(Res.string.category_meats_dairy_and_frozen_foods) -> Res.drawable.food
+    stringResource(Res.string.category_pastry_and_staples) -> Res.drawable.bread
+    stringResource(Res.string.category_canned_foods_oils_sauces_and_spices) -> Res.drawable.spices
+    stringResource(Res.string.category_beverages) -> Res.drawable.drinks
+    stringResource(Res.string.category_prepared_meals) -> Res.drawable.seafood
+    stringResource(Res.string.category_medications_and_vitamins) -> Res.drawable.medicine
+    stringResource(Res.string.category_personal_care_and_beauty) -> Res.drawable.personalcare
+    stringResource(Res.string.category_cleaning_and_household) -> Res.drawable.cleaningtools
+    stringResource(Res.string.category_infant_and_pet_care) -> Res.drawable.petcare
+    else -> Res.drawable.selectall
+}
+
 private fun getExpiredBorderColor(expired: Boolean) = if (expired) {
     errorDark
 } else {
@@ -198,7 +235,7 @@ private fun ShelfItemPreview() {
     val item = HomeShelfItem(
         id = 1,
         productName = "Milk",
-        productImage = Res.drawable.vegetable,
+        category = stringResource(Res.string.category_fresh_fruits_and_vegetables),
         expiryText = "Expires Nov 4",
         expired = false,
         durationRemaining = "2 days"

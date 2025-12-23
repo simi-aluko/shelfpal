@@ -2,8 +2,6 @@ package com.simi.shelfpal.ui.home.models
 
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
-import com.simi.shelfpal.ui.shared.models.ProductCategory
-import com.simi.shelfpal.ui.shared.models.ProductCategory.*
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -12,43 +10,18 @@ import kotlinx.datetime.daysUntil
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
-import shelfpal.composeapp.generated.resources.Res
-import shelfpal.composeapp.generated.resources.bread
-import shelfpal.composeapp.generated.resources.cleaningtools
-import shelfpal.composeapp.generated.resources.drinks
-import shelfpal.composeapp.generated.resources.food
-import shelfpal.composeapp.generated.resources.medicine
-import shelfpal.composeapp.generated.resources.personalcare
-import shelfpal.composeapp.generated.resources.petcare
-import shelfpal.composeapp.generated.resources.seafood
-import shelfpal.composeapp.generated.resources.selectall
-import shelfpal.composeapp.generated.resources.spices
-import shelfpal.composeapp.generated.resources.vegetable
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 fun ShelfPalItem.toHomeShelfItem(): HomeShelfItem = HomeShelfItem(
     id = id,
-    productName = basicInfo.productName,
-    productImage = getProductCategoryImage(basicInfo.productCategory),
+    productName = basicInfo.name,
+    category = basicInfo.category,
     expiryText = getExpiryText(expiryInfo),
     expired = getExpiredStatus(expiryInfo),
     durationRemaining = getDurationRemaining(expiryInfo)
 )
 
-fun getProductCategoryImage(productCategory: ProductCategory) = when (productCategory) {
-    FRESH_FRUITS_AND_VEGETABLES -> Res.drawable.vegetable
-    MEATS_DAIRY_AND_FROZEN_FOODS -> Res.drawable.food
-    PASTRY_AND_STAPLES -> Res.drawable.bread
-    CANNED_FOODS_OILS_SAUCES_AND_SPICES -> Res.drawable.spices
-    BEVERAGES -> Res.drawable.drinks
-    PREPARED_MEALS -> Res.drawable.seafood
-    MEDICATIONS_AND_VITAMINS -> Res.drawable.medicine
-    PERSONAL_CARE_AND_BEAUTY -> Res.drawable.personalcare
-    CLEANING_AND_HOUSEHOLD -> Res.drawable.cleaningtools
-    INFANT_AND_PET_CARE -> Res.drawable.petcare
-    OTHER -> Res.drawable.selectall
-}
 
 @OptIn(ExperimentalTime::class)
 private fun getExpiryText(expiryInfo: ProductExpiryInfo): String {

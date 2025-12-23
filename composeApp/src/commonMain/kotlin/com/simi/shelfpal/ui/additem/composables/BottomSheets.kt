@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import com.simi.shelfpal.ui.additem.models.AddItemViewState.AddItemBottomSheet
+import com.simi.shelfpal.ui.home.composables.FilterItemCard
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.primaryLight
 import kotlinx.datetime.Month
@@ -23,20 +25,18 @@ import shelfpal.composeapp.generated.resources.select_expiry_month
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddItemBottomSheet(
-    bottomSheetTitle: String,
-    showBottomSheet: Boolean,
-    items: List<String>,
+    bottomSheetData: AddItemBottomSheet?,
     onItemSelected: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    if (showBottomSheet) {
+    if (bottomSheetData != null && bottomSheetData.showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
                 onDismiss()
             }
         ) {
             Text(
-                text = bottomSheetTitle,
+                text = stringResource(bottomSheetData.title),
                 fontWeight = FontWeight.Bold,
                 color = primaryLight,
                 fontSize = Dimens.textSizeLarge,
@@ -46,14 +46,14 @@ fun AddItemBottomSheet(
                 modifier = Modifier.padding(Dimens.spacingSmallMedium),
                 verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
             ) {
-                items(items.size) { index ->
-                    _root_ide_package_.com.simi.shelfpal.ui.home.composables.FilterItemCard(
+                items(bottomSheetData.items.size) { index ->
+                    FilterItemCard(
                         selected = false,
                         rightIcon = null,
                         leftIcon = null,
-                        title = items[index],
+                        title = bottomSheetData.items[index],
                         onClick = {
-                            onItemSelected(items[index])
+                            onItemSelected(bottomSheetData.items[index])
                         }
                     )
                     Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
@@ -67,10 +67,12 @@ fun AddItemBottomSheet(
 @Composable
 private fun AddItemBottomSheetPreview() {
     MaterialTheme {
-        _root_ide_package_.com.simi.shelfpal.ui.additem.composables.AddItemBottomSheet(
-            bottomSheetTitle = stringResource(Res.string.select_expiry_month),
-            showBottomSheet = true,
-            items = Month.entries.map { it.name },
+        AddItemBottomSheet(
+            bottomSheetData = AddItemBottomSheet(
+                title = Res.string.select_expiry_month,
+                showBottomSheet = true,
+                items = Month.entries.map { it.name }
+            ),
             onItemSelected = {},
             onDismiss = {}
         )

@@ -13,17 +13,35 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.input.key.Key.Companion.M
+import androidx.compose.ui.text.font.FontWeight.Companion.Light
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.simi.shelfpal.ui.additem.models.AddItemViewState
+import com.simi.shelfpal.ui.additem.models.AddItemViewState.BasicInfo
 import com.simi.shelfpal.ui.shared.ImageThumbnail
 import com.simi.shelfpal.ui.theme.Dimens
+import com.simi.shelfpal.ui.theme.onBackgroundLight
+import com.simi.shelfpal.ui.theme.onPrimaryContainerLight
+import com.simi.shelfpal.ui.theme.onPrimaryLight
+import com.simi.shelfpal.ui.theme.onSecondaryContainerLight
+import com.simi.shelfpal.ui.theme.onSecondaryLight
 import com.simi.shelfpal.ui.theme.primaryContainerLight
+import com.simi.shelfpal.ui.theme.primaryLight
+import com.simi.shelfpal.ui.theme.surfaceContainerHighLight
+import com.simi.shelfpal.ui.theme.surfaceContainerHighestLight
+import com.simi.shelfpal.ui.theme.surfaceContainerLight
+import com.simi.shelfpal.ui.theme.surfaceContainerLowLight
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -38,32 +56,34 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicInfoForm(
-    productName: String,
-    selectedCategory: String,
-    imageBitmap: ImageBitmap? = null,
+    formData: BasicInfo,
     onCategoryClick: () -> Unit,
-    onCameraClick: () -> Unit
+    onCameraClick: () -> Unit,
+    onNameChange: (String) -> Unit
 ) {
     OutlinedCard(
-        border = BorderStroke(2.dp, primaryContainerLight)
+        border = BorderStroke(1.dp, onPrimaryContainerLight)
     ) {
         Column(
-            modifier = Modifier.padding(Dimens.spacingMedium)
+            modifier = Modifier.padding(horizontal = Dimens.spacingSmallMedium)
         ) {
             FormHeader(
                 title = stringResource(Res.string.basic_info),
                 onCameraClick = onCameraClick
             )
             ProductNameTextField(
-                productName
+                productName = formData.productName,
+                error = formData.basicInfoError.nameError,
+                errorText = stringResource(formData.basicInfoError.nameErrorText),
+                onValueChange = { onNameChange(it) }
             )
-            Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
             ProductCategory(
-                selectedCategory = selectedCategory,
+                selectedCategory = formData.category,
+                error = formData.basicInfoError.categoryError,
+                errorText = stringResource(formData.basicInfoError.categoryErrorText),
                 onClick = onCategoryClick
             )
-            Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-            imageBitmap?.let {
+            formData.imageBitmap?.let {
                 ImageThumbnail(it)
             }
         }
@@ -72,41 +92,68 @@ fun BasicInfoForm(
 
 @Composable
 private fun ProductNameTextField(
-    productName: String
+    productName: String,
+    error: Boolean,
+    errorText: String,
+    onValueChange: (String) -> Unit
 ) {
     var value by remember { mutableStateOf("") }
     if (productName.isNotEmpty()) {
         value = productName
     }
 
-    OutlinedTextField(
+    TextField(
         value = value,
-        onValueChange = { value = it },
+        onValueChange = {
+            value = it
+            onValueChange(it)
+        },
         label = {
-            Text(text = stringResource(Res.string.product_name))
+            Text(
+                text = stringResource(Res.string.product_name),
+                color = Color.DarkGray
+            )
         },
         placeholder = {
-            Text(text = stringResource(Res.string.enter_the_product_name))
+            Text(
+                text = stringResource(Res.string.enter_the_product_name),
+                color = Color.Gray
+            )
         },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
-        isError = true,
-        supportingText = { Text(text = "please enter a product name") }
+        isError = error,
+        supportingText = {
+            if (error) {
+                Text(text = errorText)
+            }
+        },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = surfaceContainerLight,
+            unfocusedContainerColor = surfaceContainerLight,
+            focusedIndicatorColor = surfaceContainerHighestLight,
+            unfocusedIndicatorColor = surfaceContainerHighestLight
+        )
     )
 }
 
 @Composable
 private fun ProductCategory(
     selectedCategory: String,
-    onClick: () -> Unit
+    error: Boolean,
+    errorText: String,
+    onClick: () -> Unit,
 ) {
     Box {
-        OutlinedTextField(
+        TextField(
             modifier = Modifier.fillMaxWidth(),
             value = selectedCategory,
             onValueChange = { },
             label = {
-                Text(text = stringResource(Res.string.product_category))
+                Text(
+                    text = stringResource(Res.string.product_category),
+                    color = Color.Gray
+                )
             },
             placeholder = {
                 Text(text = stringResource(Res.string.select_product_category))
@@ -118,6 +165,18 @@ private fun ProductCategory(
                     contentDescription = null
                 )
             },
+            isError = error,
+            supportingText = {
+                if (error) {
+                    Text(text = errorText)
+                }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = surfaceContainerLight,
+                unfocusedContainerColor = surfaceContainerLight,
+                focusedIndicatorColor = surfaceContainerHighestLight,
+                unfocusedIndicatorColor = surfaceContainerHighestLight
+            )
         )
         Box(
             modifier = Modifier
@@ -132,17 +191,19 @@ private fun ProductCategory(
 @Composable
 @Preview
 private fun BasicInfoFormPreview() {
-    MaterialTheme(
-
-    ) {
+    MaterialTheme {
         Column(
             modifier = Modifier.padding(Dimens.spacingMedium)
         ) {
             BasicInfoForm(
-                selectedCategory = "Category",
+                formData = BasicInfo(
+                    imageBitmap = null,
+                    productName = "",
+                    category = ""
+                ),
                 onCategoryClick = {},
                 onCameraClick = {},
-                productName = ""
+                onNameChange = {}
             )
         }
     }

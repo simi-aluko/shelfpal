@@ -4,13 +4,17 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,11 +22,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.simi.shelfpal.ui.additem.AddItemBottomSheetType
+import com.simi.shelfpal.ui.additem.models.AddItemViewState
+import com.simi.shelfpal.ui.additem.models.AddItemViewState.ExpiryInfo
 import com.simi.shelfpal.ui.shared.ImageThumbnail
 import com.simi.shelfpal.ui.shared.ReadOnlyTextField
 import com.simi.shelfpal.ui.theme.Dimens
+import com.simi.shelfpal.ui.theme.onPrimaryContainerLight
 import com.simi.shelfpal.ui.theme.primaryContainerLight
+import com.simi.shelfpal.ui.theme.primaryLight
+import io.ktor.client.request.forms.formData
 import org.jetbrains.compose.resources.stringResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.add_expiry_day
@@ -37,41 +48,38 @@ import shelfpal.composeapp.generated.resources.year
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpiryForm(
-    expiryDay: String = "",
-    expiryMonth: String = "",
-    expiryYear: String = "",
-    hasDay: Boolean = false,
-    imageBitmap: ImageBitmap? = null,
-    onExpiryDayClick: () -> Unit = {},
-    onExpiryMonthClick: () -> Unit,
-    onExpiryYearClick: () -> Unit,
+    formData: ExpiryInfo,
+    onExpiryDateClick: (AddItemBottomSheetType) -> Unit,
+    onDayChecked: (Boolean) -> Unit,
     onCameraClick: () -> Unit
 ) {
-    var addDay by remember { mutableStateOf(false) }
     OutlinedCard(
-        border = BorderStroke(2.dp, primaryContainerLight)
+        border = BorderStroke(1.dp, onPrimaryContainerLight)
     ) {
         Column(
-            modifier = Modifier.padding(Dimens.spacingMedium)
+            modifier = Modifier.padding(horizontal = Dimens.spacingSmallMedium)
         ) {
-            _root_ide_package_.com.simi.shelfpal.ui.additem.composables.FormHeader(
+            FormHeader(
                 title = stringResource(Res.string.expiry_info),
                 onCameraClick = onCameraClick
             )
-            _root_ide_package_.com.simi.shelfpal.ui.additem.composables.ExpirySection(
-                expiryDay = expiryDay,
-                expiryMonth = expiryMonth,
-                expiryYear = expiryYear,
-                showDay = addDay || hasDay,
-                onExpiryDayClick = onExpiryDayClick,
-                onExpiryMonthClick = onExpiryMonthClick,
-                onExpiryYearClick = onExpiryYearClick
+            ExpirySection(
+                sectionData = formData,
+                onExpiryDayClick = {
+                    onExpiryDateClick(AddItemBottomSheetType.DAY)
+                },
+                onExpiryMonthClick = {
+                    onExpiryDateClick(AddItemBottomSheetType.MONTH)
+                },
+                onExpiryYearClick = {
+                    onExpiryDateClick(AddItemBottomSheetType.YEAR)
+                }
             )
-            _root_ide_package_.com.simi.shelfpal.ui.additem.composables.AddDayCheckBox(
-                checked = addDay || hasDay,
-                onCheckChanged = { addDay = it || hasDay }
+            AddDayCheckBox(
+                checked = formData.hasDay,
+                onCheckChanged = { onDayChecked(it) }
             )
-            imageBitmap?.let {
+            formData.imageBitmap?.let {
                 ImageThumbnail(it)
             }
         }
@@ -80,10 +88,7 @@ fun ExpiryForm(
 
 @Composable
 private fun ExpirySection(
-    expiryDay: String,
-    expiryMonth: String,
-    expiryYear: String,
-    showDay: Boolean,
+    sectionData: ExpiryInfo,
     onExpiryMonthClick: () -> Unit,
     onExpiryYearClick: () -> Unit,
     onExpiryDayClick: () -> Unit = {}
@@ -91,31 +96,37 @@ private fun ExpirySection(
     Row(
         horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
     ) {
-        if (showDay) {
+        if (sectionData.hasDay) {
             ReadOnlyTextField(
-                value = expiryDay,
+                value = sectionData.day,
                 label = stringResource(Res.string.day),
                 placeholder = stringResource(Res.string.select_expiry_day),
                 onClick = onExpiryDayClick,
                 modifier = Modifier.weight(1f),
-                showTrailingIcon = !showDay
+                showTrailingIcon = !sectionData.hasDay,
+                isError = sectionData.expiryInfoError.dayError,
+                errorText = stringResource(sectionData.expiryInfoError.dayErrorText),
             )
         }
         ReadOnlyTextField(
-            value = expiryMonth,
+            value = sectionData.month,
             label = stringResource(Res.string.month),
             placeholder = stringResource(Res.string.select_expiry_month),
             onClick = onExpiryMonthClick,
             modifier = Modifier.weight(1f),
-            showTrailingIcon = !showDay
+            showTrailingIcon = !sectionData.hasDay,
+            isError = sectionData.expiryInfoError.monthError,
+            errorText = stringResource(sectionData.expiryInfoError.monthErrorText),
         )
         ReadOnlyTextField(
-            value = expiryYear,
+            value = sectionData.year,
             label = stringResource(Res.string.year),
             placeholder = stringResource(Res.string.select_expiry_year),
             onClick = onExpiryYearClick,
             modifier = Modifier.weight(1f),
-            showTrailingIcon = !showDay
+            showTrailingIcon = !sectionData.hasDay,
+            isError = sectionData.expiryInfoError.yearError,
+            errorText = stringResource(sectionData.expiryInfoError.yearErrorText),
         )
     }
 }
@@ -127,12 +138,15 @@ private fun AddDayCheckBox(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spacingSmallMedium)
     ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckChanged
-        )
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = onCheckChanged
+            )
+        }
+        Spacer(modifier = Modifier.size(Dimens.spacingExtraSmall))
         Text(
             text = stringResource(Res.string.add_expiry_day)
         )

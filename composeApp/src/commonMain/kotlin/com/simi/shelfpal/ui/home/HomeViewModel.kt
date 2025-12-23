@@ -8,13 +8,19 @@ import com.simi.shelfpal.ui.home.repository.HomeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.mp.KoinPlatform.getKoin
 
-class HomeViewModel() : ViewModel() {
-    private val homeRepository by getKoin().inject<HomeRepository>()
+class HomeViewModel() : ViewModel(), KoinComponent {
+    private val homeRepository by inject<HomeRepository>()
 
     private val _items = MutableStateFlow<List<HomeShelfItem>>(emptyList())
     val items: StateFlow<List<HomeShelfItem>> = _items
+
+    init {
+        getAllItems()
+    }
 
     fun getAllItems() {
         viewModelScope.launch {

@@ -7,8 +7,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import com.simi.shelfpal.ui.theme.surfaceContainerHighestLight
+import com.simi.shelfpal.ui.theme.surfaceContainerLight
+import com.simi.shelfpal.ui.theme.surfaceContainerLowLight
 import org.jetbrains.compose.resources.vectorResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.chevrondown
@@ -18,20 +24,26 @@ fun ReadOnlyTextField(
     value: String,
     label: String,
     placeholder: String,
+    isError: Boolean,
+    errorText: String,
     showTrailingIcon: Boolean = true,
     onClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    onValueChange: (String) -> Unit = {}
 ) {
     Box(
         modifier = modifier
     ) {
-        OutlinedTextField(
+        TextField(
             value = value,
-            onValueChange = { },
+            onValueChange = {
+                onValueChange(it)
+            },
             label = {
                 Text(
                     text = label,
-                    maxLines = 1
+                    maxLines = 1,
+                    color = Color.Gray
                 )
             },
             placeholder = {
@@ -51,7 +63,19 @@ fun ReadOnlyTextField(
             } else {
                 null
             },
-            readOnly = true
+            readOnly = true,
+            isError = isError,
+            supportingText = {
+                if (isError) {
+                    Text(text = errorText)
+                }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = surfaceContainerLight,
+                unfocusedContainerColor = surfaceContainerLight,
+                focusedIndicatorColor = surfaceContainerHighestLight,
+                unfocusedIndicatorColor = surfaceContainerHighestLight
+            )
         )
         Box(
             modifier = Modifier

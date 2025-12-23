@@ -25,6 +25,8 @@ import com.kashif.cameraK.permissions.Permissions
 import com.kashif.cameraK.permissions.providePermissions
 import com.kashif.cameraK.result.ImageCaptureResult
 import com.kashif.cameraK.ui.CameraPreview
+import com.simi.shelfpal.ui.imagecapture.composables.CameraControls
+import com.simi.shelfpal.ui.imagecapture.composables.PermissionDenied
 import com.simi.shelfpal.ui.shared.IMAGE_CAPTURE_RESULT
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -67,7 +69,7 @@ fun ImageCaptureScreen(
             )
         }
 
-        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.CameraPermissionHandler(
+        CameraPermissionHandler(
             permissions = permissions,
             cameraPermissionState = cameraPermissionState,
             onCameraPermissionDenied = {
@@ -78,7 +80,7 @@ fun ImageCaptureScreen(
             }
         )
 
-        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.StoragePermissionHandler(
+        StoragePermissionHandler(
             permissions = permissions,
             storagePermissionState = storagePermissionState,
             cameraPermissionState = cameraPermissionState,
@@ -90,7 +92,7 @@ fun ImageCaptureScreen(
             }
         )
         savedStateHandle?.let {
-            _root_ide_package_.com.simi.shelfpal.ui.imagecapture.ScreenContent(
+            ScreenContent(
                 cameraController = cameraController,
                 cameraPermissionState = cameraPermissionState.value,
                 storagePermissionState = storagePermissionState.value,
@@ -114,7 +116,7 @@ private fun ScreenContent(
     navController: NavController
 ) {
     if (cameraPermissionState && storagePermissionState) {
-        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.CameraContent(
+        CameraContent(
             cameraController = cameraController,
             snackBarHostState = snackBarHostState,
             savedStateHandle = savedStateHandle,
@@ -123,7 +125,7 @@ private fun ScreenContent(
             }
         )
     } else {
-        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.composables.PermissionDenied(
+        PermissionDenied(
             permissionDeniedDrawable = permissionDeniedDrawable
         )
     }
@@ -157,12 +159,12 @@ private fun CameraContent(
         )
 
         cameraController.value?.let { controller ->
-            _root_ide_package_.com.simi.shelfpal.ui.imagecapture.composables.CameraControls(
+            CameraControls(
                 cameraController = controller,
                 imageBitmap = imageBitmap.value,
                 onCapture = {
                     coroutineScope.launch {
-                        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.handleImageCapture(
+                        handleImageCapture(
                             cameraController = controller,
                             onErrorOccurred = {
                                 coroutineScope.launch {

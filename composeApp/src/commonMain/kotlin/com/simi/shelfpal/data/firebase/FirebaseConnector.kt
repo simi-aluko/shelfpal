@@ -2,7 +2,7 @@ package com.simi.shelfpal.data.firebase
 
 const val GEMINI_MODEL = "gemini-2.5-flash"
 const val JSON_RESPONSE_MIMETYPE = "application/json"
-const val PRODUCT_NAME = "productName"
+const val PRODUCT_NAME = "name"
 const val CATEGORY = "category"
 const val EXPIRY_DAY = "expiryDay"
 const val EXPIRY_MONTH = "expiryMonth"
@@ -22,7 +22,7 @@ expect interface FirebaseConnector {
 }
 
 fun getBasicInfoPrompt(categories: List<String>) = "Get the product name and category from the image. " +
-    "Return the response in JSON format using productName and category fields. " +
+    "Return the response in JSON format using the provided schema fields. " +
     "Select the category from the following list: ${categories.joinToString(", ")}." +
     "The category MUST be from the list, if it doesn't match a category you can put it in the Other category."
 

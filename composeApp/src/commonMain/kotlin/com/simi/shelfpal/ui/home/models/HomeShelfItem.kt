@@ -5,7 +5,7 @@ import org.jetbrains.compose.resources.DrawableResource
 data class HomeShelfItem(
     val id: Long,
     val productName: String,
-    val productImage: DrawableResource,
+    val category: String,
     val expiryText: String,
     val expired: Boolean,
     val durationRemaining: String
