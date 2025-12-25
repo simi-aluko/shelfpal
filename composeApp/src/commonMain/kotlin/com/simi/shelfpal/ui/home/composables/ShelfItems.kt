@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
@@ -42,7 +43,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.apps
 import shelfpal.composeapp.generated.resources.bread
+import shelfpal.composeapp.generated.resources.category_all_categories
 import shelfpal.composeapp.generated.resources.category_beverages
 import shelfpal.composeapp.generated.resources.category_canned_foods_oils_sauces_and_spices
 import shelfpal.composeapp.generated.resources.category_cleaning_and_household
@@ -55,14 +58,16 @@ import shelfpal.composeapp.generated.resources.category_personal_care_and_beauty
 import shelfpal.composeapp.generated.resources.category_prepared_meals
 import shelfpal.composeapp.generated.resources.cleaningtools
 import shelfpal.composeapp.generated.resources.drinks
+import shelfpal.composeapp.generated.resources.empty_home_screen
+import shelfpal.composeapp.generated.resources.empty_home_screen_subtitle
 import shelfpal.composeapp.generated.resources.food
 import shelfpal.composeapp.generated.resources.medicine
-import shelfpal.composeapp.generated.resources.other
 import shelfpal.composeapp.generated.resources.personalcare
 import shelfpal.composeapp.generated.resources.petcare
 import shelfpal.composeapp.generated.resources.seafood
 import shelfpal.composeapp.generated.resources.selectall
 import shelfpal.composeapp.generated.resources.spices
+import shelfpal.composeapp.generated.resources.surprise
 import shelfpal.composeapp.generated.resources.vegetable
 
 @Composable
@@ -70,12 +75,16 @@ fun ShelfItems(
     modifier: Modifier = Modifier,
     items: List<HomeShelfItem>
 ) {
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
-    ) {
-        items(items.size) { index ->
-            ShelfItem(homeShelfItem = items[index])
+    if (items.isEmpty()) {
+        EmptyList()
+    } else {
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+        ) {
+            items(items.size) { index ->
+                ShelfItem(homeShelfItem = items[index])
+            }
         }
     }
 }
@@ -197,6 +206,45 @@ private fun ExpiredLabel(
 }
 
 @Composable
+private fun EmptyList() {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(Dimens.spacingMedium),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier.weight(0.6f),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Image(
+                modifier = Modifier.alpha(0.8f),
+                painter = painterResource(Res.drawable.surprise),
+                contentDescription = "Your shelf is empty"
+            )
+        }
+        Box(
+            modifier = Modifier.weight(0.4f),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(Res.string.empty_home_screen),
+                    fontSize = Dimens.textSizeXLarge,
+                    fontWeight = FontWeight.W400
+                )
+                Text(
+                    text = stringResource(Res.string.empty_home_screen_subtitle),
+                    fontSize = Dimens.textSizeSmall,
+                    fontWeight = FontWeight.W300
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun getProductCategoryImage(category: String) = when (category) {
     stringResource(Res.string.category_fresh_fruits_and_vegetables) -> Res.drawable.vegetable
     stringResource(Res.string.category_meats_dairy_and_frozen_foods) -> Res.drawable.food
@@ -208,6 +256,7 @@ fun getProductCategoryImage(category: String) = when (category) {
     stringResource(Res.string.category_personal_care_and_beauty) -> Res.drawable.personalcare
     stringResource(Res.string.category_cleaning_and_household) -> Res.drawable.cleaningtools
     stringResource(Res.string.category_infant_and_pet_care) -> Res.drawable.petcare
+    stringResource(Res.string.category_all_categories) -> Res.drawable.apps
     else -> Res.drawable.selectall
 }
 
@@ -238,7 +287,8 @@ private fun ShelfItemPreview() {
         category = stringResource(Res.string.category_fresh_fruits_and_vegetables),
         expiryText = "Expires Nov 4",
         expired = false,
-        durationRemaining = "2 days"
+        durationRemaining = "2 days",
+        expiryYear = 2025
     )
     MaterialTheme {
         ShelfItem(homeShelfItem = item)

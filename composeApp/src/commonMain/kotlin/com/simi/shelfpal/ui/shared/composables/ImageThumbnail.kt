@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.shared
+package com.simi.shelfpal.ui.shared.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

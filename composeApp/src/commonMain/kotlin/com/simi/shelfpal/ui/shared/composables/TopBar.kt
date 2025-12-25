@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.shared
+package com.simi.shelfpal.ui.shared.composables
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api

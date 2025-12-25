@@ -39,10 +39,11 @@
     <string name="category_personal_care_and_beauty">Personal care and beauty</string>
     <string name="category_cleaning_and_household">Cleaning and household</string>
     <string name="category_infant_and_pet_care">Infant and pet care</string>
-    <string name="all_items">All items</string>
+    <string name="category_all_categories">All categories</string>
     <string name="other">Other</string>
 
     <string-array name="categories">
+        <item>All categories</item>
         <item>Fresh fruits and vegetables</item>
         <item>Meats, dairy and frozen foods</item>
         <item>Pastry and Staples</item>
@@ -91,7 +92,6 @@
     <string name="cancel">Cancel</string>
     <string name="add_expiry_day">Add day</string>
     <string name="enter_product_name">"Enter product name"</string>
-    <string name="select_category">Select product category</string>
     <string name="select_day">Select day</string>
     <string name="select_month">Select month</string>
     <string name="select_year">Select year</string>
@@ -105,4 +105,11 @@
     <string name="turn_on_flash">Turn on flash</string>
     <string name="turn_off_flash">Turn off flash</string>
     <string name="generic_error">An error occurred. Please try again later.</string>
+
+    <!-- Home screen -->
+    <string name="empty_home_screen">Your shelf is empty</string>
+    <string name="empty_home_screen_subtitle">Start by adding new items to your shelf</string>
+    <string name="expiry_month">Expiry month</string>
+    <string name="select_category">Select category</string>
+    <string name="expiry_year">Expiry year</string>
 </resources>

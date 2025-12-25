@@ -23,12 +23,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
-import shelfpal.composeapp.generated.resources.all_items
-import shelfpal.composeapp.generated.resources.apps
+import shelfpal.composeapp.generated.resources.category_all_categories
 
 @Composable
 fun TopRowFilter(
     filters: Set<Filter>,
+    onFilterClick: (Filter) -> Unit
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmallMedium),
@@ -38,13 +38,16 @@ fun TopRowFilter(
             item {
                 when (item) {
                     is Filter.Category -> CategoryFilter(
-                        category = item
+                        category = item,
+                        onFilterClick = onFilterClick
                     )
                     is Filter.Month -> MonthFilter(
-                        month = item
+                        month = item,
+                        onFilterClick = onFilterClick
                     )
                     is Filter.Year -> YearFilter(
-                        year = item
+                        year = item,
+                        onFilterClick = onFilterClick
                     )
                 }
             }
@@ -54,37 +57,46 @@ fun TopRowFilter(
 
 @Composable
 private fun CategoryFilter(
-    category: Filter.Category
+    category: Filter.Category,
+    onFilterClick: (Filter.Category) -> Unit
 ) {
     FilterCard(
-        title = category.title.toString(),
-        leftIcon = category.leftIcon,
+        title = category.title,
+        leftIcon = getProductCategoryImage(category.title),
         rightIcon = category.rightIcon,
-        onClick = category.onClick
+        onClick = {
+            onFilterClick(category)
+        }
     )
 }
 
 @Composable
 private fun MonthFilter(
-    month: Filter.Month
+    month: Filter.Month,
+    onFilterClick: (Filter.Month) -> Unit
 ) {
     FilterCard(
         title = month.title,
         leftIcon = null,
         rightIcon = month.rightIcon,
-        onClick = month.onClick
+        onClick = {
+            onFilterClick(month)
+        }
     )
 }
 
 @Composable
 private fun YearFilter(
-    year: Filter.Year
+    year: Filter.Year,
+    onFilterClick: (Filter.Year) -> Unit
 ) {
     FilterCard(
         title = year.title,
         leftIcon = null,
         rightIcon = year.rightIcon,
-        onClick = year.onClick
+        onClick = {
+            onFilterClick(year)
+        }
     )
 }
 
@@ -138,8 +150,7 @@ private fun HomeFilterPreview() {
         TopRowFilter(
             filters = setOf(
                 Filter.Category(
-                    title = stringResource(Res.string.all_items),
-                    leftIcon = Res.drawable.apps,
+                    title = stringResource(Res.string.category_all_categories),
                     onClick = { }
                 ),
                 Filter.Month(
@@ -150,7 +161,8 @@ private fun HomeFilterPreview() {
                     title = "2025",
                     onClick = { }
                 )
-            )
+            ),
+            onFilterClick = {}
         )
     }
 }

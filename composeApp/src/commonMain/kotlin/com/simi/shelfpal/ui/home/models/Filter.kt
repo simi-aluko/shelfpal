@@ -1,12 +1,10 @@
 package com.simi.shelfpal.ui.home.models
 
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
 
 sealed class Filter {
     data class Category(
         val title: String,
-        val leftIcon: DrawableResource,
         val rightIcon: DrawableResource? = null,
         val selected: Boolean = false,
         val onClick: () -> Unit = {}

@@ -1,10 +1,10 @@
 package com.simi.shelfpal.ui.additem.utils
 
-import com.simi.shelfpal.ui.additem.models.AddItemViewState
 import com.simi.shelfpal.ui.additem.models.AddItemViewState.BasicInfo
 import com.simi.shelfpal.ui.additem.models.AddItemViewState.ExpiryInfo
 import com.simi.shelfpal.ui.additem.models.BasicInfoError
 import com.simi.shelfpal.ui.additem.models.ExpiryInfoError
+import com.simi.shelfpal.ui.shared.capitalizeFirstChar
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -26,7 +26,7 @@ fun validateBasicInfo(
 
 fun validateExpiryInfo(expiryInfo: ExpiryInfo): ExpiryInfoError {
     val dayValid = expiryInfo.day.isNotBlank() && expiryInfo.day.toInt() in 1..31
-    val monthValid = expiryInfo.month.isNotBlank() && expiryInfo.month in Month.entries.map { it.name }
+    val monthValid = expiryInfo.month.isNotBlank() && expiryInfo.month in Month.entries.map { it.name.capitalizeFirstChar() }
     val yearValid = expiryInfo.year.isNotBlank() && expiryInfo.year in getSelectableYearList()
 
     return ExpiryInfoError(

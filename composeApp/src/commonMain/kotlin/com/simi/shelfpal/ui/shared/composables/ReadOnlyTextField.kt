@@ -1,20 +1,16 @@
-package com.simi.shelfpal.ui.shared
+package com.simi.shelfpal.ui.shared.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.simi.shelfpal.ui.theme.surfaceContainerHighestLight
 import com.simi.shelfpal.ui.theme.surfaceContainerLight
-import com.simi.shelfpal.ui.theme.surfaceContainerLowLight
 import org.jetbrains.compose.resources.vectorResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.chevrondown

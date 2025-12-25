@@ -32,7 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.simi.shelfpal.ui.home.models.Filter
 import com.simi.shelfpal.ui.home.models.Filter.Category
+import com.simi.shelfpal.ui.home.models.ViewStates
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.outlineVariantLight
 import com.simi.shelfpal.ui.theme.primaryContainerLight
@@ -43,35 +45,35 @@ import com.simi.shelfpal.ui.theme.secondaryLight
 import com.simi.shelfpal.ui.theme.surfaceContainerLight
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.InternalResourceApi
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
-import shelfpal.composeapp.generated.resources.all_items
-import shelfpal.composeapp.generated.resources.apps
+import shelfpal.composeapp.generated.resources.category_all_categories
 import shelfpal.composeapp.generated.resources.check_24px
+import shelfpal.composeapp.generated.resources.product_category
+import shelfpal.composeapp.generated.resources.select_product_category
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterBottomSheet(
     sheetState: SheetState,
-    showBottomSheet: Boolean,
-    bottomSheetHeaderViewModel: BottomSheetHeaderViewModel,
-    filters: List<com.simi.shelfpal.ui.home.models.Filter>,
-    onDismiss: () -> Unit = {}
+    bottomSheet: ViewStates.BottomSheet,
+    onDismiss: () -> Unit
 ) {
-    if (showBottomSheet) {
+    if (bottomSheet.showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState
         ) {
             BottomSheetHeader(
-                bottomSheetHeaderViewModel = bottomSheetHeaderViewModel
+                bottomSheetHeaderViewModel = bottomSheet.bottomSheetHeaderViewModel
             )
             Spacer(modifier = Modifier.size(Dimens.spacingSmallMedium))
             BottomSheetContent(
-                filters = filters
+                filters = bottomSheet.filters
             )
         }
     }
@@ -87,14 +89,14 @@ private fun BottomSheetHeader(
         modifier = Modifier.padding(Dimens.spacingSmall)
     ){
         Text(
-            text = bottomSheetHeaderViewModel.title,
+            text = stringResource(bottomSheetHeaderViewModel.title),
             fontWeight = FontWeight.Bold,
             color = primaryLight,
             fontSize = Dimens.textSizeLarge
         )
         Spacer(modifier = Modifier.size(Dimens.spacingMicro))
         Text(
-            text = bottomSheetHeaderViewModel.subtitle,
+            text = stringResource(bottomSheetHeaderViewModel.subtitle),
             color = secondaryLight
         )
     }
@@ -102,7 +104,7 @@ private fun BottomSheetHeader(
 
 @Composable
 private fun BottomSheetContent(
-    filters: List<com.simi.shelfpal.ui.home.models.Filter>
+    filters: List<Filter>
 ) {
     LazyColumn(
         modifier = Modifier.padding(Dimens.spacingSmall),
@@ -110,13 +112,13 @@ private fun BottomSheetContent(
     ) {
         items(filters.size) {
             when(val filter = filters[it]) {
-                is Category -> _root_ide_package_.com.simi.shelfpal.ui.home.composables.CategoryFilterItem(
+                is Category -> CategoryFilterItem(
                     category = filter
                 )
-                is com.simi.shelfpal.ui.home.models.Filter.Month -> _root_ide_package_.com.simi.shelfpal.ui.home.composables.MonthFilterItem(
+                is Filter.Month -> MonthFilterItem(
                     month = filter
                 )
-                is com.simi.shelfpal.ui.home.models.Filter.Year -> _root_ide_package_.com.simi.shelfpal.ui.home.composables.YearFilterItem(
+                is Filter.Year -> YearFilterItem(
                     year = filter
                 )
             }
@@ -128,9 +130,9 @@ private fun BottomSheetContent(
 private fun CategoryFilterItem(
     category: Category
 ) {
-    _root_ide_package_.com.simi.shelfpal.ui.home.composables.FilterItemCard(
+    FilterItemCard(
         selected = category.selected,
-        leftIcon = category.leftIcon,
+        leftIcon = getProductCategoryImage(category.title),
         title = category.title,
         rightIcon = category.rightIcon,
         onClick = category.onClick
@@ -139,9 +141,9 @@ private fun CategoryFilterItem(
 
 @Composable
 private fun MonthFilterItem(
-    month: com.simi.shelfpal.ui.home.models.Filter.Month
+    month: Filter.Month
 ) {
-    _root_ide_package_.com.simi.shelfpal.ui.home.composables.FilterItemCard(
+    FilterItemCard(
         selected = month.selected,
         leftIcon = null,
         title = month.title,
@@ -152,9 +154,9 @@ private fun MonthFilterItem(
 
 @Composable
 private fun YearFilterItem(
-    year: com.simi.shelfpal.ui.home.models.Filter.Year
+    year: Filter.Year
 ) {
-    _root_ide_package_.com.simi.shelfpal.ui.home.composables.FilterItemCard(
+    FilterItemCard(
         selected = year.selected,
         leftIcon = null,
         title = year.title,
@@ -252,8 +254,8 @@ private fun FilterItemIcon(
 }
 
 data class BottomSheetHeaderViewModel(
-    val title: String,
-    val subtitle: String
+    val title: StringResource,
+    val subtitle: StringResource
 )
 
 @OptIn(InternalResourceApi::class, ExperimentalMaterial3Api::class)
@@ -262,20 +264,17 @@ data class BottomSheetHeaderViewModel(
 private fun CategoryFilterPreview() {
     val filters = listOf(
         Category(
-            title = stringResource(Res.string.all_items),
-            leftIcon = Res.drawable.apps,
+            title = stringResource(Res.string.category_all_categories),
             selected = true,
             rightIcon = Res.drawable.check_24px
         ),
         Category(
-            title = stringResource(Res.string.all_items),
-            leftIcon = Res.drawable.apps,
+            title = stringResource(Res.string.category_all_categories),
             selected = false,
             rightIcon = null
         ),
         Category(
-            title = stringResource(Res.string.all_items),
-            leftIcon = Res.drawable.apps,
+            title = stringResource(Res.string.category_all_categories),
             selected = false,
             rightIcon = null
         )
@@ -284,12 +283,15 @@ private fun CategoryFilterPreview() {
     MaterialTheme {
         FilterBottomSheet(
             sheetState = rememberModalBottomSheetState(),
-            showBottomSheet = true,
-            bottomSheetHeaderViewModel = BottomSheetHeaderViewModel(
-                title = "Filter by category",
-                subtitle = "Choose a category to filter your items"
+            bottomSheet = ViewStates.BottomSheet(
+                showBottomSheet = true,
+                bottomSheetHeaderViewModel = BottomSheetHeaderViewModel(
+                    title = Res.string.product_category,
+                    subtitle = Res.string.select_product_category
+                ),
+                filters = filters
             ),
-            filters = filters
+            onDismiss = {}
         )
     }
 }

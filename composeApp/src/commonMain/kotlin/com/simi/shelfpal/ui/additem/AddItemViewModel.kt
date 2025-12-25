@@ -3,7 +3,6 @@ package com.simi.shelfpal.ui.additem
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.firebase.FirebaseConnector
 import com.simi.shelfpal.data.firebase.getBasicInfoPrompt
 import com.simi.shelfpal.data.models.ProductBasicInfo
@@ -23,24 +22,19 @@ import com.simi.shelfpal.ui.additem.utils.getSelectableYearList
 import com.simi.shelfpal.ui.additem.utils.getShelPalItemFromViewModel
 import com.simi.shelfpal.ui.additem.utils.validateBasicInfo
 import com.simi.shelfpal.ui.additem.utils.validateExpiryInfo
+import com.simi.shelfpal.ui.shared.capitalizeFirstChar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.mp.KoinPlatform.getKoin
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.select_expiry_day
 import shelfpal.composeapp.generated.resources.select_expiry_month
 import shelfpal.composeapp.generated.resources.select_expiry_year
 import shelfpal.composeapp.generated.resources.select_product_category
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
-import kotlin.toString
 
 class AddItemViewModel(
     val viewMetaData: ViewMetaData = ViewMetaData()
@@ -89,7 +83,7 @@ class AddItemViewModel(
             }
             MONTH -> {
                 viewMetaData.bottomSheetType = MONTH
-                Pair(Res.string.select_expiry_month,Month.entries.map { it.name })
+                Pair(Res.string.select_expiry_month,Month.entries.map { it.name.capitalizeFirstChar() })
             }
             YEAR -> {
                 viewMetaData.bottomSheetType = YEAR
@@ -226,7 +220,7 @@ class AddItemViewModel(
                             viewMetaData.hasDay && day != null
                         } ?: "",
                         month = if (month != null && month in 1..12) {
-                            Month.entries[month - 1].name
+                            Month.entries[month - 1].name.capitalizeFirstChar()
                         } else {
                             ""
                         },

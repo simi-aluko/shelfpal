@@ -2,6 +2,7 @@ package com.simi.shelfpal.ui.home.models
 
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
+import com.simi.shelfpal.ui.shared.capitalizeFirstChar
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -19,7 +20,8 @@ fun ShelfPalItem.toHomeShelfItem(): HomeShelfItem = HomeShelfItem(
     category = basicInfo.category,
     expiryText = getExpiryText(expiryInfo),
     expired = getExpiredStatus(expiryInfo),
-    durationRemaining = getDurationRemaining(expiryInfo)
+    durationRemaining = getDurationRemaining(expiryInfo),
+    expiryYear = expiryInfo.expiryYear
 )
 
 
@@ -38,15 +40,15 @@ private fun getExpiryText(expiryInfo: ProductExpiryInfo): String {
             currentYear > expiryYear -> "Expired"
 
             currentYear < expiryYear -> if (expiryMonth != null && expiryMonth in 1..12) {
-                "Expires in ${Month(expiryInfo.expiryMonth).name} $expiryYear"
+                "Expires in ${Month(expiryInfo.expiryMonth).name.capitalizeFirstChar()} $expiryYear"
             } else {
                 "Expires in $expiryYear"
             }
 
             currentYear == expiryYear -> if (expiryDay != null && expiryMonth != null && expiryDay in 1..31 && expiryMonth in 1..12) {
-                "Expires on ${Month(expiryInfo.expiryMonth).name} $expiryDay"
+                "Expires on ${Month(expiryInfo.expiryMonth).name.capitalizeFirstChar()} $expiryDay"
             } else if (expiryDay == null && expiryMonth != null && expiryMonth in 1..12) {
-                "Expires in ${Month(expiryInfo.expiryMonth).name}"
+                "Expires in ${Month(expiryInfo.expiryMonth).name.capitalizeFirstChar()}"
             } else {
                 "Expires this year"
             }
