@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.simi.shelfpal.ui.additem.models.AddItemViewState.AddItemBottomSheet
 import com.simi.shelfpal.ui.home.composables.FilterItemCard
+import com.simi.shelfpal.ui.shared.getDisplayMonths
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.primaryLight
-import kotlinx.datetime.Month
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
@@ -71,7 +71,7 @@ private fun AddItemBottomSheetPreview() {
             bottomSheetData = AddItemBottomSheet(
                 title = Res.string.select_expiry_month,
                 showBottomSheet = true,
-                items = Month.entries.map { it.name }
+                items = getDisplayMonths()
             ),
             onItemSelected = {},
             onDismiss = {}

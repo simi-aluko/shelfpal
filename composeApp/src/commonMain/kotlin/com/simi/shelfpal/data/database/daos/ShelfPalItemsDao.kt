@@ -11,8 +11,18 @@ interface ShelfPalItemsDao {
     @Insert
     suspend fun insert(item: ShelfPalItem)
 
-    @Query("SELECT * FROM ShelfPalItem")
-    fun getAll(): Flow<List<ShelfPalItem>>
+    @Query(
+        """
+            SELECT * FROM ShelfPalItem
+            WHERE (:category IS NULL OR category = :category)
+            AND (:month IS NULL OR expiryMonth = :month)
+            AND (:year IS NULL OR expiryYear = :year)
+        """)
+    fun getItems(
+        category: String?,
+        month: Int?,
+        year: Int?
+    ): Flow<List<ShelfPalItem>>
 
     @Query("SELECT * FROM ShelfPalItem WHERE id = :id")
     fun getById(id: Long): Flow<ShelfPalItem>

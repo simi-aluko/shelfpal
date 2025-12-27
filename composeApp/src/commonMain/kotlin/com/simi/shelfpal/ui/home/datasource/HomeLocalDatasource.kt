@@ -4,5 +4,13 @@ import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
 
 class HomeLocalDatasource(private val dao: ShelfPalItemsDao) {
 
-    fun getAllItems() = dao.getAll()
+    fun getAllItems(
+        category: String?,
+        month: Int?,
+        year: Int?
+    ) = dao.getItems(
+        category = category,
+        month = month,
+        year = year
+    )
 }

@@ -23,6 +23,7 @@ import com.simi.shelfpal.ui.additem.utils.getShelPalItemFromViewModel
 import com.simi.shelfpal.ui.additem.utils.validateBasicInfo
 import com.simi.shelfpal.ui.additem.utils.validateExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
+import com.simi.shelfpal.ui.shared.getDisplayMonths
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -83,7 +84,7 @@ class AddItemViewModel(
             }
             MONTH -> {
                 viewMetaData.bottomSheetType = MONTH
-                Pair(Res.string.select_expiry_month,Month.entries.map { it.name.capitalizeFirstChar() })
+                Pair(Res.string.select_expiry_month, getDisplayMonths())
             }
             YEAR -> {
                 viewMetaData.bottomSheetType = YEAR

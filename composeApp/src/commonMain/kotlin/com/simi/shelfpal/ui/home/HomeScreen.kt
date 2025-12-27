@@ -11,6 +11,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,6 +21,7 @@ import com.simi.shelfpal.ui.home.composables.ShelfItems
 import com.simi.shelfpal.ui.home.composables.TopRowFilter
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
 import shelfpal.composeapp.generated.resources.Res
@@ -33,6 +35,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel { HomeViewModel() },
     navigateToAddItem: () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
     val categories = stringArrayResource(Res.array.categories)
 
@@ -66,7 +69,11 @@ fun HomeScreen(
             ) {
                 TopRowFilter(
                     filters = filters,
-                    onFilterClick = viewModel::onFilterClick
+                    onFilterClick = {
+                        coroutineScope.launch {
+                            viewModel.onFilterClick(it)
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.size(Dimens.spacingMediumLarge))
                 ShelfItems(items = shelfItems)

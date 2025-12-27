@@ -107,9 +107,11 @@
     <string name="generic_error">An error occurred. Please try again later.</string>
 
     <!-- Home screen -->
-    <string name="empty_home_screen">Your shelf is empty</string>
-    <string name="empty_home_screen_subtitle">Start by adding new items to your shelf</string>
+    <string name="empty_home_screen">Oops, nothing to display here</string>
+    <string name="empty_home_screen_subtitle">Add new items to your shelf or expand filters</string>
     <string name="expiry_month">Expiry month</string>
     <string name="select_category">Select category</string>
     <string name="expiry_year">Expiry year</string>
+    <string name="all_months">All months</string>
+    <string name="all_years">All years</string>
 </resources>

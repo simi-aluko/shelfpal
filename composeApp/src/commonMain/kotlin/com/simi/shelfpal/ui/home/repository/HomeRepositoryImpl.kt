@@ -6,5 +6,13 @@ class HomeRepositoryImpl(
     private val homeLocalDatasource: HomeLocalDatasource
 ) : HomeRepository {
 
-    override fun getItems() = homeLocalDatasource.getAllItems()
+    override fun getItems(
+        category: String?,
+        month: Int?,
+        year: Int?
+    ) = homeLocalDatasource.getAllItems(
+        category = category,
+        month = month,
+        year = year
+    )
 }

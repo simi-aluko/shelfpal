@@ -232,12 +232,12 @@ private fun EmptyList() {
                 Text(
                     text = stringResource(Res.string.empty_home_screen),
                     fontSize = Dimens.textSizeXLarge,
-                    fontWeight = FontWeight.W400
+                    fontWeight = FontWeight.W300
                 )
                 Text(
                     text = stringResource(Res.string.empty_home_screen_subtitle),
                     fontSize = Dimens.textSizeSmall,
-                    fontWeight = FontWeight.W300
+                    fontWeight = FontWeight.W200
                 )
             }
         }
