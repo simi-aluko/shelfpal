@@ -1,5 +1,6 @@
 package com.simi.shelfpal.ui.details.models
 
+import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ShelfPalItemReminderSettings
 import org.jetbrains.compose.resources.DrawableResource
 import shelfpal.composeapp.generated.resources.Res
@@ -31,4 +32,8 @@ data class ItemDetailExpiryInfo(
     val expiryDate: String = "",
     val timeRemaining: String? = null,
     val hasExpired: Boolean = false
+)
+
+data class ViewMetaData(
+    var shelfPalItem: ShelfPalItem? = null
 )

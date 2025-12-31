@@ -24,9 +24,8 @@ fun ShelfPalItem.toViewModel() = ViewStates.ItemDetail(
         productImageUrl = "https://picsum.photos/id/237/200/300",
         expiryImageUrl = "https://picsum.photos/id/230/200/300"
     ),
-    reminderSettings = reminderSettings
+    reminderSettings = reminderSettings.copy(hasExpired = getExpiredStatus(expiryInfo))
 )
-
 
 private fun ProductExpiryInfo.toDisplayDate(): String {
     var day = ""

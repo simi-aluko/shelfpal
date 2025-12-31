@@ -1,9 +1,7 @@
 package com.simi.shelfpal.data.models
 
 import androidx.room.TypeConverter
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
@@ -12,7 +10,8 @@ data class ShelfPalItemReminderSettings(
     val notifyWeekBefore: Boolean = false,
     val notifyDayBefore: Boolean = false,
     val notifyOnDay: Boolean = false,
-    val customDaysBefore: Int? = null
+    val customDaysBefore: Int? = null,
+    val hasExpired: Boolean = false
 )
 
 class ShelfPalItemReminderSettingsConverter {

@@ -14,5 +14,5 @@ data class ShelfPalItem(
     val productExpiryImageUrl: String? = null,
     @Embedded val basicInfo: ProductBasicInfo,
     @Embedded val expiryInfo: ProductExpiryInfo,
-    val reminderSettings: ShelfPalItemReminderSettings = ShelfPalItemReminderSettings()
+    @Embedded val reminderSettings: ShelfPalItemReminderSettings = ShelfPalItemReminderSettings()
 )

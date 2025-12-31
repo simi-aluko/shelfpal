@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -22,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import com.simi.shelfpal.data.models.ShelfPalItemReminderSettings
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.colorOrange
 import com.simi.shelfpal.ui.theme.errorLight
@@ -45,62 +48,100 @@ import shelfpal.composeapp.generated.resources.reminder_settings
 import shelfpal.composeapp.generated.resources.set_custom_reminder
 
 @Composable
-fun ItemDetailSettings() {
+fun ItemDetailSettings(
+    data: ShelfPalItemReminderSettings,
+    onCheckClick: (ShelfPalItemReminderSettings) -> Unit
+) {
     ItemDetailCard {
         Column(
             modifier = Modifier.padding(Dimens.spacingMedium)
         ) {
             ItemDetailSectionHeader(stringResource(Res.string.reminder_settings))
             Spacer(modifier = Modifier.size(Dimens.spacingSmall))
-            ItemDetailSettingsBody()
+            ItemDetailSettingsBody(
+                data = data,
+                onCheckClick = onCheckClick
+            )
         }
     }
 }
 
 @Composable
-private fun ItemDetailSettingsBody() {
-    var customReminderSet by remember { mutableStateOf(false) }
+private fun ItemDetailSettingsBody(
+    data: ShelfPalItemReminderSettings,
+    onCheckClick: (ShelfPalItemReminderSettings) -> Unit
+) {
+    val showCustomReminder = data.customDaysBefore != null
+
     Column(
-        verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+        verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
     ) {
         ItemDetailsReminderRow(
+            checked = data.notifyMonthBefore,
             title = stringResource(Res.string.one_month_before),
             subtitle = stringResource(Res.string.get_notified_one_month_before),
-            iconTint = tertiaryLight
+            iconTint = tertiaryLight,
+            hasExpired = data.hasExpired,
+            onChecked = {
+                onCheckClick(data.copy(notifyMonthBefore = it))
+            }
         )
         ItemDetailsReminderRow(
+            checked = data.notifyWeekBefore,
             title = stringResource(Res.string.one_week_before),
             subtitle = stringResource(Res.string.get_notified_one_week_before),
-            iconTint = colorOrange
+            iconTint = colorOrange,
+            hasExpired = data.hasExpired,
+            onChecked = {
+                onCheckClick(data.copy(notifyWeekBefore = it))
+            }
         )
         ItemDetailsReminderRow(
+            checked = data.notifyOnDay,
             title = stringResource(Res.string.on_expiry),
             subtitle = stringResource(Res.string.get_notified_on_expiry_date),
-            iconTint = errorLight
+            iconTint = errorLight,
+            hasExpired = data.hasExpired,
+            onChecked = {
+                onCheckClick(data.copy(notifyOnDay = it))
+            }
         )
         ItemDetailsReminderRow(
+            checked = showCustomReminder,
             title = stringResource(Res.string.custom_reminder),
             subtitle = stringResource(Res.string.set_custom_reminder),
             iconTint = Color.Gray,
+            hasExpired = data.hasExpired,
             onChecked = {
-                customReminderSet = !customReminderSet
+                if (it) {
+                    onCheckClick(data.copy(customDaysBefore = 1))
+                } else {
+                    onCheckClick(data.copy(customDaysBefore = null))
+                }
             }
         )
-        if (customReminderSet) {
-            CustomReminder()
+        if (showCustomReminder) {
+            CustomReminder(
+                days = data.customDaysBefore,
+                onValueChange = {
+                    onCheckClick(data.copy(customDaysBefore = it))
+                }
+            )
         }
     }
 }
 
 @Composable
 private fun ItemDetailsReminderRow(
+    checked: Boolean?,
     title: String,
     subtitle: String,
     iconTint: Color,
-    onChecked: () -> Unit = {}
+    hasExpired: Boolean,
+    onChecked: (Boolean) -> Unit,
 ) {
 
-    var checked by remember { mutableStateOf(false) }
+    var checked = checked
 
     Row(
         verticalAlignment = Alignment.CenterVertically
@@ -127,18 +168,23 @@ private fun ItemDetailsReminderRow(
         Spacer(modifier = Modifier.size(Dimens.spacingMedium))
         Spacer(modifier = Modifier.weight(1f))
         Switch(
-            checked = checked,
+            checked = checked ?: false,
+            enabled = checked != null && !hasExpired,
             onCheckedChange = {
                 checked = it
-                onChecked()
+                onChecked(it)
             }
         )
     }
 }
 
 @Composable
-private fun CustomReminder() {
-    var value by remember { mutableStateOf("") }
+private fun CustomReminder(
+    days: Int?,
+    onValueChange: (Int) -> Unit
+) {
+    var value by remember { mutableStateOf(days) }
+
     Column {
         Text(
             text = stringResource(Res.string.custom_reminder_days_before),
@@ -147,10 +193,12 @@ private fun CustomReminder() {
         )
         Spacer(modifier = Modifier.size(Dimens.spacingSmall))
         TextField(
-            value = value,
+            value = value.toString(),
             onValueChange = {
-                if (it.length <= 4) {
-                    value = it
+                val updatedDays = it.toIntOrNull() ?: 1
+                if (it.length <= 4 && updatedDays > 0) {
+                    value = updatedDays
+                    onValueChange(updatedDays)
                 }
             },
             placeholder = {
@@ -170,7 +218,8 @@ private fun CustomReminder() {
                 unfocusedContainerColor = surfaceContainerLight,
                 focusedIndicatorColor = surfaceContainerHighestLight,
                 unfocusedIndicatorColor = surfaceContainerHighestLight
-            )
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
     }
 }
