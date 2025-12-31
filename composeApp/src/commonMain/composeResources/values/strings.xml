@@ -114,4 +114,9 @@
     <string name="expiry_year">Expiry year</string>
     <string name="all_months">All months</string>
     <string name="all_years">All years</string>
+
+    <!-- Item Detail -->
+    <string name="item_detail_expiry_date">Expiry date</string>
+    <string name="item_detail_time_remaining">Time remaining</string>
+    <string name="error_occurred_retry">An error occurred, click to retry.</string>
 </resources>

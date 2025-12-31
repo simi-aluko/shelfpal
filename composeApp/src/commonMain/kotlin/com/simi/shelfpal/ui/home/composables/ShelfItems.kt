@@ -3,6 +3,7 @@ package com.simi.shelfpal.ui.home.composables
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,7 +74,8 @@ import shelfpal.composeapp.generated.resources.vegetable
 @Composable
 fun ShelfItems(
     modifier: Modifier = Modifier,
-    items: List<HomeShelfItem>
+    items: List<HomeShelfItem>,
+    onItemClick: (Long) -> Unit
 ) {
     if (items.isEmpty()) {
         EmptyList()
@@ -83,7 +85,10 @@ fun ShelfItems(
             verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
         ) {
             items(items.size) { index ->
-                ShelfItem(homeShelfItem = items[index])
+                ShelfItem(
+                    homeShelfItem = items[index],
+                    onItemClick = onItemClick
+                )
             }
         }
     }
@@ -91,9 +96,11 @@ fun ShelfItems(
 
 @Composable
 private fun ShelfItem(
-    homeShelfItem: HomeShelfItem
+    homeShelfItem: HomeShelfItem,
+    onItemClick: (Long) -> Unit
 ) {
     OutlinedCard(
+        modifier = Modifier.clickable { onItemClick(homeShelfItem.id) },
         colors = CardDefaults.cardColors(containerColor = onPrimaryLight),
         border = BorderStroke(1.dp, outlineVariantLight),
     ) {
@@ -291,6 +298,9 @@ private fun ShelfItemPreview() {
         expiryYear = 2025
     )
     MaterialTheme {
-        ShelfItem(homeShelfItem = item)
+        ShelfItem(
+            homeShelfItem = item,
+            onItemClick = {}
+        )
     }
 }

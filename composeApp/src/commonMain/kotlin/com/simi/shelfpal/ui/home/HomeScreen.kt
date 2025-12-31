@@ -34,6 +34,7 @@ import shelfpal.composeapp.generated.resources.shelfpal
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel { HomeViewModel() },
     navigateToAddItem: () -> Unit,
+    navigateToItemDetail: (id: Long) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
@@ -76,7 +77,12 @@ fun HomeScreen(
                     }
                 )
                 Spacer(modifier = Modifier.size(Dimens.spacingMediumLarge))
-                ShelfItems(items = shelfItems)
+                ShelfItems(
+                    items = shelfItems,
+                    onItemClick = {
+                        navigateToItemDetail(it)
+                    }
+                )
                 bottomSheet?.let {
                     FilterBottomSheet(
                         sheetState = sheetState,

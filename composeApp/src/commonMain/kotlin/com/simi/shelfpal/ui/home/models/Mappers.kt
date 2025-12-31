@@ -3,6 +3,7 @@ package com.simi.shelfpal.ui.home.models
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
+import com.simi.shelfpal.ui.shared.getLocalDateTime
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -59,7 +60,7 @@ private fun getExpiryText(expiryInfo: ProductExpiryInfo): String {
 }
 
 @OptIn(ExperimentalTime::class)
-private fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
+fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
     val now = Clock.System.now()
     val localTimeZone = TimeZone.currentSystemDefault()
     val localDateTime = now.toLocalDateTime(localTimeZone)
@@ -89,7 +90,6 @@ private fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
     } ?: false
 }
 
-@OptIn(ExperimentalTime::class)
 private fun getDurationRemaining(expiryInfo: ProductExpiryInfo): String {
     if (getExpiredStatus(expiryInfo)) {
         return getFormattedDaysRemaining(-1)
@@ -99,10 +99,7 @@ private fun getDurationRemaining(expiryInfo: ProductExpiryInfo): String {
     val expiryMonth = expiryInfo.expiryMonth
     val expiryDay = expiryInfo.expiryDay
 
-    val now = Clock.System.now()
-    val localTimeZone = TimeZone.currentSystemDefault()
-    val localDateTime = now.toLocalDateTime(localTimeZone)
-
+    val localDateTime = getLocalDateTime()
     val currentDate = LocalDate(localDateTime.year, localDateTime.month, localDateTime.day)
 
     return if (expiryYear != null) {
