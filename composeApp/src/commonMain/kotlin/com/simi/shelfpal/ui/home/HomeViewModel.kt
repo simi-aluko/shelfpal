@@ -10,7 +10,6 @@ import com.simi.shelfpal.ui.home.models.ViewMetaData
 import com.simi.shelfpal.ui.home.models.ViewStates.BottomSheet
 import com.simi.shelfpal.ui.home.models.toHomeShelfItem
 import com.simi.shelfpal.ui.home.repository.HomeRepository
-import com.simi.shelfpal.ui.shared.capitalizeFirstChar
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,9 +73,9 @@ class HomeViewModel(
         val localTimeZone = TimeZone.currentSystemDefault()
         val currentTime = now.toLocalDateTime(localTimeZone)
 
-        viewMetaData.selectedMonth = currentTime.month.name.capitalizeFirstChar()
+        viewMetaData.selectedMonth = getString(Res.string.all_months)
 
-        viewMetaData.selectedYear = currentTime.year.toString()
+        viewMetaData.selectedYear = getString(Res.string.all_years)
 
         viewMetaData.selectedCategory = getString(Res.string.category_all_categories)
 

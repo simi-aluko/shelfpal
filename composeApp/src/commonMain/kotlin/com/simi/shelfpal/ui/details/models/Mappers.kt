@@ -17,7 +17,8 @@ fun ShelfPalItem.toViewModel() = ViewStates.ItemDetail(
     ),
     itemDetailExpiryInfo = ItemDetailExpiryInfo(
         expiryDate = expiryInfo.toDisplayDate(),
-        timeRemaining = expiryInfo.toDetailedTimeRemaining()
+        timeRemaining = expiryInfo.toDetailedTimeRemaining(),
+        hasExpired = getExpiredStatus(expiryInfo)
     ),
     itemDetailImages = ItemDetailImages(
         productImageUrl = "https://picsum.photos/id/237/200/300",
@@ -77,15 +78,22 @@ private fun ProductExpiryInfo.toDetailedTimeRemaining(): String? {
         val month = (daysRemaining%365)/30
         val days = (daysRemaining%365)%30
 
-        val displayYear = "$year year(s), "
-        val displayMonth = "$month month(s), "
-        val displayDays = "$days day(s)"
+        val displayYear = if (year != 0) {
+            " $year year(s), "
+        } else {
+            ""
+        }
+        val displayMonth = if(month != 0) {
+            " $month month(s), "
+        } else {
+            ""
+        }
+        val displayDays = " $days day(s)"
 
         if (hasExpired) {
-            "Expired $displayYear $displayMonth $displayDays ago"
-
+            "Expired$displayYear$displayMonth$displayDays ago"
         } else {
-            "Expires in $displayYear $displayMonth $displayDays"
+            "Expires in$displayYear$displayMonth$displayDays"
         }
     }
 }

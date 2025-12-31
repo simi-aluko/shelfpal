@@ -30,4 +30,5 @@ data class ItemDetailImages(
 data class ItemDetailExpiryInfo(
     val expiryDate: String = "",
     val timeRemaining: String? = null,
+    val hasExpired: Boolean = false
 )
