@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.simi.shelfpal.ui.additem.models.AddItemViewState.AddItemBottomSheet
+import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBottomSheet
 import com.simi.shelfpal.ui.home.composables.FilterItemCard
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import com.simi.shelfpal.ui.theme.Dimens
@@ -25,7 +25,7 @@ import shelfpal.composeapp.generated.resources.select_expiry_month
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddItemBottomSheet(
-    bottomSheetData: AddItemBottomSheet?,
+    bottomSheetData: AddEditItemBottomSheet?,
     onItemSelected: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -68,7 +68,7 @@ fun AddItemBottomSheet(
 private fun AddItemBottomSheetPreview() {
     MaterialTheme {
         AddItemBottomSheet(
-            bottomSheetData = AddItemBottomSheet(
+            bottomSheetData = AddEditItemBottomSheet(
                 title = Res.string.select_expiry_month,
                 showBottomSheet = true,
                 items = getDisplayMonths()

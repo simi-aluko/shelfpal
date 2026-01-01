@@ -10,4 +10,8 @@ class AddItemRepositoryImpl(
     override suspend fun saveItem(shelfPalItem: ShelfPalItem) {
         shelfPalItemsDao.insert(shelfPalItem)
     }
+
+    override fun getItem(id: Long) = shelfPalItemsDao.getById(id)
+
+    override suspend fun updateItem(shelfPalItem: ShelfPalItem) = shelfPalItemsDao.update(shelfPalItem)
 }

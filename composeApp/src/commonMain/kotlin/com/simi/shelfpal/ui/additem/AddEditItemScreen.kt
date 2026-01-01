@@ -27,33 +27,39 @@ import com.simi.shelfpal.ui.additem.composables.AddItemBottomSheet
 import com.simi.shelfpal.ui.additem.composables.BasicInfoForm
 import com.simi.shelfpal.ui.additem.composables.BottomCTA
 import com.simi.shelfpal.ui.additem.composables.ExpiryForm
+import com.simi.shelfpal.ui.additem.models.ViewMetaData
 import com.simi.shelfpal.ui.shared.IMAGE_CAPTURE_RESULT
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
-import org.jetbrains.compose.resources.stringArrayResource
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
-import shelfpal.composeapp.generated.resources.add_item
-import shelfpal.composeapp.generated.resources.categories
 import shelfpal.composeapp.generated.resources.close
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemScreen(
+fun AddEditItemScreen(
+    itemId: Long?,
     navigateBack: () -> Unit,
     navigateToImageCapture: () -> Unit,
     navController: NavController,
-    viewModel: AddItemViewModel = viewModel { AddItemViewModel() }
+    viewModel: AddEditItemViewModel = viewModel {
+        AddEditItemViewModel(
+            viewMetaData = ViewMetaData(itemId = itemId)
+        )
+    }
 ) {
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val imageCaptureResult by savedStateHandle?.getStateFlow<ByteArray?>(IMAGE_CAPTURE_RESULT,  null)
         ?.collectAsState(initial = null) ?: mutableStateOf(null)
-    viewModel.viewMetaData.categories = stringArrayResource(Res.array.categories)
 
     val basicInfo by viewModel.basicInfo.collectAsStateWithLifecycle()
     val expiryInfo by viewModel.expiryInfo.collectAsStateWithLifecycle()
     val bottomSheet by viewModel.bottomSheet.collectAsStateWithLifecycle()
+    val screenTitle by viewModel.screenTitle.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.init()
+    }
 
     LaunchedEffect(imageCaptureResult) {
         val result = imageCaptureResult
@@ -66,7 +72,7 @@ fun AddItemScreen(
     Scaffold(
         topBar = {
             TopBar(
-                title = stringResource(Res.string.add_item),
+                title = screenTitle,
                 actionIcon = Res.drawable.close,
                 actionIconClick = navigateBack
             )
@@ -90,7 +96,7 @@ fun AddItemScreen(
                         viewModel.onCategoryClick()
                     },
                     onCameraClick = {
-                        viewModel.viewMetaData.cameraEntry = BASIC_INFO
+                        viewModel.updateCameraEntry(BASIC_INFO)
                         navigateToImageCapture()
                     },
                     onNameChange = {
@@ -107,7 +113,7 @@ fun AddItemScreen(
                         viewModel.onDayChecked(it)
                     },
                     onCameraClick = {
-                        viewModel.viewMetaData.cameraEntry = EXPIRY_INFO
+                        viewModel.updateCameraEntry(EXPIRY_INFO)
                         navigateToImageCapture()
                     }
                 )
@@ -134,10 +140,11 @@ fun AddItemScreen(
 @Composable
 private fun AddItemScreenPreview() {
     MaterialTheme {
-        AddItemScreen(
+        AddEditItemScreen(
             navigateBack = {},
             navigateToImageCapture = {},
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            itemId = 1L
         )
     }
 }

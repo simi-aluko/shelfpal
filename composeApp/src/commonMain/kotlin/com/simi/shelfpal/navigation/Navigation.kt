@@ -6,12 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.simi.shelfpal.navigation.Routes.AddItem
+import com.simi.shelfpal.navigation.Routes.AddEditItem
 import com.simi.shelfpal.navigation.Routes.Home
 import com.simi.shelfpal.navigation.Routes.ImageCapture
 import com.simi.shelfpal.navigation.Routes.ItemDetails
 import com.simi.shelfpal.navigation.Routes.Welcome
-import com.simi.shelfpal.ui.additem.AddItemScreen
+import com.simi.shelfpal.ui.additem.AddEditItemScreen
 import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
@@ -27,7 +27,9 @@ sealed class Routes {
     object Home : Routes()
 
     @Serializable
-    object AddItem : Routes()
+    data class AddEditItem(
+        val id: Long? = null
+    ) : Routes()
 
     @Serializable
     object ImageCapture : Routes()
@@ -56,7 +58,7 @@ fun ShelfPalApp(
         composable<Home> {
             HomeScreen(
                 navigateToAddItem = {
-                    navHostController.navigate(AddItem)
+                    navHostController.navigate(AddEditItem())
                 },
                 navigateToItemDetail = { id ->
                     navHostController.navigate(ItemDetails(id))
@@ -64,8 +66,11 @@ fun ShelfPalApp(
             )
 
         }
-        composable<AddItem> {
-            AddItemScreen(
+        composable<AddEditItem> { backStackEntry ->
+            val addEditItemRoute = backStackEntry.toRoute<AddEditItem>()
+
+            AddEditItemScreen(
+                itemId = addEditItemRoute.id,
                 navigateBack = { navHostController.popBackStack() },
                 navigateToImageCapture = { navHostController.navigate(ImageCapture) },
                 navController = navHostController
@@ -78,12 +83,12 @@ fun ShelfPalApp(
         }
 
         composable<ItemDetails> { backStackEntry ->
-            val itemDetails = backStackEntry.toRoute<ItemDetails>()
+            val itemId = backStackEntry.toRoute<ItemDetails>().id
             ShelfPalItemDetailScreen(
-                id = itemDetails.id,
+                id = itemId,
                 onNavigationIconClick = { navHostController.popBackStack() },
                 onActionIconClick = {
-                    navHostController.navigate(AddItem)
+                    navHostController.navigate(AddEditItem(itemId))
                 }
             )
         }

@@ -28,6 +28,7 @@ import shelfpal.composeapp.generated.resources.test_notification
 
 @Composable
 fun ItemDetailActions(
+    hasExpired: Boolean,
     onTestClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -41,14 +42,16 @@ fun ItemDetailActions(
                 text = stringResource(Res.string.test_notification),
                 contentTint = Color.DarkGray,
                 borderColor = Color.Gray,
-                onClick = onTestClick
+                onClick = onTestClick,
+                enabled = !hasExpired
             )
             ItemDetailAction(
                 icon = Res.drawable.delete,
                 text = stringResource(Res.string.delete_item),
                 contentTint = errorLight,
                 borderColor = errorLight,
-                onClick = onDeleteClick
+                onClick = onDeleteClick,
+                enabled = !hasExpired
             )
         }
     }
@@ -56,6 +59,7 @@ fun ItemDetailActions(
 
 @Composable
 private fun ItemDetailAction(
+    enabled: Boolean,
     icon: DrawableResource,
     text: String,
     borderColor: Color,
@@ -63,6 +67,7 @@ private fun ItemDetailAction(
     onClick: () -> Unit
 ) {
     OutlinedButton(
+        enabled = enabled,
         modifier = Modifier.fillMaxWidth(),
         onClick = onClick,
         border = BorderStroke(1.dp, color = borderColor)

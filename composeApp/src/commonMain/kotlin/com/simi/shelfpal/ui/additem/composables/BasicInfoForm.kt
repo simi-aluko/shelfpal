@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.simi.shelfpal.ui.additem.models.AddItemViewState.BasicInfo
+import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBasicInfo
 import com.simi.shelfpal.ui.shared.composables.ImageThumbnail
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryContainerLight
@@ -41,7 +41,7 @@ import shelfpal.composeapp.generated.resources.select_product_category
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicInfoForm(
-    formData: BasicInfo,
+    formData: AddEditItemBasicInfo,
     onCategoryClick: () -> Unit,
     onCameraClick: () -> Unit,
     onNameChange: (String) -> Unit
@@ -181,7 +181,7 @@ private fun BasicInfoFormPreview() {
             modifier = Modifier.padding(Dimens.spacingMedium)
         ) {
             BasicInfoForm(
-                formData = BasicInfo(
+                formData = AddEditItemBasicInfo(
                     imageBitmap = null,
                     productName = "",
                     category = ""

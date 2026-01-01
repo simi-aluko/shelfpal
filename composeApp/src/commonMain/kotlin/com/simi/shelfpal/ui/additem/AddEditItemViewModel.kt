@@ -13,13 +13,15 @@ import com.simi.shelfpal.ui.additem.AddItemBottomSheetType.MONTH
 import com.simi.shelfpal.ui.additem.AddItemBottomSheetType.YEAR
 import com.simi.shelfpal.ui.additem.CameraEntry.BASIC_INFO
 import com.simi.shelfpal.ui.additem.CameraEntry.EXPIRY_INFO
-import com.simi.shelfpal.ui.additem.models.AddItemViewState.AddItemBottomSheet
-import com.simi.shelfpal.ui.additem.models.AddItemViewState.BasicInfo
-import com.simi.shelfpal.ui.additem.models.AddItemViewState.ExpiryInfo
+import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBasicInfo
+import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBottomSheet
+import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemExpiryInfo
 import com.simi.shelfpal.ui.additem.models.ViewMetaData
 import com.simi.shelfpal.ui.additem.repository.AddItemRepository
 import com.simi.shelfpal.ui.additem.utils.getSelectableYearList
 import com.simi.shelfpal.ui.additem.utils.getShelPalItemFromViewModel
+import com.simi.shelfpal.ui.additem.utils.toAddEditItemBasicInfo
+import com.simi.shelfpal.ui.additem.utils.toAddEditItemExpiryInfo
 import com.simi.shelfpal.ui.additem.utils.validateBasicInfo
 import com.simi.shelfpal.ui.additem.utils.validateExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
@@ -29,28 +31,55 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Month
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.getStringArray
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.add_item
+import shelfpal.composeapp.generated.resources.categories
+import shelfpal.composeapp.generated.resources.edit_item
 import shelfpal.composeapp.generated.resources.select_expiry_day
 import shelfpal.composeapp.generated.resources.select_expiry_month
 import shelfpal.composeapp.generated.resources.select_expiry_year
 import shelfpal.composeapp.generated.resources.select_product_category
 
-class AddItemViewModel(
-    val viewMetaData: ViewMetaData = ViewMetaData()
+class AddEditItemViewModel(
+    private val viewMetaData: ViewMetaData
 ): ViewModel(), KoinComponent {
+
     val firebaseConnector by inject<FirebaseConnector>()
     val repository by inject<AddItemRepository>()
 
-    private val _bottomSheet = MutableStateFlow<AddItemBottomSheet?>(null)
+    private val _bottomSheet = MutableStateFlow<AddEditItemBottomSheet?>(null)
     val bottomSheet = _bottomSheet.asStateFlow()
 
-    private val _basicInfo = MutableStateFlow(BasicInfo())
-    val basicInfo = _basicInfo.asStateFlow()
+    private val _addEditItemBasicInfo = MutableStateFlow(AddEditItemBasicInfo())
+    val basicInfo = _addEditItemBasicInfo.asStateFlow()
 
-    private val _expiryInfo = MutableStateFlow(ExpiryInfo())
-    val expiryInfo = _expiryInfo.asStateFlow()
+    private val _addEditItemExpiryInfo = MutableStateFlow(AddEditItemExpiryInfo())
+    val expiryInfo = _addEditItemExpiryInfo.asStateFlow()
+
+    private val _screenTitle = MutableStateFlow("")
+    val screenTitle = _screenTitle.asStateFlow()
+
+    suspend fun init() {
+        viewMetaData.categories = getStringArray(Res.array.categories)
+        _screenTitle.value = getString(Res.string.add_item)
+
+        viewMetaData.itemId?.let {
+            repository.getItem(it).collect { shelfPalItem ->
+                _addEditItemBasicInfo.value = shelfPalItem?.basicInfo?.toAddEditItemBasicInfo()
+                    ?: AddEditItemBasicInfo()
+                _addEditItemExpiryInfo.value = shelfPalItem?.expiryInfo?.toAddEditItemExpiryInfo()
+                    ?: AddEditItemExpiryInfo()
+
+                shelfPalItem?.let {
+                    _screenTitle.value = getString(Res.string.edit_item)
+                }
+            }
+        }
+    }
 
     fun processImageCaptureResult(data: ByteArray) {
         when (viewMetaData.cameraEntry) {
@@ -65,7 +94,7 @@ class AddItemViewModel(
     }
 
     fun onCategoryClick() {
-        _bottomSheet.value = AddItemBottomSheet(
+        _bottomSheet.value = AddEditItemBottomSheet(
             showBottomSheet = true,
             title = Res.string.select_product_category,
             items = viewMetaData.categories
@@ -95,7 +124,7 @@ class AddItemViewModel(
                 Pair(Res.string.select_product_category, listOf())
             }
         }
-        _bottomSheet.value = AddItemBottomSheet(
+        _bottomSheet.value = AddEditItemBottomSheet(
             showBottomSheet = true,
             title = title,
             items = items
@@ -113,26 +142,26 @@ class AddItemViewModel(
         viewMetaData.bottomSheetType?.let {
             when (it) {
                 MONTH -> {
-                    _expiryInfo.value = _expiryInfo.value.copy(
+                    _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
                         month = item
                     )
                 }
 
                 YEAR -> {
-                    _expiryInfo.value = _expiryInfo.value.copy(
+                    _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
                         year = item
                     )
 
                 }
 
                 CATEGORY -> {
-                    _basicInfo.value = _basicInfo.value.copy(
+                    _addEditItemBasicInfo.value = _addEditItemBasicInfo.value.copy(
                         category = item
                     )
                 }
 
                 DAY -> {
-                    _expiryInfo.value = _expiryInfo.value.copy(
+                    _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
                         day = item
                     )
                 }
@@ -144,7 +173,7 @@ class AddItemViewModel(
     }
 
     fun onNameChange(name: String) {
-        _basicInfo.value = _basicInfo.value.copy(
+        _addEditItemBasicInfo.value = _addEditItemBasicInfo.value.copy(
             productName = name
         )
         if (viewMetaData.isItemValid == false) {
@@ -154,7 +183,7 @@ class AddItemViewModel(
 
     fun onDayChecked(checked: Boolean) {
         viewMetaData.hasDay = checked
-        _expiryInfo.value = _expiryInfo.value.copy(
+        _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
             hasDay = viewMetaData.hasDay
         )
     }
@@ -164,17 +193,35 @@ class AddItemViewModel(
         if (viewMetaData.isItemValid == true) {
             viewModelScope.launch {
                 // if images are present, upload to cloud storage
-                // upon completion, save to database
+                // upon completion, save url to database
                 // handle errors with try/catch
                 // show error SnackBar
-                repository.saveItem(
-                    getShelPalItemFromViewModel(
-                        basicInfo = _basicInfo.value,
-                        expiryInfo = _expiryInfo.value
-                    )
+
+                val shelfPalItem = getShelPalItemFromViewModel(
+                    addEditItemBasicInfo = _addEditItemBasicInfo.value,
+                    addEditItemExpiryInfo = _addEditItemExpiryInfo.value
                 )
+
+                if (viewMetaData.itemId != null) {
+                    repository.getItem(viewMetaData.itemId).collect { currentItem ->
+                        currentItem?.let {
+                            repository.updateItem(
+                                currentItem.copy(
+                                    basicInfo = shelfPalItem.basicInfo,
+                                    expiryInfo = shelfPalItem.expiryInfo
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    repository.saveItem(shelfPalItem)
+                }
             }
         }
+    }
+
+    fun updateCameraEntry(cameraEntry: CameraEntry) {
+        viewMetaData.cameraEntry = cameraEntry
     }
 
     private fun getBasicInfoFromImage(imageData: ByteArray) {
@@ -187,7 +234,7 @@ class AddItemViewModel(
                 if (response != null) {
                     val info = Json.decodeFromString<ProductBasicInfo>(response)
 
-                    _basicInfo.value = _basicInfo.value.copy(
+                    _addEditItemBasicInfo.value = _addEditItemBasicInfo.value.copy(
                         productName = info.name,
                         category = info.category,
                         imageBitmap = imageData.decodeToImageBitmap()
@@ -216,7 +263,7 @@ class AddItemViewModel(
                     val month = info.expiryMonth
                     val year = info.expiryYear
 
-                    _expiryInfo.value = _expiryInfo.value.copy(
+                    _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
                         day = day.toString().takeIf {
                             viewMetaData.hasDay && day != null
                         } ?: "",
@@ -239,14 +286,14 @@ class AddItemViewModel(
     }
 
     private fun validateItem() {
-        val expiryInfoError = validateExpiryInfo(_expiryInfo.value)
-        val basicInfoError = validateBasicInfo(_basicInfo.value, viewMetaData.categories)
+        val expiryInfoError = validateExpiryInfo(_addEditItemExpiryInfo.value)
+        val basicInfoError = validateBasicInfo(_addEditItemBasicInfo.value, viewMetaData.categories)
 
-        _basicInfo.value = _basicInfo.value.copy(
+        _addEditItemBasicInfo.value = _addEditItemBasicInfo.value.copy(
             basicInfoError = basicInfoError
         )
 
-        _expiryInfo.value = _expiryInfo.value.copy(
+        _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
             expiryInfoError = expiryInfoError
         )
 

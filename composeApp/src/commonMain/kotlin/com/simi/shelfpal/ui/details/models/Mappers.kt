@@ -9,11 +9,18 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
+import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.edit
 
 fun ShelfPalItem.toViewModel() = ViewStates.ItemDetail(
     itemDetailHeader = ItemDetailHeader(
         title = basicInfo.name,
-        subtitle = basicInfo.category
+        subtitle = basicInfo.category,
+        actionIcon = if (getExpiredStatus(expiryInfo)) {
+            null
+        } else {
+            Res.drawable.edit
+        }
     ),
     itemDetailExpiryInfo = ItemDetailExpiryInfo(
         expiryDate = expiryInfo.toDisplayDate(),

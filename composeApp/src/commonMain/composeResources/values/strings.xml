@@ -95,6 +95,8 @@
     <string name="select_day">Select day</string>
     <string name="select_month">Select month</string>
     <string name="select_year">Select year</string>
+    <string name="edit_item">Edit item</string>
+
 
     <!-- Image capture screen -->
     <string name="camera_permission_denied_message">Camera Permission Denied. Please grant camera permission in settings</string>

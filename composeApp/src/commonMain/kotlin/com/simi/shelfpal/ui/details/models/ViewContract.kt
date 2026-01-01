@@ -5,7 +5,6 @@ import com.simi.shelfpal.data.models.ShelfPalItemReminderSettings
 import org.jetbrains.compose.resources.DrawableResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.arrowback
-import shelfpal.composeapp.generated.resources.edit
 
 sealed class ViewStates {
     data class ItemDetail(
@@ -19,7 +18,7 @@ sealed class ViewStates {
 data class ItemDetailHeader(
     val title: String = "",
     val subtitle: String = "",
-    val actionIcon: DrawableResource = Res.drawable.edit,
+    val actionIcon: DrawableResource? = null,
     val navigationIcon: DrawableResource = Res.drawable.arrowback,
 )
 

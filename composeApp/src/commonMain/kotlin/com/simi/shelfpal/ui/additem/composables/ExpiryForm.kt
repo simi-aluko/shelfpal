@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.ui.additem.AddItemBottomSheetType
-import com.simi.shelfpal.ui.additem.models.AddItemViewState.ExpiryInfo
+import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemExpiryInfo
 import com.simi.shelfpal.ui.shared.composables.ImageThumbnail
 import com.simi.shelfpal.ui.shared.composables.ReadOnlyTextField
 import com.simi.shelfpal.ui.theme.Dimens
@@ -39,7 +39,7 @@ import shelfpal.composeapp.generated.resources.year
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpiryForm(
-    formData: ExpiryInfo,
+    formData: AddEditItemExpiryInfo,
     onExpiryDateClick: (AddItemBottomSheetType) -> Unit,
     onDayChecked: (Boolean) -> Unit,
     onCameraClick: () -> Unit
@@ -79,7 +79,7 @@ fun ExpiryForm(
 
 @Composable
 private fun ExpirySection(
-    sectionData: ExpiryInfo,
+    sectionData: AddEditItemExpiryInfo,
     onExpiryMonthClick: () -> Unit,
     onExpiryYearClick: () -> Unit,
     onExpiryDayClick: () -> Unit = {}

@@ -136,13 +136,16 @@ private fun ProductInfo(
     ) {
         Text(
             text = productName,
-            fontWeight = FontWeight.Bold,
-            fontSize = Dimens.textSizeMediumLarge
+            fontWeight = Bold,
+            fontSize = Dimens.textSizeMediumLarge,
+            lineHeight = Dimens.textSizeMediumLarge
         )
+        Spacer(modifier = Modifier.size(Dimens.spacingExtraSmall))
         Text(
             text = expiryInfo,
             fontSize = Dimens.textSizeXSmall,
-            color = secondaryLight
+            color = secondaryLight,
+            lineHeight = Dimens.textSizeXSmall
         )
     }
 }

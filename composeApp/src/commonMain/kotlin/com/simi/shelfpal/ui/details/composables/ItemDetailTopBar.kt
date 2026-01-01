@@ -52,14 +52,16 @@ import org.jetbrains.compose.resources.vectorResource
             }
         },
         actions = {
-            IconButton(
-                onClick = onActionIconClick
-            ) {
-                Icon(
-                    imageVector = vectorResource(viewData.actionIcon),
-                    contentDescription = null,
-                    modifier = Modifier.size(Dimens.iconSizeMediumLarge)
-                )
+            viewData.actionIcon?.let {
+                IconButton(
+                    onClick = onActionIconClick
+                ) {
+                    Icon(
+                        imageVector = vectorResource(it),
+                        contentDescription = null,
+                        modifier = Modifier.size(Dimens.iconSizeMediumLarge)
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

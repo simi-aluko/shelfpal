@@ -74,6 +74,7 @@ fun ShelfPalItemDetailScreen(
                     }
                 )
                 ItemDetailActions(
+                    hasExpired = itemDetail.reminderSettings.hasExpired,
                     onTestClick = {
                         // TODO: Implement the test notification
                     },
