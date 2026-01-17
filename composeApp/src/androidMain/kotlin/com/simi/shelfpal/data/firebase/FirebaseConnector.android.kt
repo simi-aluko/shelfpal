@@ -7,6 +7,7 @@ import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.Schema
 import com.google.firebase.ai.type.content
 import com.google.firebase.ai.type.generationConfig
+import dev.gitlive.firebase.storage.Data
 
 actual interface FirebaseConnector {
     actual suspend fun getProductBasicInfoFromImage(
@@ -18,6 +19,8 @@ actual interface FirebaseConnector {
         image: ByteArray,
         prompt: String
     ): String?
+
+    actual fun getFirebaseData(image: ByteArray): Data
 }
 
 class FirebaseConnectorImpl : FirebaseConnector {
@@ -60,6 +63,10 @@ class FirebaseConnectorImpl : FirebaseConnector {
         }
 
         return model.generateContent(content).text
+    }
+
+    override fun getFirebaseData(image: ByteArray): Data {
+        return Data(image)
     }
 }
 

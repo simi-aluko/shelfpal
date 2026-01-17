@@ -7,6 +7,7 @@ import FirebaseAILogic
 import UIKit
 
 final class IosFirebaseConnector: FirebaseConnector {
+    
     private lazy var ai = FirebaseAI.firebaseAI(backend: .googleAI())
     private lazy var model = ai.generativeModel(modelName: FirebaseConnectorKt.GEMINI_MODEL)
     
@@ -70,5 +71,9 @@ final class IosFirebaseConnector: FirebaseConnector {
 
     enum ImageDecodingError: Error {
         case invalidImageData
+    }
+    
+    func getFirebaseData(image: KotlinByteArray) -> Firebase_storageData {
+        return Firebase_storageData(data: image.toNSData())
     }
 }

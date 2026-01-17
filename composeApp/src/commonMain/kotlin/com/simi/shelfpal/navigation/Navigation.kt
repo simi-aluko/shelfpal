@@ -11,7 +11,7 @@ import com.simi.shelfpal.navigation.Routes.Home
 import com.simi.shelfpal.navigation.Routes.ImageCapture
 import com.simi.shelfpal.navigation.Routes.ItemDetails
 import com.simi.shelfpal.navigation.Routes.Welcome
-import com.simi.shelfpal.ui.additem.AddEditItemScreen
+import com.simi.shelfpal.ui.addEditItem.AddEditItemScreen
 import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen

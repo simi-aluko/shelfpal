@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem.models
+package com.simi.shelfpal.ui.addEditItem.models
 
 import org.jetbrains.compose.resources.StringResource
 import shelfpal.composeapp.generated.resources.Res

@@ -1,9 +1,9 @@
-package com.simi.shelfpal.ui.additem.utils
+package com.simi.shelfpal.ui.addEditItem.utils
 
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBasicInfo
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemExpiryInfo
-import com.simi.shelfpal.ui.additem.models.BasicInfoError
-import com.simi.shelfpal.ui.additem.models.ExpiryInfoError
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemBasicInfo
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemExpiryInfo
+import com.simi.shelfpal.ui.addEditItem.models.BasicInfoError
+import com.simi.shelfpal.ui.addEditItem.models.ExpiryInfoError
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

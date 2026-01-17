@@ -28,8 +28,8 @@ fun ShelfPalItem.toViewModel() = ViewStates.ItemDetail(
         hasExpired = getExpiredStatus(expiryInfo)
     ),
     itemDetailImages = ItemDetailImages(
-        productImageUrl = "https://picsum.photos/id/237/200/300",
-        expiryImageUrl = "https://picsum.photos/id/230/200/300"
+        productImageUrl = productImageUrl.orEmpty(),
+        expiryImageUrl = productExpiryImageUrl.orEmpty()
     ),
     reminderSettings = reminderSettings.copy(hasExpired = getExpiredStatus(expiryInfo))
 )

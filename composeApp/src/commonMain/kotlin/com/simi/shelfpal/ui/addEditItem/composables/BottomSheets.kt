@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem.composables
+package com.simi.shelfpal.ui.addEditItem.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBottomSheet
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemBottomSheet
 import com.simi.shelfpal.ui.home.composables.FilterItemCard
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import com.simi.shelfpal.ui.theme.Dimens

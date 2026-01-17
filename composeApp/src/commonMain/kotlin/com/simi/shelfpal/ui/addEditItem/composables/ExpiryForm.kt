@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem.composables
+package com.simi.shelfpal.ui.addEditItem.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -19,9 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.simi.shelfpal.ui.additem.AddItemBottomSheetType
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemExpiryInfo
-import com.simi.shelfpal.ui.shared.composables.ImageThumbnail
+import com.simi.shelfpal.ui.addEditItem.AddItemBottomSheetType
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemExpiryInfo
 import com.simi.shelfpal.ui.shared.composables.ReadOnlyTextField
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryContainerLight
@@ -70,9 +69,7 @@ fun ExpiryForm(
                 checked = formData.hasDay,
                 onCheckChanged = { onDayChecked(it) }
             )
-            formData.imageBitmap?.let {
-                ImageThumbnail(it)
-            }
+            AddEditItemImageComposable(formData.image)
         }
     }
 }

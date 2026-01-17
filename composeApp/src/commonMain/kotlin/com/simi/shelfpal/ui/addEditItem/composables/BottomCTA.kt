@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem.composables
+package com.simi.shelfpal.ui.addEditItem.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,13 +33,13 @@ fun BottomCTA(
             bottom = Dimens.spacingSmall
         )
     ) {
-        _root_ide_package_.com.simi.shelfpal.ui.additem.composables.CTA(
+        CTA(
             title = stringResource(Res.string.save_item),
             onClick = onSaveClick,
             containerColor = primaryLight,
             contentColor = onPrimaryLight
         )
-        _root_ide_package_.com.simi.shelfpal.ui.additem.composables.CTA(
+        CTA(
             title = stringResource(Res.string.cancel),
             onClick = onCancelClick,
             containerColor = onSecondaryLight,

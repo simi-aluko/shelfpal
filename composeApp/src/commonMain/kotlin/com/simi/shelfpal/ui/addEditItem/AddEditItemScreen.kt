@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem
+package com.simi.shelfpal.ui.addEditItem
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,21 +16,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.simi.shelfpal.ui.additem.CameraEntry.BASIC_INFO
-import com.simi.shelfpal.ui.additem.CameraEntry.EXPIRY_INFO
-import com.simi.shelfpal.ui.additem.composables.AddItemBottomSheet
-import com.simi.shelfpal.ui.additem.composables.BasicInfoForm
-import com.simi.shelfpal.ui.additem.composables.BottomCTA
-import com.simi.shelfpal.ui.additem.composables.ExpiryForm
-import com.simi.shelfpal.ui.additem.models.ViewMetaData
+import com.simi.shelfpal.ui.addEditItem.CameraEntry.BASIC_INFO
+import com.simi.shelfpal.ui.addEditItem.CameraEntry.EXPIRY_INFO
+import com.simi.shelfpal.ui.addEditItem.composables.AddItemBottomSheet
+import com.simi.shelfpal.ui.addEditItem.composables.BasicInfoForm
+import com.simi.shelfpal.ui.addEditItem.composables.BottomCTA
+import com.simi.shelfpal.ui.addEditItem.composables.ExpiryForm
+import com.simi.shelfpal.ui.addEditItem.models.ViewMetaData
 import com.simi.shelfpal.ui.shared.IMAGE_CAPTURE_RESULT
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.close
@@ -56,6 +58,8 @@ fun AddEditItemScreen(
     val expiryInfo by viewModel.expiryInfo.collectAsStateWithLifecycle()
     val bottomSheet by viewModel.bottomSheet.collectAsStateWithLifecycle()
     val screenTitle by viewModel.screenTitle.collectAsStateWithLifecycle()
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.init()
@@ -127,7 +131,10 @@ fun AddEditItemScreen(
                 Spacer(modifier = Modifier.weight(1f))
                 BottomCTA(
                     onSaveClick = {
-                        viewModel.saveItem()
+                        coroutineScope.launch {
+                            viewModel.saveItem()
+                            navigateBack()
+                        }
                     },
                     onCancelClick = navigateBack
                 )

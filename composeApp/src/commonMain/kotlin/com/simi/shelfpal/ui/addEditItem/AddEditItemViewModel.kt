@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem
+package com.simi.shelfpal.ui.addEditItem
 
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.lifecycle.ViewModel
@@ -7,23 +7,24 @@ import com.simi.shelfpal.data.firebase.FirebaseConnector
 import com.simi.shelfpal.data.firebase.getBasicInfoPrompt
 import com.simi.shelfpal.data.models.ProductBasicInfo
 import com.simi.shelfpal.data.models.ProductExpiryInfo
-import com.simi.shelfpal.ui.additem.AddItemBottomSheetType.CATEGORY
-import com.simi.shelfpal.ui.additem.AddItemBottomSheetType.DAY
-import com.simi.shelfpal.ui.additem.AddItemBottomSheetType.MONTH
-import com.simi.shelfpal.ui.additem.AddItemBottomSheetType.YEAR
-import com.simi.shelfpal.ui.additem.CameraEntry.BASIC_INFO
-import com.simi.shelfpal.ui.additem.CameraEntry.EXPIRY_INFO
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBasicInfo
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBottomSheet
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemExpiryInfo
-import com.simi.shelfpal.ui.additem.models.ViewMetaData
-import com.simi.shelfpal.ui.additem.repository.AddItemRepository
-import com.simi.shelfpal.ui.additem.utils.getSelectableYearList
-import com.simi.shelfpal.ui.additem.utils.getShelPalItemFromViewModel
-import com.simi.shelfpal.ui.additem.utils.toAddEditItemBasicInfo
-import com.simi.shelfpal.ui.additem.utils.toAddEditItemExpiryInfo
-import com.simi.shelfpal.ui.additem.utils.validateBasicInfo
-import com.simi.shelfpal.ui.additem.utils.validateExpiryInfo
+import com.simi.shelfpal.ui.addEditItem.AddItemBottomSheetType.CATEGORY
+import com.simi.shelfpal.ui.addEditItem.AddItemBottomSheetType.DAY
+import com.simi.shelfpal.ui.addEditItem.AddItemBottomSheetType.MONTH
+import com.simi.shelfpal.ui.addEditItem.AddItemBottomSheetType.YEAR
+import com.simi.shelfpal.ui.addEditItem.CameraEntry.BASIC_INFO
+import com.simi.shelfpal.ui.addEditItem.CameraEntry.EXPIRY_INFO
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemImage
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemBasicInfo
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemBottomSheet
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemExpiryInfo
+import com.simi.shelfpal.ui.addEditItem.models.ViewMetaData
+import com.simi.shelfpal.ui.addEditItem.repository.AddItemRepository
+import com.simi.shelfpal.ui.addEditItem.utils.getSelectableYearList
+import com.simi.shelfpal.ui.addEditItem.utils.getShelPalItemFromViewModel
+import com.simi.shelfpal.ui.addEditItem.utils.toEditItemBasicInfo
+import com.simi.shelfpal.ui.addEditItem.utils.toEditItemExpiryInfo
+import com.simi.shelfpal.ui.addEditItem.utils.validateBasicInfo
+import com.simi.shelfpal.ui.addEditItem.utils.validateExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,9 +70,9 @@ class AddEditItemViewModel(
 
         viewMetaData.itemId?.let {
             repository.getItem(it).collect { shelfPalItem ->
-                _addEditItemBasicInfo.value = shelfPalItem?.basicInfo?.toAddEditItemBasicInfo()
+                _addEditItemBasicInfo.value = shelfPalItem?.toEditItemBasicInfo()
                     ?: AddEditItemBasicInfo()
-                _addEditItemExpiryInfo.value = shelfPalItem?.expiryInfo?.toAddEditItemExpiryInfo()
+                _addEditItemExpiryInfo.value = shelfPalItem?.toEditItemExpiryInfo()
                     ?: AddEditItemExpiryInfo()
 
                 shelfPalItem?.let {
@@ -188,34 +189,28 @@ class AddEditItemViewModel(
         )
     }
 
-    fun saveItem() {
+    suspend fun saveItem() {
         validateItem()
         if (viewMetaData.isItemValid == true) {
-            viewModelScope.launch {
-                // if images are present, upload to cloud storage
-                // upon completion, save url to database
-                // handle errors with try/catch
-                // show error SnackBar
+            val expiryInfoUrl = viewMetaData.expiryImage?.let {
+                repository.uploadImage(firebaseConnector.getFirebaseData(it), "expiry_image")
+            }
+            val basicInfoUrl = viewMetaData.basicInfoImage?.let {
+                repository.uploadImage(firebaseConnector.getFirebaseData(it), "basic_info_image")
+            }
 
-                val shelfPalItem = getShelPalItemFromViewModel(
-                    addEditItemBasicInfo = _addEditItemBasicInfo.value,
-                    addEditItemExpiryInfo = _addEditItemExpiryInfo.value
-                )
+            val shelfPalItem = getShelPalItemFromViewModel(
+                addEditItemBasicInfo = _addEditItemBasicInfo.value,
+                addEditItemExpiryInfo = _addEditItemExpiryInfo.value,
+                basicInfoImageUrl = basicInfoUrl,
+                expiryInfoImageUrl = expiryInfoUrl
+            )
 
-                if (viewMetaData.itemId != null) {
-                    repository.getItem(viewMetaData.itemId).collect { currentItem ->
-                        currentItem?.let {
-                            repository.updateItem(
-                                currentItem.copy(
-                                    basicInfo = shelfPalItem.basicInfo,
-                                    expiryInfo = shelfPalItem.expiryInfo
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    repository.saveItem(shelfPalItem)
-                }
+            if (viewMetaData.itemId != null) {
+                val updatedItem = shelfPalItem.copy(id = viewMetaData.itemId)
+                repository.updateItem(updatedItem)
+            } else {
+                repository.saveItem(shelfPalItem)
             }
         }
     }
@@ -233,11 +228,15 @@ class AddEditItemViewModel(
                 )
                 if (response != null) {
                     val info = Json.decodeFromString<ProductBasicInfo>(response)
+                    viewMetaData.basicInfoImage = imageData
 
                     _addEditItemBasicInfo.value = _addEditItemBasicInfo.value.copy(
                         productName = info.name,
                         category = info.category,
-                        imageBitmap = imageData.decodeToImageBitmap()
+                        image = AddEditItemImage(
+                            bitmap = viewMetaData.basicInfoImage?.decodeToImageBitmap(),
+                            isEdit = false
+                        )
                     )
                 } else {
                     throw Exception("Null product basic info response from FirebaseAI")
@@ -258,6 +257,7 @@ class AddEditItemViewModel(
                     image = imageData
                 )
                 if (response != null) {
+                    viewMetaData.expiryImage = imageData
                     val info = Json.decodeFromString<ProductExpiryInfo>(response)
                     val day = info.expiryDay
                     val month = info.expiryMonth
@@ -273,7 +273,10 @@ class AddEditItemViewModel(
                             ""
                         },
                         year = year.toString().takeIf { year != null } ?: "",
-                        imageBitmap = imageData.decodeToImageBitmap()
+                        image = AddEditItemImage(
+                            bitmap = viewMetaData.expiryImage?.decodeToImageBitmap(),
+                            isEdit = false
+                        )
                     )
                 } else {
                     throw Exception("Null product expiry info response from FirebaseAI")

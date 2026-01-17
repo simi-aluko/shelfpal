@@ -1,5 +1,7 @@
 package com.simi.shelfpal.data.firebase
 
+import dev.gitlive.firebase.storage.Data
+
 const val GEMINI_MODEL = "gemini-2.5-flash"
 const val JSON_RESPONSE_MIMETYPE = "application/json"
 const val PRODUCT_NAME = "name"
@@ -19,6 +21,8 @@ expect interface FirebaseConnector {
         image: ByteArray,
         prompt: String = EXPIRY_PROMPT
     ) : String?
+
+    fun getFirebaseData(image: ByteArray): Data
 }
 
 fun getBasicInfoPrompt(categories: List<String>) = "Get the product name and category from the image. " +

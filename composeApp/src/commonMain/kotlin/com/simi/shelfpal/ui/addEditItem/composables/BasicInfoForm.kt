@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem.composables
+package com.simi.shelfpal.ui.addEditItem.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -21,8 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.simi.shelfpal.ui.additem.models.AddEditItemViewState.AddEditItemBasicInfo
-import com.simi.shelfpal.ui.shared.composables.ImageThumbnail
+import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState.AddEditItemBasicInfo
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryContainerLight
 import com.simi.shelfpal.ui.theme.surfaceContainerHighestLight
@@ -68,9 +67,7 @@ fun BasicInfoForm(
                 errorText = stringResource(formData.basicInfoError.categoryErrorText),
                 onClick = onCategoryClick
             )
-            formData.imageBitmap?.let {
-                ImageThumbnail(it)
-            }
+            AddEditItemImageComposable(formData.image)
         }
     }
 }
@@ -182,7 +179,6 @@ private fun BasicInfoFormPreview() {
         ) {
             BasicInfoForm(
                 formData = AddEditItemBasicInfo(
-                    imageBitmap = null,
                     productName = "",
                     category = ""
                 ),

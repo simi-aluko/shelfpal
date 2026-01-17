@@ -1,4 +1,4 @@
-package com.simi.shelfpal.ui.additem.composables
+package com.simi.shelfpal.ui.addEditItem.composables
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

@@ -1,5 +1,6 @@
 package com.simi.shelfpal.data.firebase
 
+import dev.gitlive.firebase.storage.Data
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
@@ -16,6 +17,8 @@ actual interface FirebaseConnector {
         image: ByteArray,
         prompt: String
     ): String?
+
+    actual fun getFirebaseData(image: ByteArray): Data
 }
 
 @OptIn(ExperimentalForeignApi::class)
