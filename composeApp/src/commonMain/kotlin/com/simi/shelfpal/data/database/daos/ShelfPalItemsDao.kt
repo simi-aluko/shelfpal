@@ -32,8 +32,8 @@ interface ShelfPalItemsDao {
         """
     )
     fun getItems(
-        category: String?,
-        month: Int?,
-        year: Int?
+        category: String? = null,
+        month: Int? = null,
+        year: Int? = null
     ): Flow<List<ShelfPalItem>>
 }

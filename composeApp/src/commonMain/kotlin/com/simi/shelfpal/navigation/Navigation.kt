@@ -1,11 +1,14 @@
 package com.simi.shelfpal.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.notification.PayloadData
 import com.simi.shelfpal.navigation.Routes.AddEditItem
 import com.simi.shelfpal.navigation.Routes.Home
 import com.simi.shelfpal.navigation.Routes.ImageCapture
@@ -36,6 +39,9 @@ sealed class Routes {
 
     @Serializable
     data class ItemDetails(val id: Long) : Routes()
+
+    @Serializable
+    object Notifications : Routes()
 }
 
 @Composable
@@ -43,6 +49,21 @@ fun ShelfPalApp(
     navHostController: NavHostController = rememberNavController(),
     startDestination: Routes = Welcome
 ) {
+    LaunchedEffect(Unit) {
+        NotifierManager.getLocalNotifier().removeAll()
+        NotifierManager.addListener(object: NotifierManager.Listener {
+            override fun onNotificationClicked(data: PayloadData) {
+                super.onNotificationClicked(data)
+                navHostController.navigate(Routes.Notifications)
+            }
+        })
+
+        NotifierManager.setLogger { message ->
+            // Log the message
+            println("NotifierManager: $message")
+        }
+    }
+
     NavHost(
         navController = navHostController,
         startDestination = startDestination,

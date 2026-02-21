@@ -4,11 +4,10 @@ import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
 import com.simi.shelfpal.ui.home.models.getExpiredStatus
 import com.simi.shelfpal.ui.shared.getDisplayMonths
-import com.simi.shelfpal.ui.shared.getLocalDateTime
-import kotlinx.datetime.DateTimeUnit
+import com.simi.shelfpal.utils.getExpiryDate
+import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
-import kotlinx.datetime.plus
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.edit
 
@@ -62,16 +61,7 @@ private fun ProductExpiryInfo.toDetailedTimeRemaining(): String? {
     val hasExpired = getExpiredStatus(this)
     val localDateTime = getLocalDateTime()
     val currentDate = LocalDate(localDateTime.year, localDateTime.month, localDateTime.day)
-
-    val expiryDate = expiryYear?.let {
-        if (hasDay && expiryDay != null && expiryMonth != null) {
-            LocalDate(expiryYear, expiryMonth, expiryDay)
-        } else if(!hasDay && expiryDay == null && expiryMonth != null) {
-            LocalDate(expiryYear, expiryMonth, 1).plus(1, DateTimeUnit.MONTH)
-        } else {
-            null
-        }
-    }
+    val expiryDate = getExpiryDate()
 
     return expiryDate?.let{
         val daysRemaining = if (hasExpired) {

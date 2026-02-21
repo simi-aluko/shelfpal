@@ -4,9 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-    <key>NSCameraUsageDescription</key>
-    <string>Camera permission is required for the app to work.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Photo Library permission is required for the app to work.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

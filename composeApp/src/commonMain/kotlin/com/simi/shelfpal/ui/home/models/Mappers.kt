@@ -3,7 +3,7 @@ package com.simi.shelfpal.ui.home.models
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
-import com.simi.shelfpal.ui.shared.getLocalDateTime
+import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month

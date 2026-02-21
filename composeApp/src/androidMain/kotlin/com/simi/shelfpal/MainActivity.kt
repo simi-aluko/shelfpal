@@ -6,15 +6,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.WorkManager
+import com.mmk.kmpnotifier.permission.permissionUtil
+import com.simi.shelfpal.work.expiryWorkRequest
 
 class MainActivity : ComponentActivity() {
+
+    val permissionUtil by permissionUtil()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        KoinModules(this)
         setContent {
             App()
         }
+
+        permissionUtil.askNotificationPermission()
+
+        WorkManager.getInstance(this).enqueue(expiryWorkRequest)
     }
 }
 

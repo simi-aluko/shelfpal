@@ -2,6 +2,7 @@ package com.simi.shelfpal.koin
 
 import com.simi.shelfpal.data.database.AppDatabase
 import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
+import com.simi.shelfpal.expirymanager.ExpiryManager
 import com.simi.shelfpal.ui.addEditItem.repository.AddItemRepository
 import com.simi.shelfpal.ui.addEditItem.repository.AddItemRepositoryImpl
 import com.simi.shelfpal.ui.details.repository.ShelfPalItemDetailRepository
@@ -32,6 +33,11 @@ val commonModules = module {
     }
     factory<ShelfPalItemDetailRepository> {
         ShelfPalItemDetailRepositoryImpl(
+            shelfPalItemsDao = get()
+        )
+    }
+    single {
+        ExpiryManager(
             shelfPalItemsDao = get()
         )
     }

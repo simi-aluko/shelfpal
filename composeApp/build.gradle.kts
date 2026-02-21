@@ -27,6 +27,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export(libs.kmp.notifier)
             baseName = "ComposeApp"
             isStatic = true
         }
@@ -38,6 +39,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.work.runtime)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,6 +63,7 @@ kotlin {
             implementation(libs.coil.network.ktor3)
             implementation(libs.ktor.client.core)
             implementation(libs.firebase.storage)
+            api(libs.kmp.notifier)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

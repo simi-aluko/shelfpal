@@ -27,6 +27,8 @@ cameraK = "0.0.12"
 room = "2.8.4"
 sqlite = "2.6.2"
 ksp = "2.3.3"
+work = "2.11.1"
+kmpNofifier = "1.6.1"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -57,6 +59,8 @@ image_saver_plugin = { module = "io.github.kashif-mehmood-km:image_saver_plugin"
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpNofifier" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

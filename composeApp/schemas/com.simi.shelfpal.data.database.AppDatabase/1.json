@@ -1,0 +1,109 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "c0ab26a128db6c4a543070482615084d",
+    "entities": [
+      {
+        "tableName": "ShelfPalItem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productImageUrl` TEXT, `productExpiryImageUrl` TEXT, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `expiryDay` INTEGER, `expiryMonth` INTEGER, `expiryYear` INTEGER, `hasDay` INTEGER NOT NULL, `notifyMonthBefore` INTEGER NOT NULL, `notifyWeekBefore` INTEGER NOT NULL, `notifyDayBefore` INTEGER NOT NULL, `notifyOnDay` INTEGER NOT NULL, `customDaysBefore` INTEGER, `hasExpired` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productImageUrl",
+            "columnName": "productImageUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "productExpiryImageUrl",
+            "columnName": "productExpiryImageUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "basicInfo.name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "basicInfo.category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiryInfo.expiryDay",
+            "columnName": "expiryDay",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "expiryInfo.expiryMonth",
+            "columnName": "expiryMonth",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "expiryInfo.expiryYear",
+            "columnName": "expiryYear",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "expiryInfo.hasDay",
+            "columnName": "hasDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reminderSettings.notifyMonthBefore",
+            "columnName": "notifyMonthBefore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reminderSettings.notifyWeekBefore",
+            "columnName": "notifyWeekBefore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reminderSettings.notifyDayBefore",
+            "columnName": "notifyDayBefore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reminderSettings.notifyOnDay",
+            "columnName": "notifyOnDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reminderSettings.customDaysBefore",
+            "columnName": "customDaysBefore",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "reminderSettings.hasExpired",
+            "columnName": "hasExpired",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c0ab26a128db6c4a543070482615084d')"
+    ]
+  }
+}
