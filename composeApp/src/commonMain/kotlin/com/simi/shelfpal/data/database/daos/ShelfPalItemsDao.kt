@@ -32,8 +32,11 @@ interface ShelfPalItemsDao {
         """
     )
     fun getItems(
-        category: String? = null,
-        month: Int? = null,
-        year: Int? = null
+        category: String?,
+        month: Int?,
+        year: Int?
     ): Flow<List<ShelfPalItem>>
+
+    @Query("SELECT * FROM ShelfPalItem")
+    suspend fun getItems(): List<ShelfPalItem>
 }

@@ -6,10 +6,10 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class ShelfPalItemReminderSettings(
-    val notifyMonthBefore: Boolean = false,
-    val notifyWeekBefore: Boolean = false,
-    val notifyDayBefore: Boolean = false,
-    val notifyOnDay: Boolean = false,
+    val notifyMonthBefore: Boolean = true,
+    val notifyWeekBefore: Boolean = true,
+    val notifyDayBefore: Boolean = true,
+    val notifyOnDay: Boolean = true,
     val customDaysBefore: Int? = null,
     val hasExpired: Boolean = false
 )

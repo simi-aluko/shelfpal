@@ -17,13 +17,13 @@ class ExpiryManager(private val shelfPalItemsDao: ShelfPalItemsDao) {
     ) {
         shelfPalItemsDao
             .getItems()
-            .collect { items ->
-                items.map { it.toExpiryNotification() }.forEach {
-                    if (it != null) {
-                        sendNotification(title, it)
-                    }
+            .map { it.toExpiryNotification() }
+            .forEach {
+                if (it != null) {
+                    sendNotification(title, it)
                 }
             }
+        }
     }
 
     private fun sendNotification(
@@ -37,7 +37,6 @@ class ExpiryManager(private val shelfPalItemsDao: ShelfPalItemsDao) {
             body = notificationBody
         }
     }
-}
 
 private fun ShelfPalItem.toExpiryNotification(): String? {
     val currentDate = getLocalDateTime().date
