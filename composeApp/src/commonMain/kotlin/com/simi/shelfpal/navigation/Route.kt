@@ -1,0 +1,28 @@
+package com.simi.shelfpal.navigation
+
+import kotlinx.serialization.Serializable
+
+sealed class Route {
+    @Serializable
+    object Welcome : Route()
+
+    @Serializable
+    object Home : Route()
+
+    @Serializable
+    data class AddEditItem(
+        val id: Long? = null
+    ) : Route()
+
+    @Serializable
+    object ImageCapture : Route()
+
+    @Serializable
+    data class ItemDetails(val id: Long) : Route()
+
+    @Serializable
+    object Notifications : Route()
+
+    @Serializable
+    object Settings : Route()
+}

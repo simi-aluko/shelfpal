@@ -12,31 +12,21 @@ import kotlin.random.Random
 
 class ExpiryManager(private val shelfPalItemsDao: ShelfPalItemsDao) {
 
-    suspend fun getItemsToNotifyAbout(
-        title: String
-    ) {
-        shelfPalItemsDao
-            .getItems()
-            .map { it.toExpiryNotification() }
-            .forEach {
-                if (it != null) {
-                    sendNotification(title, it)
-                }
-            }
-        }
-    }
+    suspend fun getExpiryNotifications(title: String) = shelfPalItemsDao
+        .getItems()
+        .mapNotNull { it.toExpiryNotification() }
+        .map { ExpiryNotification(title, it) }
+        .toSet()
 
-    private fun sendNotification(
-        notificationTitle: String,
-        notificationBody: String
-    ) {
+    fun sendNotification(notification: ExpiryNotification) {
         val notifier = NotifierManager.getLocalNotifier()
         notifier.notify {
-            id= Random.nextInt(0, Int.MAX_VALUE)
-            title = notificationTitle
-            body = notificationBody
+            id = Random.nextInt(0, Int.MAX_VALUE)
+            title = notification.title
+            body = notification.body
         }
     }
+}
 
 private fun ShelfPalItem.toExpiryNotification(): String? {
     val currentDate = getLocalDateTime().date
@@ -104,3 +94,7 @@ private fun shouldNotify(
     expectedDifference: Long = 1L
 ) = notify && currentDate.until(expiryDate, unit) == expectedDifference
 
+data class ExpiryNotification(
+    val title: String,
+    val body: String
+)

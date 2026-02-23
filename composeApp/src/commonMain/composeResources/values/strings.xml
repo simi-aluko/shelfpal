@@ -134,4 +134,8 @@
     <string name="set_custom_reminder">Set a custom time to get notified</string>
     <string name="delete_item">Delete item</string>
     <string name="test_notification">Test notification</string>
+
+    <!-- Bottom Nav -->
+    <string name="home">Home</string>
+    <string name="notifications">Notifications</string>
 </resources>

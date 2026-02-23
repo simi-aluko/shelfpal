@@ -17,8 +17,10 @@ class ExpiryWorker(
 ) : CoroutineWorker(context, workerParams), KoinComponent {
 
     override suspend fun doWork(): Result {
-        val expiryManager: ExpiryManager = get()
-        expiryManager.getItemsToNotifyAbout(context.getString(R.string.app_name))
+        with(get<ExpiryManager>()) {
+            getExpiryNotifications(context.getString(R.string.app_name))
+                .forEach { sendNotification(it) }
+        }
         return Result.success()
     }
 }

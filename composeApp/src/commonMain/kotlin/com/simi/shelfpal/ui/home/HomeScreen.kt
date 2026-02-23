@@ -35,6 +35,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel { HomeViewModel() },
     navigateToAddItem: () -> Unit,
     navigateToItemDetail: (id: Long) -> Unit,
+    navigateToSettings: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
@@ -53,7 +54,7 @@ fun HomeScreen(
             TopBar(
                 title = stringResource(Res.string.shelfpal),
                 actionIcon = Res.drawable.packed_closed_check,
-                actionIconClick = {}
+                actionIconClick = { navigateToSettings() }
             )
          },
         floatingActionButton = {
