@@ -29,16 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.ui.home.models.HomeShelfItem
+import com.simi.shelfpal.ui.shared.getExpiredBorderColor
+import com.simi.shelfpal.ui.shared.getExpiredContainerColor
+import com.simi.shelfpal.ui.shared.getExpiredLabelColor
 import com.simi.shelfpal.ui.theme.Dimens
-import com.simi.shelfpal.ui.theme.errorContainerLight
-import com.simi.shelfpal.ui.theme.errorDark
-import com.simi.shelfpal.ui.theme.errorLight
-import com.simi.shelfpal.ui.theme.inversePrimaryLight
 import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.outlineVariantLight
-import com.simi.shelfpal.ui.theme.primaryContainerLight
 import com.simi.shelfpal.ui.theme.secondaryLight
-import com.simi.shelfpal.ui.theme.tertiaryLight
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -195,7 +192,7 @@ private fun ExpiredLabel(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = androidx.compose.ui.Modifier.Companion
+            modifier = Modifier
                 .background(
                     getExpiredContainerColor(
                         expired
@@ -268,24 +265,6 @@ fun getProductCategoryImage(category: String) = when (category) {
     stringResource(Res.string.category_infant_and_pet_care) -> Res.drawable.petcare
     stringResource(Res.string.category_all_categories) -> Res.drawable.apps
     else -> Res.drawable.selectall
-}
-
-private fun getExpiredBorderColor(expired: Boolean) = if (expired) {
-    errorDark
-} else {
-    inversePrimaryLight
-}
-
-private fun getExpiredContainerColor(expired: Boolean) = if (expired) {
-    errorContainerLight
-} else {
-    primaryContainerLight
-}
-
-private fun getExpiredLabelColor(expired: Boolean) = if (expired) {
-    errorLight
-} else {
-    tertiaryLight
 }
 
 @Preview

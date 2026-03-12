@@ -1,5 +1,6 @@
 package com.simi.shelfpal.ui.shared.composables
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -7,6 +8,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -20,25 +22,37 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
  fun TopBar(
     title: String,
-    actionIcon: DrawableResource,
-    actionIconClick: () -> Unit
+    subtitle: String? = null,
+    actionIcon: DrawableResource? = null,
+    actionIconClick: () -> Unit = {}
 ) {
     TopAppBar(
         title = {
-            Text(
-                text= title,
-                fontWeight = FontWeight.ExtraBold
-            )
+            Column {
+                Text(
+                    text= title,
+                    fontWeight = FontWeight.Bold
+                )
+                subtitle?.let {
+                    Text(
+                        text = it,
+                        fontWeight = FontWeight.W400,
+                        style = Typography().bodySmall
+                    )
+                }
+            }
         },
         actions = {
-            IconButton(
-                onClick = actionIconClick
-            ) {
-                Icon(
-                    imageVector = vectorResource(actionIcon),
-                    contentDescription = null,
-                    modifier = Modifier.size(Dimens.iconSizeMediumLarge)
-                )
+            actionIcon?.let {
+                IconButton(
+                    onClick = actionIconClick
+                ) {
+                    Icon(
+                        imageVector = vectorResource(actionIcon),
+                        contentDescription = null,
+                        modifier = Modifier.size(Dimens.iconSizeMediumLarge)
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

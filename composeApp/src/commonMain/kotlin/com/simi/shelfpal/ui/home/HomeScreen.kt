@@ -24,6 +24,7 @@ import com.simi.shelfpal.ui.theme.Dimens
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.categories
 import shelfpal.composeapp.generated.resources.packed_closed_check
@@ -95,4 +96,14 @@ fun HomeScreen(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun HomeScreenPreview() {
+    HomeScreen(
+        navigateToAddItem = {},
+        navigateToItemDetail = {},
+        navigateToSettings = {}
+    )
 }

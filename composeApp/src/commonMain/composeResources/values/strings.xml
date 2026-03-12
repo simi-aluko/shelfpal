@@ -137,5 +137,12 @@
 
     <!-- Bottom Nav -->
     <string name="home">Home</string>
-    <string name="notifications">Notifications</string>
+    <string name="updates">Updates</string>
+    <string name="shelf_updates">Shelf Updates</string>
+    <string name="shelf_updates_subtitle">Your expiry reminders and summaries</string>
+
+    <!-- Updates screen -->
+    <string name="shelf_summary">Shelf summary</string>
+    <string name="recent_activity">Recent activity</string>
+    <string name="related_items">Related Items:</string>
 </resources>

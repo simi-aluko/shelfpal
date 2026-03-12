@@ -4,7 +4,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.home
-import shelfpal.composeapp.generated.resources.notifications
+import shelfpal.composeapp.generated.resources.updates
 
 
 enum class BottomNavDestination(
@@ -21,8 +21,8 @@ enum class BottomNavDestination(
     ),
     NOTIFICATIONS(
         route = Route.Notifications,
-        title = Res.string.notifications,
-        icon = Res.drawable.notifications,
-        contentDescription = Res.string.notifications
+        title = Res.string.updates,
+        icon = Res.drawable.updates,
+        contentDescription = Res.string.updates
     )
 }

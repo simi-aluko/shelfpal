@@ -16,8 +16,8 @@ import com.simi.shelfpal.ui.addEditItem.AddEditItemScreen
 import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
-import com.simi.shelfpal.ui.notifications.NotificationsScreen
 import com.simi.shelfpal.ui.settings.SettingsScreen
+import com.simi.shelfpal.ui.updates.UpdatesScreen
 import com.simi.shelfpal.ui.welcome.WelcomeScreen
 import com.simi.shelfpal.ui.welcome.carouselContent
 
@@ -82,7 +82,7 @@ fun ShelfPalNavHost(
         }
 
         composable<Route.Notifications> {
-            NotificationsScreen()
+            UpdatesScreen()
         }
 
         composable<Route.Settings> {

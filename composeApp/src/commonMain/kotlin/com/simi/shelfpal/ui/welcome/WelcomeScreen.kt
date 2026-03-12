@@ -52,11 +52,11 @@ import shelfpal.composeapp.generated.resources.skip
 
 @Composable
 fun WelcomeScreen(
-    content: List<com.simi.shelfpal.ui.welcome.CarouselPage>,
+    content: List<CarouselPage>,
     navigateToHome: () -> Unit = {}
 ) {
     Scaffold {
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.WelcomeScreenContent(
+        WelcomeScreenContent(
             content = content,
             navigateToHome = navigateToHome
         )
@@ -65,7 +65,7 @@ fun WelcomeScreen(
 
 @Composable
 private fun WelcomeScreenContent(
-    content: List<com.simi.shelfpal.ui.welcome.CarouselPage>,
+    content: List<CarouselPage>,
     navigateToHome: () -> Unit = {}
 ) {
     val pagerState = rememberPagerState(pageCount = { content.size })
@@ -76,14 +76,14 @@ private fun WelcomeScreenContent(
             .fillMaxSize()
             .padding(Dimens.spacingMedium)
     ) {
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.SkipWelcome { navigateToHome() }
+        SkipWelcome { navigateToHome() }
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
         ) {
-            _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselContent(content[it])
+            CarouselContent(content[it])
         }
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselProgressCta(
+        CarouselProgressCta(
             ctaTitle = content[pagerState.currentPage].ctaTitle
         ) {
             val nextPage = pagerState.currentPage + 1
@@ -94,7 +94,7 @@ private fun WelcomeScreenContent(
             }
         }
         Spacer(modifier = Modifier.size(Dimens.spacingMedium))
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselPageIndicator(
+        CarouselPageIndicator(
             pageCount = content.size,
             currentPage = pagerState.currentPage
         )
@@ -110,13 +110,13 @@ private fun CarouselContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.size(Dimens.spacingXXLarge))
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselContentHeaderImage(imageRes = content.imageRes)
+        CarouselContentHeaderImage(imageRes = content.imageRes)
         Spacer(modifier = Modifier.size(Dimens.spacingXXLarge))
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselContentTitle(title = content.title)
+        CarouselContentTitle(title = content.title)
         Spacer(modifier = Modifier.size(Dimens.spacingSmall))
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselContentSubtitle(subtitle = content.subtitle)
+        CarouselContentSubtitle(subtitle = content.subtitle)
         Spacer(modifier = Modifier.size(Dimens.spacingXXLarge))
-        _root_ide_package_.com.simi.shelfpal.ui.welcome.CarouselContentBody(body = content.body)
+        CarouselContentBody(body = content.body)
         Spacer(modifier = Modifier.size(Dimens.spacingMedium))
     }
 }

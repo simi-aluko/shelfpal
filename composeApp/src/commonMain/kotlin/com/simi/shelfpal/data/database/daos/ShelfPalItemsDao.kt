@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
+import com.simi.shelfpal.data.database.shelfItemsTable
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,12 +21,12 @@ interface ShelfPalItemsDao {
     @Delete
     suspend fun deleteById(item: ShelfPalItem)
 
-    @Query("SELECT * FROM ShelfPalItem WHERE id = :id")
+    @Query("SELECT * FROM $shelfItemsTable WHERE id = :id")
     fun getById(id: Long): Flow<ShelfPalItem?>
 
     @Query(
         """
-            SELECT * FROM ShelfPalItem
+            SELECT * FROM $shelfItemsTable
             WHERE (:category IS NULL OR category = :category)
             AND (:month IS NULL OR expiryMonth = :month)
             AND (:year IS NULL OR expiryYear = :year)
@@ -37,6 +38,6 @@ interface ShelfPalItemsDao {
         year: Int?
     ): Flow<List<ShelfPalItem>>
 
-    @Query("SELECT * FROM ShelfPalItem")
+    @Query("SELECT * FROM $shelfItemsTable")
     suspend fun getItems(): List<ShelfPalItem>
 }
