@@ -22,5 +22,9 @@ expect interface FirebaseConnector {
         prompt: String = EXPIRY_PROMPT
     ) : String?
 
+    suspend fun getExpirySummary(
+        prompt: String
+    ) : String?
+
     fun getFirebaseData(image: ByteArray): Data
 }

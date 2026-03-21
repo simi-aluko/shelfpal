@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.simi.shelfpal.ui.home.composables.getProductCategoryImage
 import com.simi.shelfpal.ui.shared.getExpiredBorderColor
 import com.simi.shelfpal.ui.shared.getExpiredContainerColor
 import com.simi.shelfpal.ui.shared.getExpiredLabelColor
@@ -25,7 +26,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.chevron_right
-import shelfpal.composeapp.generated.resources.food
 
 @Composable
 fun UpdatesPill(
@@ -53,7 +53,7 @@ fun UpdatesPill(
         horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
     ) {
         Image(
-            painter = painterResource(data.icon),
+            painter = painterResource(getProductCategoryImage(data.category)),
             contentDescription = null,
             modifier = Modifier.size(Dimens.iconSizeSmall),
         )
@@ -78,7 +78,7 @@ private fun UpdatesPill() {
         data = ShelfPalUpdateItem(
             id = 1,
             title = "Item 1",
-            icon = Res.drawable.food
+            category = "Beverages"
         )
     )
 }

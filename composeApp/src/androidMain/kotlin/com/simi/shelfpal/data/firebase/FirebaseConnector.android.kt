@@ -21,6 +21,7 @@ actual interface FirebaseConnector {
     ): String?
 
     actual fun getFirebaseData(image: ByteArray): Data
+    actual suspend fun getExpirySummary(prompt: String): String?
 }
 
 class FirebaseConnectorImpl : FirebaseConnector {
@@ -68,6 +69,19 @@ class FirebaseConnectorImpl : FirebaseConnector {
     override fun getFirebaseData(image: ByteArray): Data {
         return Data(image)
     }
+
+    override suspend fun getExpirySummary(prompt: String): String? {
+        val model = ai.generativeModel(
+            modelName = GEMINI_MODEL,
+            generationConfig = generationConfig {
+                responseMimeType = JSON_RESPONSE_MIMETYPE
+                responseSchema = expirySummaryResponseSchema
+            }
+        )
+        val content = content { text(prompt) }
+
+        return model.generateContent(content).text
+    }
 }
 
 private val basicInfoResponseSchema = Schema.obj(
@@ -83,5 +97,12 @@ private val expiryInfoResponseSchema = Schema.obj(
         EXPIRY_MONTH to Schema.integer(nullable = true),
         EXPIRY_YEAR to Schema.integer(nullable = true),
         HAS_DAY to Schema.boolean()
+    )
+)
+
+private val expirySummaryResponseSchema = Schema.obj(
+    mapOf(
+        "title" to Schema.string(),
+        "body" to Schema.string()
     )
 )

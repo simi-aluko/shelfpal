@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,8 +38,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
-import shelfpal.composeapp.generated.resources.food
-import shelfpal.composeapp.generated.resources.notifications_24px
+import shelfpal.composeapp.generated.resources.info
 import shelfpal.composeapp.generated.resources.related_items
 
 @Composable
@@ -137,15 +137,19 @@ private fun UpdatesCardIcon(
 ) {
     Box(
         modifier = modifier
-            .size(Dimens.iconSizeXXLarge)
-            .clip(CircleShape)
-            .background(backgroundColor),
+            .size(Dimens.iconSizeXLarge)
+            .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+        )
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            modifier = Modifier.size(Dimens.iconSizeMedium),
+            modifier = Modifier.size(Dimens.iconSizeMediumLarge),
             tint = tint
         )
     }
@@ -165,7 +169,7 @@ private fun UpdatesCardTitle(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface
         )
         if (isNew == true) {
@@ -225,13 +229,13 @@ private fun UpdatesCardPreview() {
                 ShelfPalUpdateItem(
                     id = 1,
                     title = "Item 1",
-                    icon = Res.drawable.food
+                    category = "Beverages"
                 )
             ),
             headerIcon = UpdateHeaderIcon(
-                icon = Res.drawable.notifications_24px,
+                icon = Res.drawable.info,
                 tint = Color.White,
-                backgroundColor = Color.Red,
+                backgroundColor = Color.Red.copy(alpha = 0.5f)
             )
         )
     )

@@ -1,6 +1,7 @@
 package com.simi.shelfpal.koin
 
 import com.simi.shelfpal.data.database.AppDatabase
+import com.simi.shelfpal.data.database.daos.ExpiryUpdatesDao
 import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
 import com.simi.shelfpal.expirymanager.ExpiryManager
 import com.simi.shelfpal.ui.addEditItem.repository.AddItemRepository
@@ -10,6 +11,8 @@ import com.simi.shelfpal.ui.details.repository.ShelfPalItemDetailRepositoryImpl
 import com.simi.shelfpal.ui.home.datasource.HomeLocalDatasource
 import com.simi.shelfpal.ui.home.repository.HomeRepository
 import com.simi.shelfpal.ui.home.repository.HomeRepositoryImpl
+import com.simi.shelfpal.ui.updates.repository.UpdatesRepository
+import com.simi.shelfpal.ui.updates.repository.UpdatesRepositoryImpl
 import org.koin.dsl.module
 
 val commonModules = module {
@@ -39,6 +42,14 @@ val commonModules = module {
     single {
         ExpiryManager(
             shelfPalItemsDao = get()
+        )
+    }
+    factory<ExpiryUpdatesDao> {
+        get<AppDatabase>().getExpiryUpdatesDao()
+    }
+    factory<UpdatesRepository> {
+        UpdatesRepositoryImpl(
+            updatesDao = get()
         )
     }
 }

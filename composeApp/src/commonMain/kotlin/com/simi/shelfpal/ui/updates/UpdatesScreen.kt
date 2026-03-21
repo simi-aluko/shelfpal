@@ -1,6 +1,8 @@
 package com.simi.shelfpal.ui.updates
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -10,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.shared.composables.TopBar
+import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.updates.composables.RecentActivity
 import com.simi.shelfpal.ui.updates.composables.UpdatesSummary
 import org.jetbrains.compose.resources.stringResource
@@ -38,10 +41,21 @@ fun UpdatesScreen(
         Surface(
             modifier = Modifier.padding(innerPadding)
         ) {
-            summary?.let {
-                UpdatesSummary(data = it)
+            LazyColumn (
+                modifier = Modifier.padding(horizontal = Dimens.spacingMedium)
+            ) {
+                summary?.let {
+                    item {
+                        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                        UpdatesSummary(data = it)
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                    RecentActivity(updates = recentActivity)
+                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                }
             }
-            RecentActivity(updates = recentActivity)
         }
     }
 }

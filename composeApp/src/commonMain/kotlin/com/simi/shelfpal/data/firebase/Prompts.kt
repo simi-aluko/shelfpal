@@ -23,8 +23,9 @@ const val EXPIRY_PROMPT = "Get the expiry day, month and year from the product i
  * Prompt to summarize soon to expire items
  */
 fun getExpirySummaryPrompt(expirySummary: ExpirySummary) =
-    "Provide an app user friendly summary of these shelf items. They will be expiring soon and " +
+    "Provide an app user friendly summary of these shelf items according to the response model containing a title and body. " +
+    "The title should be a one line summary and the body containing more useful information on the state of the shelf. " +
+    "These are the items: ${Json.encodeToString(expirySummary)} and they will be expiring soon." +
     "we want to provide the user with actionable tips of what to do with these items. " +
-    "This summary will be displayed in a card within an app. Some items are expiring in a month, " +
-    "some others in a week, some in a day, and the others in a custom set time. " +
-    "Prioritize items expiring very soon in the tips. Items: ${Json.encodeToString(expirySummary)}"
+    "This summary will be displayed in a card within the app. Some items are expiring in a month, " +
+    "some others in a week, some today, and the others in a custom set time. Prioritize items expiring very soon in the tips. "

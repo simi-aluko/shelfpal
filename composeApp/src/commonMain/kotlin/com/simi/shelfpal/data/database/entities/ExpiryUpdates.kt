@@ -1,9 +1,11 @@
 package com.simi.shelfpal.data.database.entities
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import androidx.room.TypeConverter
 import com.simi.shelfpal.data.database.expiryUpdatesTable
 
@@ -46,3 +48,12 @@ class ExpiryStatusTypeConverter {
     @TypeConverter
     fun toStatus(status: Int) = ExpiryStatus.entries.first { it.status == status }
 }
+
+data class UpdateWithItem(
+    @Embedded val expiryUpdate: ExpiryUpdates,
+    @Relation(
+        parentColumn = "itemId",
+        entityColumn = "id"
+    )
+    val item: ShelfPalItem
+)

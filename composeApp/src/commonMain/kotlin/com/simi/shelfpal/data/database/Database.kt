@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.simi.shelfpal.data.database.daos.ExpiryUpdatesDao
 import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
 import com.simi.shelfpal.data.database.entities.ExpiryStatusTypeConverter
 import com.simi.shelfpal.data.database.entities.ExpiryUpdates
@@ -28,6 +29,7 @@ const val DATABASE_NAME = "shelfpal_database.db"
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getShelfPalItemsDao(): ShelfPalItemsDao
+    abstract fun getExpiryUpdatesDao(): ExpiryUpdatesDao
 }
 
 @Suppress("KotlinNoActualForExpect")

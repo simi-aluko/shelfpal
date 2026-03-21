@@ -20,7 +20,6 @@ import com.simi.shelfpal.ui.updates.UpdateHeaderIcon
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
-import shelfpal.composeapp.generated.resources.food
 import shelfpal.composeapp.generated.resources.notifications_24px
 import shelfpal.composeapp.generated.resources.recent_activity
 
@@ -57,7 +56,7 @@ private fun RecentActivityPreview() {
                 timestamp = "Mar 9, 11:19 PM",
                 isNew = true,
                 items = listOf(
-                    ShelfPalUpdateItem(1, "Organic Milk", Res.drawable.food)
+                    ShelfPalUpdateItem(1, "Organic Milk", "Beverages")
                 ),
                 headerIcon = UpdateHeaderIcon(
                     icon = Res.drawable.notifications_24px,
@@ -72,10 +71,10 @@ private fun RecentActivityPreview() {
                 timestamp = "Mar 8, 12:19 AM",
                 isNew = false,
                 items = listOf(
-                    ShelfPalUpdateItem(1, "Organic Milk", Res.drawable.food),
-                    ShelfPalUpdateItem(2, "Greek Yogurt", Res.drawable.food),
-                    ShelfPalUpdateItem(3, "Face Cream", Res.drawable.food),
-                    ShelfPalUpdateItem(4, "Vitamin D3", Res.drawable.food)
+                    ShelfPalUpdateItem(1, "Organic Milk", "Beverages"),
+                    ShelfPalUpdateItem(2, "Greek Yogurt", "Beverages"),
+                    ShelfPalUpdateItem(3, "Face Cream", "Beverages"),
+                    ShelfPalUpdateItem(4, "Vitamin D3", "Beverages")
                 ),
                 headerIcon = UpdateHeaderIcon(
                     icon = Res.drawable.notifications_24px,
