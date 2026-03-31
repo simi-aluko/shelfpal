@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.data.database.entities.ExpiryStatus
+import com.simi.shelfpal.ui.shared.composables.DefaultCard
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.onTertiaryContainerLight
@@ -46,14 +47,7 @@ fun UpdatesCard(
     data: ShelfPalUpdate,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(Dimens.radiusLarge),
-        colors = CardDefaults.cardColors(
-            containerColor = onPrimaryLight
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
-    ) {
+    DefaultCard(modifier = modifier) {
         Column(
             modifier = Modifier.padding(Dimens.spacingSmallMedium)
         ) {

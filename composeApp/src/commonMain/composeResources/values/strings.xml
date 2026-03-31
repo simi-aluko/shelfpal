@@ -145,4 +145,8 @@
     <string name="shelf_summary">Shelf summary</string>
     <string name="recent_activity">Recent activity</string>
     <string name="related_items">Related Items:</string>
+
+    <!-- Settings screen -->
+    <string name="push_notifications">Push notifications</string>
+    <string name="notification_subtitle">Get notified about expiring items</string>
 </resources>
