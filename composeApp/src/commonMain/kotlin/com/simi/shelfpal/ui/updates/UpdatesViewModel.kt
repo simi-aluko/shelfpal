@@ -14,6 +14,7 @@ import com.simi.shelfpal.data.firebase.FirebaseConnector
 import com.simi.shelfpal.data.firebase.getExpirySummaryPrompt
 import com.simi.shelfpal.data.models.ExpirySummary
 import com.simi.shelfpal.data.models.ExpirySummaryItem
+import com.simi.shelfpal.data.settings.ShelfPalSettings
 import com.simi.shelfpal.ui.theme.primaryContainerLight
 import com.simi.shelfpal.ui.theme.primaryLight
 import com.simi.shelfpal.ui.updates.repository.UpdatesRepository
@@ -38,6 +39,7 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
 
     private val updatesRepository: UpdatesRepository by inject()
     private val firebaseConnector: FirebaseConnector by inject()
+    private val shelfPalSettings: ShelfPalSettings by inject()
 
     private val _updates = MutableStateFlow<List<ShelfPalUpdate>>(emptyList())
     val updates = _updates.asStateFlow()
@@ -45,51 +47,27 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
     private val _aiSummary = MutableStateFlow<ShelfPalUpdate?>(null)
     val aiSummary = _aiSummary.asStateFlow()
 
+    private val _loadingState= MutableStateFlow(LoadingState())
+    val loadingState = _loadingState.asStateFlow()
+
     init {
         viewModelScope.launch {
-            with(updatesRepository) {
-                val today = getUpdates(EXPIRING_TODAY)
-                val todayExpirySummary = today.getExpirySummary()
-                val todayUpdate = today.toShelfPalUpdate(EXPIRING_TODAY)
+            _loadingState.value = LoadingState(isLoading = true)
+            try {
+                with(updatesRepository) {
+                    val today = getUpdates(EXPIRING_TODAY)
+                    val expired = getUpdates(EXPIRED)
+                    val week = getUpdates( EXPIRING_IN_A_WEEK)
+                    val month = getUpdates(EXPIRING_IN_A_MONTH)
+                    val custom = getUpdates(EXPIRING_IN_CUSTOM_DURATION)
 
-                val expired = getUpdates(EXPIRED)
-                val expiredUpdate = expired.toShelfPalUpdate(EXPIRED)
-
-
-
-                val week = getUpdates( EXPIRING_IN_A_WEEK)
-                val weekExpirySummary = week.getExpirySummary()
-                val weekUpdate = week.toShelfPalUpdate(EXPIRING_IN_A_WEEK)
-
-                val month = getUpdates(EXPIRING_IN_A_MONTH)
-                val monthExpirySummary = month.getExpirySummary()
-                val monthUpdate = month.toShelfPalUpdate(EXPIRING_IN_A_MONTH)
-
-                val custom = getUpdates(EXPIRING_IN_CUSTOM_DURATION)
-                val customExpirySummary = custom.getExpirySummary()
-                val customUpdate = custom.toShelfPalUpdate(EXPIRING_IN_CUSTOM_DURATION)
-
-                _updates.value = listOf(
-                    todayUpdate,
-                    weekUpdate,
-                    monthUpdate,
-                    customUpdate,
-                    expiredUpdate,
-                )
-
-                val expirySummary = ExpirySummary(
-                    expiringInAWeek = weekExpirySummary,
-                    expiringInAMonth = monthExpirySummary,
-                    expiringInCustomDuration = customExpirySummary,
-                    expiringToDay = todayExpirySummary
-                )
-
-                val summaryResponse = firebaseConnector
-                    .getExpirySummary(getExpirySummaryPrompt(expirySummary))
-                summaryResponse?.let {
-                    val summary = Json.decodeFromString<ExpirySummaryAIResponse>(summaryResponse)
-                    _aiSummary.value = summaryUpdate(summary)
+                    initSummary(today, week, month, custom)
+                    initUpdates(today, week, month, custom, expired)
                 }
+                _loadingState.value = LoadingState(isLoading = false, isError = false)
+            } catch (e: Exception) {
+                e.printStackTrace() // todo: log to crashlytics
+                _loadingState.value = LoadingState(isLoading = false, isError = true)
             }
         }
     }
@@ -202,7 +180,7 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
         )
     }
 
-    private fun summaryUpdate(summaryResponse: ExpirySummaryAIResponse) = ShelfPalUpdate(
+    private fun createAiSummaryUpdate(summaryResponse: AiExpirySummary) = ShelfPalUpdate(
         title = summaryResponse.title,
         subtitle = summaryResponse.body,
         status = null,
@@ -215,4 +193,64 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
             backgroundColor = primaryContainerLight
         )
     )
+
+    private suspend fun initSummary(
+        today: List<UpdateWithItem>,
+        week: List<UpdateWithItem>,
+        month: List<UpdateWithItem>,
+        custom: List<UpdateWithItem>,
+    ) {
+        val todayExpirySummary = today.getExpirySummary()
+        val weekExpirySummary = week.getExpirySummary()
+        val monthExpirySummary = month.getExpirySummary()
+        val customExpirySummary = custom.getExpirySummary()
+
+        val expirySummary = ExpirySummary(
+            expiringInAWeek = weekExpirySummary,
+            expiringInAMonth = monthExpirySummary,
+            expiringInCustomDuration = customExpirySummary,
+            expiringToDay = todayExpirySummary
+        )
+
+        val cachedExpirySummary = shelfPalSettings.getExpirySummary()
+
+        if (cachedExpirySummary == null || cachedExpirySummary != expirySummary) {
+            try {
+                firebaseConnector.getExpirySummary(getExpirySummaryPrompt(expirySummary))?.let {
+                    val summaryResponse = Json.decodeFromString<AiExpirySummary>(it)
+                    shelfPalSettings.saveExpirySummary(expirySummary)
+                    shelfPalSettings.saveAiSummary(summaryResponse)
+                    _aiSummary.value = createAiSummaryUpdate(summaryResponse)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace() // todo: log to crashlytics
+            }
+        } else {
+            shelfPalSettings.getAiSummary()?.let {
+                _aiSummary.value = createAiSummaryUpdate(it)
+            }
+        }
+    }
+
+    private fun initUpdates(
+        today: List<UpdateWithItem>,
+        week: List<UpdateWithItem>,
+        month: List<UpdateWithItem>,
+        custom: List<UpdateWithItem>,
+        expired: List<UpdateWithItem>,
+    ) {
+        val todayUpdate = today.toShelfPalUpdate(EXPIRING_TODAY)
+        val weekUpdate = week.toShelfPalUpdate(EXPIRING_IN_A_WEEK)
+        val monthUpdate = month.toShelfPalUpdate(EXPIRING_IN_A_MONTH)
+        val customUpdate = custom.toShelfPalUpdate(EXPIRING_IN_CUSTOM_DURATION)
+        val expiredUpdate = expired.toShelfPalUpdate(EXPIRED)
+
+        _updates.value = listOf(
+            todayUpdate,
+            weekUpdate,
+            monthUpdate,
+            customUpdate,
+            expiredUpdate,
+        )
+    }
 }

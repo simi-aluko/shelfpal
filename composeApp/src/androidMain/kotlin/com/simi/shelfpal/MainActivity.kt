@@ -6,9 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.mmk.kmpnotifier.permission.permissionUtil
-import com.simi.shelfpal.work.expiryWorkRequest
+import com.simi.shelfpal.work.expiryNotificationWorkRequest
 
 class MainActivity : ComponentActivity() {
 
@@ -23,7 +24,13 @@ class MainActivity : ComponentActivity() {
 
         permissionUtil.askNotificationPermission()
 
-        WorkManager.getInstance(this).enqueue(expiryWorkRequest)
+        WorkManager.getInstance(this).apply {
+            enqueueUniquePeriodicWork(
+                uniqueWorkName = "expiry_updates",
+                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.KEEP,
+                expiryNotificationWorkRequest
+            )
+        }
     }
 }
 

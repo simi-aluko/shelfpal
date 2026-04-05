@@ -21,7 +21,7 @@ import com.simi.shelfpal.data.database.expiryUpdatesTable
     ],
     indices = [Index(value = ["itemId"], unique = true)],
 )
-data class ExpiryUpdates(
+data class ExpiryUpdate(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val itemId: Long,
     val expiryStatus: ExpiryStatus,
@@ -30,7 +30,7 @@ data class ExpiryUpdates(
     val todayReviewed: Boolean = false,
     val customDurationReviewed: Boolean = false,
     val expiredReviewed: Boolean = false,
-    val updatedAt: Long
+    val updatedAt: Long = 0
 )
 
 enum class ExpiryStatus(val status: Int) {
@@ -50,7 +50,7 @@ class ExpiryStatusTypeConverter {
 }
 
 data class UpdateWithItem(
-    @Embedded val expiryUpdate: ExpiryUpdates,
+    @Embedded val expiryUpdate: ExpiryUpdate,
     @Relation(
         parentColumn = "itemId",
         entityColumn = "id"

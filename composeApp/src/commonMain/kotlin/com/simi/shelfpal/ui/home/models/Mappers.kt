@@ -82,7 +82,11 @@ fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
                         // TODO: If day is today, it has not expired. but should use yellow color to signal it is soon
                         // day == expiry, not yet expired. but less than 2 weeks. yellow color
                         // day > expiry then expired. red color
-                        expiryDay != null && localDateTime.day >= expiryDay
+                        if(expiryDay != null && localDateTime.day > expiryDay) {
+                            true
+                        } else {
+                            false
+                        }
                     }
                 } else {
                     false

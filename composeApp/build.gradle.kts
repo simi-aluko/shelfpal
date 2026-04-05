@@ -63,6 +63,9 @@ kotlin {
             implementation(libs.coil.network.ktor3)
             implementation(libs.ktor.client.core)
             implementation(libs.firebase.storage)
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings.serialization)
+            implementation(libs.multiplatform.settings.coroutines)
             api(libs.kmp.notifier)
         }
         commonTest.dependencies {

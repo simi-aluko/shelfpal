@@ -9,7 +9,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.simi.shelfpal.data.database.daos.ExpiryUpdatesDao
 import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
 import com.simi.shelfpal.data.database.entities.ExpiryStatusTypeConverter
-import com.simi.shelfpal.data.database.entities.ExpiryUpdates
+import com.simi.shelfpal.data.database.entities.ExpiryUpdate
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductBasicInfoConverter
 import com.simi.shelfpal.data.models.ProductExpiryInfoConverter
@@ -19,7 +19,7 @@ import kotlinx.coroutines.IO
 
 const val DATABASE_NAME = "shelfpal_database.db"
 
-@Database(entities = [ShelfPalItem::class, ExpiryUpdates::class], version = 1)
+@Database(entities = [ShelfPalItem::class, ExpiryUpdate::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)
 @TypeConverters(
     ProductBasicInfoConverter::class,

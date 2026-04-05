@@ -1,9 +1,12 @@
 package com.simi.shelfpal.data.database.daos
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.simi.shelfpal.data.database.entities.ExpiryStatus
+import com.simi.shelfpal.data.database.entities.ExpiryUpdate
 import com.simi.shelfpal.data.database.entities.UpdateWithItem
 
 @Dao
@@ -25,4 +28,13 @@ interface ExpiryUpdatesDao {
         status: ExpiryStatus,
         isReviewed: Boolean
     ): List<UpdateWithItem>
+
+    @Update
+    suspend fun update(update: ExpiryUpdate)
+
+    @Insert
+    suspend fun insert(update: ExpiryUpdate)
+
+    @Query("SELECT * FROM expiry_updates WHERE itemId = :itemId")
+    suspend fun getByItemId(itemId: Long): ExpiryUpdate?
 }

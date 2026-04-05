@@ -29,7 +29,13 @@ data class UpdateHeaderIcon(
 )
 
 @Serializable
-data class ExpirySummaryAIResponse(
+data class AiExpirySummary(
     val title: String,
     val body: String
 )
+
+data class LoadingState(
+    val isLoading: Boolean = false,
+    val isError: Boolean = false
+)
+

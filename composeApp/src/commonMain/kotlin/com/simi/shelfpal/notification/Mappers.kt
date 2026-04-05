@@ -1,34 +1,14 @@
-package com.simi.shelfpal.expirymanager
+package com.simi.shelfpal.notification
 
-import com.mmk.kmpnotifier.notification.NotifierManager
-import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
+import com.simi.shelfpal.data.database.entities.ExpiryStatus
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.until
-import kotlin.random.Random
 
-class ExpiryManager(private val shelfPalItemsDao: ShelfPalItemsDao) {
-
-    suspend fun getExpiryNotifications(title: String) = shelfPalItemsDao
-        .getItems()
-        .mapNotNull { it.toExpiryNotification() }
-        .map { ExpiryNotification(title, it) }
-        .toSet()
-
-    fun sendNotification(notification: ExpiryNotification) {
-        val notifier = NotifierManager.getLocalNotifier()
-        notifier.notify {
-            id = Random.nextInt(0, Int.MAX_VALUE)
-            title = notification.title
-            body = notification.body
-        }
-    }
-}
-
-private fun ShelfPalItem.toExpiryNotification(): String? {
+fun ShelfPalItem.toExpiryNotification(title: String): ExpiryNotification? {
     val currentDate = getLocalDateTime().date
     val expiryDate = expiryInfo.getExpiryDate()
 
@@ -37,7 +17,7 @@ private fun ShelfPalItem.toExpiryNotification(): String? {
             notify = reminderSettings.notifyMonthBefore,
             currentDate = currentDate,
             expiryDate = expiryDate,
-            unit = DateTimeUnit.MONTH,
+            unit = DateTimeUnit.Companion.MONTH,
         )
 
         val notifyWeekBefore = shouldNotify(
@@ -62,25 +42,32 @@ private fun ShelfPalItem.toExpiryNotification(): String? {
             expectedDifference = reminderSettings.customDaysBefore?.toLong() ?: 0
         )
 
-
-        when {
+        val (body, status) = when {
             notifyMonthBefore -> {
-                "Friendly Nudge: Your ${basicInfo.name} would be expiring in a month's time."
+                Pair("Friendly Nudge: Your ${basicInfo.name} would be expiring in a month's time.", ExpiryStatus.EXPIRING_IN_A_MONTH)
             }
             notifyWeekBefore -> {
-                "Planning your week? Your ${basicInfo.name} expires in 7 days."
+                    Pair("Planning your week? Your ${basicInfo.name} expires in 7 days.",ExpiryStatus.EXPIRING_IN_A_WEEK)
             }
             notifyDayBefore -> {
-                "Heads up! Your ${basicInfo.name} expires tomorrow. Don't let it go to waste."
+                Pair("Heads up! Your ${basicInfo.name} expires tomorrow. Don't let it go to waste.", ExpiryStatus.EXPIRING_IN_CUSTOM_DURATION)
             }
             notifyOnDay -> {
-                "Last chance! Your ${basicInfo.name} is expires today."
+                Pair("Last chance! Your ${basicInfo.name} is expires today.", ExpiryStatus.EXPIRING_TODAY)
             }
             notifyCustomDaysBefore -> {
-                "Friendly reminder: Your ${basicInfo.name} expires in ${reminderSettings.customDaysBefore} day(s)"
+                Pair("Heads up! Your ${basicInfo.name} expires in ${reminderSettings.customDaysBefore} days.", ExpiryStatus.EXPIRING_IN_CUSTOM_DURATION)
             }
-            else -> null
+            else -> Pair(null, null)
         }
+        if (body != null && status != null) {
+            ExpiryNotification(
+                title = title,
+                body = body,
+                itemId = id,
+                expiryStatus = status
+            )
+        } else null
     } else {
         null
     }
@@ -90,11 +77,6 @@ private fun shouldNotify(
     notify: Boolean,
     currentDate: LocalDate,
     expiryDate: LocalDate,
-    unit: DateTimeUnit.DateBased = DateTimeUnit.DAY,
+    unit: DateTimeUnit.DateBased = DateTimeUnit.Companion.DAY,
     expectedDifference: Long = 1L
 ) = notify && currentDate.until(expiryDate, unit) == expectedDifference
-
-data class ExpiryNotification(
-    val title: String,
-    val body: String
-)

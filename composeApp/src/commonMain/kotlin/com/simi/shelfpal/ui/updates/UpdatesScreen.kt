@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.updates.composables.RecentActivity
+import com.simi.shelfpal.ui.updates.composables.UpdatesShimmer
 import com.simi.shelfpal.ui.updates.composables.UpdatesSummary
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -26,9 +27,9 @@ import shelfpal.composeapp.generated.resources.shelf_updates_subtitle
 fun UpdatesScreen(
     viewModel: UpdatesViewModel = viewModel { UpdatesViewModel() }
 ) {
-
     val summary: ShelfPalUpdate? by viewModel.aiSummary.collectAsStateWithLifecycle()
     val recentActivity: List<ShelfPalUpdate> by viewModel.updates.collectAsStateWithLifecycle()
+    val loadingState by viewModel.loadingState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -39,21 +40,26 @@ fun UpdatesScreen(
         }
     ) { innerPadding ->
         Surface(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(top =innerPadding.calculateTopPadding())
         ) {
-            LazyColumn (
-                modifier = Modifier.padding(horizontal = Dimens.spacingMedium)
-            ) {
-                summary?.let {
-                    item {
-                        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-                        UpdatesSummary(data = it)
+            when {
+                loadingState.isLoading -> UpdatesShimmer()
+                else -> {
+                    LazyColumn (
+                        modifier = Modifier.padding(horizontal = Dimens.spacingMedium)
+                    ) {
+                        summary?.let {
+                            item {
+                                Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                                UpdatesSummary(data = it)
+                            }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                            RecentActivity(updates = recentActivity)
+                            Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                        }
                     }
-                }
-                item {
-                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-                    RecentActivity(updates = recentActivity)
-                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
                 }
             }
         }
