@@ -27,6 +27,7 @@ import shelfpal.composeapp.generated.resources.shelf_updates_subtitle
 @Composable
 fun UpdatesScreen(
     onCardClick: (UpdatesDetailParams) -> Unit = {},
+    onItemClick: (Long) -> Unit = {},
     viewModel: UpdatesViewModel = viewModel { UpdatesViewModel() }
 ) {
     val summary: ShelfPalUpdate? by viewModel.aiSummary.collectAsStateWithLifecycle()
@@ -58,7 +59,7 @@ fun UpdatesScreen(
                         }
                         item {
                             Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-                            RecentActivity(updates = recentActivity, onCardClick = onCardClick)
+                            RecentActivity(updates = recentActivity, onCardClick = onCardClick, onItemClick = onItemClick)
                             Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
                         }
                     }

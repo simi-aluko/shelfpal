@@ -50,7 +50,8 @@ import shelfpal.composeapp.generated.resources.set_custom_reminder
 @Composable
 fun ItemDetailSettings(
     data: ShelfPalItemReminderSettings,
-    onCheckClick: (ShelfPalItemReminderSettings) -> Unit
+    onCheckClick: (ShelfPalItemReminderSettings) -> Unit,
+    enabled: Boolean = true,
 ) {
     ItemDetailCard {
         Column(
@@ -60,7 +61,8 @@ fun ItemDetailSettings(
             Spacer(modifier = Modifier.size(Dimens.spacingSmall))
             ItemDetailSettingsBody(
                 data = data,
-                onCheckClick = onCheckClick
+                onCheckClick = onCheckClick,
+                enabled = enabled,
             )
         }
     }
@@ -69,7 +71,8 @@ fun ItemDetailSettings(
 @Composable
 private fun ItemDetailSettingsBody(
     data: ShelfPalItemReminderSettings,
-    onCheckClick: (ShelfPalItemReminderSettings) -> Unit
+    onCheckClick: (ShelfPalItemReminderSettings) -> Unit,
+    enabled: Boolean = true,
 ) {
     val showCustomReminder = data.customDaysBefore != null
 
@@ -82,6 +85,7 @@ private fun ItemDetailSettingsBody(
             subtitle = stringResource(Res.string.get_notified_one_month_before),
             iconTint = tertiaryLight,
             hasExpired = data.hasExpired,
+            enabled = enabled,
             onChecked = {
                 onCheckClick(data.copy(notifyMonthBefore = it))
             }
@@ -92,6 +96,7 @@ private fun ItemDetailSettingsBody(
             subtitle = stringResource(Res.string.get_notified_one_week_before),
             iconTint = colorOrange,
             hasExpired = data.hasExpired,
+            enabled = enabled,
             onChecked = {
                 onCheckClick(data.copy(notifyWeekBefore = it))
             }
@@ -102,6 +107,7 @@ private fun ItemDetailSettingsBody(
             subtitle = stringResource(Res.string.get_notified_on_expiry_date),
             iconTint = errorLight,
             hasExpired = data.hasExpired,
+            enabled = enabled,
             onChecked = {
                 onCheckClick(data.copy(notifyOnDay = it))
             }
@@ -112,6 +118,7 @@ private fun ItemDetailSettingsBody(
             subtitle = stringResource(Res.string.set_custom_reminder),
             iconTint = Color.Gray,
             hasExpired = data.hasExpired,
+            enabled = enabled,
             onChecked = {
                 if (it) {
                     onCheckClick(data.copy(customDaysBefore = 1))
@@ -138,6 +145,7 @@ private fun ItemDetailsReminderRow(
     subtitle: String,
     iconTint: Color,
     hasExpired: Boolean,
+    enabled: Boolean = true,
     onChecked: (Boolean) -> Unit,
 ) {
 
@@ -169,7 +177,7 @@ private fun ItemDetailsReminderRow(
         Spacer(modifier = Modifier.weight(1f))
         Switch(
             checked = checked ?: false,
-            enabled = checked != null && !hasExpired,
+            enabled = enabled && checked != null && !hasExpired,
             onCheckedChange = {
                 checked = it
                 onChecked(it)

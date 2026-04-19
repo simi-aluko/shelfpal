@@ -29,6 +29,7 @@ fun RecentActivity(
     updates: List<ShelfPalUpdate>,
     modifier: Modifier = Modifier,
     onCardClick: ((UpdatesDetailParams) -> Unit)? = null,
+    onItemClick: (Long) -> Unit = {},
 ) {
     Column(modifier = modifier) {
         Text(
@@ -39,7 +40,7 @@ fun RecentActivity(
         Spacer(modifier = Modifier.height(Dimens.spacingSmallMedium))
         Column(verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium)) {
             updates.forEach { update ->
-                UpdatesCard(data = update, onCardClick = onCardClick)
+                UpdatesCard(data = update, onCardClick = onCardClick, onItemClick = onItemClick)
             }
         }
     }

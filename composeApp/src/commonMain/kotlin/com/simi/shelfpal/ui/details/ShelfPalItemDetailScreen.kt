@@ -29,6 +29,7 @@ fun ShelfPalItemDetailScreen(
     id: Long,
     onNavigationIconClick: () -> Unit,
     onActionIconClick: (ViewStates.ItemDetail) -> Unit,
+    showActions: Boolean = true,
     viewModel: ShelfPalItemDetailViewModel = viewModel { ShelfPalItemDetailViewModel(id) },
 ) {
 
@@ -43,12 +44,13 @@ fun ShelfPalItemDetailScreen(
 
     Scaffold(
         topBar = {
+            val actionIconClick: (() -> Unit)? = if (showActions) {
+                { onActionIconClick(itemDetail) }
+            } else null
             ItemDetailTopBar(
                 viewData = itemDetail.itemDetailHeader,
                 onNavigationIconClick = onNavigationIconClick,
-                onActionIconClick = {
-                    onActionIconClick(itemDetail)
-                }
+                onActionIconClick = actionIconClick
             )
         },
     ) { innerPadding ->
@@ -71,19 +73,22 @@ fun ShelfPalItemDetailScreen(
                         coroutineScope.launch {
                             viewModel.updateReminderSettings(it)
                         }
-                    }
-                )
-                ItemDetailActions(
-                    hasExpired = itemDetail.reminderSettings.hasExpired,
-                    onTestClick = {
-                        // TODO: Implement the test notification
                     },
-                    onDeleteClick = {
-                        coroutineScope.launch {
-                            viewModel.deleteItem()
-                        }
-                    }
+                    enabled = showActions,
                 )
+                if (showActions) {
+                    ItemDetailActions(
+                        hasExpired = itemDetail.reminderSettings.hasExpired,
+                        onTestClick = {
+                            // TODO: Implement the test notification
+                        },
+                        onDeleteClick = {
+                            coroutineScope.launch {
+                                viewModel.deleteItem()
+                            }
+                        }
+                    )
+                }
                 Spacer(modifier = Modifier.size(Dimens.spacingLarge))
             }
         }

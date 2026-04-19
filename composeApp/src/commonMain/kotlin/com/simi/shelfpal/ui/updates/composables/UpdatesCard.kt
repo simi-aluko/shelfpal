@@ -45,6 +45,7 @@ fun UpdatesCard(
     data: ShelfPalUpdate,
     modifier: Modifier = Modifier,
     onCardClick: ((UpdatesDetailParams) -> Unit)? = null,
+    onItemClick: (Long) -> Unit = {},
 ) {
     val clickModifier = if (onCardClick != null) {
         modifier.clickable {
@@ -87,7 +88,7 @@ fun UpdatesCard(
                         verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
                     ) {
                         repeat(items.size) {
-                            UpdatesPill(data = data.items[it])
+                            UpdatesPill(data = data.items[it], onItemClick = onItemClick)
                         }
                     }
                 }

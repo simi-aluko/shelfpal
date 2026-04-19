@@ -18,7 +18,7 @@ sealed class Route {
     object ImageCapture : Route()
 
     @Serializable
-    data class ItemDetails(val id: Long) : Route()
+    data class ItemDetails(val id: Long, val showActions: Boolean = true) : Route()
 
     @Serializable
     object Notifications : Route()

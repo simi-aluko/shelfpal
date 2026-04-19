@@ -92,10 +92,7 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
             ShelfPalUpdateItem(
                 id = it.id,
                 title = it.basicInfo.name,
-                category = it.basicInfo.category,
-                onClick = {
-                    // todo: navigate to item details
-                }
+                category = it.basicInfo.category
             )
         }
     }

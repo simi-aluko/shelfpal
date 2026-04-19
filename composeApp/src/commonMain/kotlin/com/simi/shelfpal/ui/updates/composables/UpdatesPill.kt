@@ -31,6 +31,7 @@ import shelfpal.composeapp.generated.resources.chevron_right
 fun UpdatesPill(
     expired: Boolean = false,
     data: ShelfPalUpdateItem,
+    onItemClick: (Long) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -42,7 +43,7 @@ fun UpdatesPill(
                 shape = RoundedCornerShape(Dimens.radiusCircle)
             )
             .background(getExpiredContainerColor(expired))
-            .clickable { data.onClick(data.id) }
+            .clickable { onItemClick(data.id) }
             .padding(
                 start = Dimens.spacingSmallMedium,
                 end = Dimens.spacingExtraSmall,

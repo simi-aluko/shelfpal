@@ -73,13 +73,14 @@ fun ShelfPalNavHost(
         }
 
         composable<ItemDetails> { backStackEntry ->
-            val itemId = backStackEntry.toRoute<ItemDetails>().id
+            val route = backStackEntry.toRoute<ItemDetails>()
             ShelfPalItemDetailScreen(
-                id = itemId,
+                id = route.id,
                 onNavigationIconClick = { navHostController.popBackStack() },
                 onActionIconClick = {
-                    navHostController.navigate(AddEditItem(itemId))
-                }
+                    navHostController.navigate(AddEditItem(route.id))
+                },
+                showActions = route.showActions
             )
         }
 
@@ -93,7 +94,8 @@ fun ShelfPalNavHost(
                             subtitle = params.subtitle
                         )
                     )
-                }
+                },
+                onItemClick = { id -> navHostController.navigate(ItemDetails(id, showActions = false)) }
             )
         }
 
@@ -107,6 +109,7 @@ fun ShelfPalNavHost(
                     subtitle = route.subtitle
                 ),
                 onNavigateBack = { navHostController.popBackStack() },
+                onItemClick = { id -> navHostController.navigate(ItemDetails(id, showActions = false)) }
             )
         }
 

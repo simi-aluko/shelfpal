@@ -3,6 +3,7 @@ package com.simi.shelfpal.ui.updatedetail
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import org.jetbrains.compose.resources.painterResource
 fun UpdatesDetailScreen(
     params: UpdatesDetailParams,
     onNavigateBack: () -> Unit,
+    onItemClick: (Long) -> Unit = {},
     viewModel: UpdatesDetailViewModel = viewModel {
         UpdatesDetailViewModel(
             items = params.items,
@@ -95,7 +97,8 @@ fun UpdatesDetailScreen(
                 items(state.items.size) { index ->
                     UpdateDetailItemRow(
                         item = state.items[index],
-                        onMarkAsUsed = { viewModel.markAsUsed(state.items[index].id) }
+                        onMarkAsUsed = { viewModel.markAsUsed(state.items[index].id) },
+                        onItemClick = { onItemClick(state.items[index].id) }
                     )
                 }
             }
@@ -107,11 +110,12 @@ fun UpdatesDetailScreen(
 private fun UpdateDetailItemRow(
     item: UpdatesDetailItem,
     onMarkAsUsed: () -> Unit,
+    onItemClick: () -> Unit = {},
 ) {
     val categoryIcon = getProductCategoryImage(item.category)
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable { onItemClick() },
         colors = CardDefaults.cardColors(containerColor = onPrimaryLight),
         border = BorderStroke(1.dp, outlineVariantLight),
         shape = RoundedCornerShape(Dimens.radiusMedium),

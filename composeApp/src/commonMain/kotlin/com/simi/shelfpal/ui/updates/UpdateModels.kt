@@ -15,8 +15,7 @@ data class ShelfPalUpdate(
 data class ShelfPalUpdateItem(
     val id: Long,
     val title: String,
-    val category: String,
-    val onClick: (Long) -> Unit = {}
+    val category: String
 )
 
 data class UpdateHeaderIcon(
