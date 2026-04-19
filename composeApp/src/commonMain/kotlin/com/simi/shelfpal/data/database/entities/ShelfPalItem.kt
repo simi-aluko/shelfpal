@@ -15,6 +15,7 @@ data class ShelfPalItem(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val productImageUrl: String? = null,
     val productExpiryImageUrl: String? = null,
+    val used: Boolean = false,
     @Embedded val basicInfo: ProductBasicInfo,
     @Embedded val expiryInfo: ProductExpiryInfo,
     @Embedded val reminderSettings: ShelfPalItemReminderSettings = ShelfPalItemReminderSettings()

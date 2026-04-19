@@ -1,6 +1,5 @@
 package com.simi.shelfpal.notification
 
-import com.simi.shelfpal.data.database.entities.ExpiryStatus
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
@@ -42,30 +41,20 @@ fun ShelfPalItem.toExpiryNotification(title: String): ExpiryNotification? {
             expectedDifference = reminderSettings.customDaysBefore?.toLong() ?: 0
         )
 
-        val (body, status) = when {
-            notifyMonthBefore -> {
-                Pair("Friendly Nudge: Your ${basicInfo.name} would be expiring in a month's time.", ExpiryStatus.EXPIRING_IN_A_MONTH)
-            }
-            notifyWeekBefore -> {
-                    Pair("Planning your week? Your ${basicInfo.name} expires in 7 days.",ExpiryStatus.EXPIRING_IN_A_WEEK)
-            }
-            notifyDayBefore -> {
-                Pair("Heads up! Your ${basicInfo.name} expires tomorrow. Don't let it go to waste.", ExpiryStatus.EXPIRING_IN_CUSTOM_DURATION)
-            }
-            notifyOnDay -> {
-                Pair("Last chance! Your ${basicInfo.name} is expires today.", ExpiryStatus.EXPIRING_TODAY)
-            }
-            notifyCustomDaysBefore -> {
-                Pair("Heads up! Your ${basicInfo.name} expires in ${reminderSettings.customDaysBefore} days.", ExpiryStatus.EXPIRING_IN_CUSTOM_DURATION)
-            }
-            else -> Pair(null, null)
+        val body = when {
+            notifyMonthBefore -> "Friendly Nudge: Your ${basicInfo.name} would be expiring in a month's time."
+            notifyWeekBefore -> "Planning your week? Your ${basicInfo.name} expires in 7 days."
+            notifyDayBefore -> "Heads up! Your ${basicInfo.name} expires tomorrow. Don't let it go to waste."
+            notifyOnDay -> "Last chance! Your ${basicInfo.name} is expires today."
+            notifyCustomDaysBefore -> "Heads up! Your ${basicInfo.name} expires in ${reminderSettings.customDaysBefore} days."
+            else -> null
         }
-        if (body != null && status != null) {
+
+        if (body != null) {
             ExpiryNotification(
                 title = title,
                 body = body,
                 itemId = id,
-                expiryStatus = status
             )
         } else null
     } else {

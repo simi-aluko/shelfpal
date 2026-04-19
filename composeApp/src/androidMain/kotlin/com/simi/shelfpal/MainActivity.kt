@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.mmk.kmpnotifier.permission.permissionUtil
-import com.simi.shelfpal.work.expiryNotificationWorkRequest
+import com.simi.shelfpal.work.ExpiryNotificationWorker
 
 class MainActivity : ComponentActivity() {
 
@@ -26,9 +26,9 @@ class MainActivity : ComponentActivity() {
 
         WorkManager.getInstance(this).apply {
             enqueueUniquePeriodicWork(
-                uniqueWorkName = "expiry_updates",
-                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.KEEP,
-                expiryNotificationWorkRequest
+                uniqueWorkName = "expiry_notification",
+                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
+                ExpiryNotificationWorker.workRequest
             )
         }
     }

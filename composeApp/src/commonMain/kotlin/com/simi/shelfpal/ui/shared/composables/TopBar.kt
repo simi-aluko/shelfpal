@@ -17,16 +17,30 @@ import com.simi.shelfpal.ui.theme.primaryContainerLight
 import com.simi.shelfpal.ui.theme.primaryLight
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
+import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.arrowback
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
  fun TopBar(
     title: String,
     subtitle: String? = null,
+    onNavigateBack: (() -> Unit)? = null,
     actionIcon: DrawableResource? = null,
     actionIconClick: () -> Unit = {}
 ) {
     TopAppBar(
+        navigationIcon = {
+            onNavigateBack?.let {
+                IconButton(onClick = it) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.arrowback),
+                        contentDescription = "Back",
+                        modifier = Modifier.size(Dimens.iconSizeMediumLarge)
+                    )
+                }
+            }
+        },
         title = {
             Column {
                 Text(

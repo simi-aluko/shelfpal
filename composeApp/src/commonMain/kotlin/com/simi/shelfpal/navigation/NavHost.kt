@@ -17,6 +17,8 @@ import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
 import com.simi.shelfpal.ui.settings.SettingsScreen
+import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
+import com.simi.shelfpal.ui.updatedetail.UpdatesDetailScreen
 import com.simi.shelfpal.ui.updates.UpdatesScreen
 import com.simi.shelfpal.ui.welcome.WelcomeScreen
 import com.simi.shelfpal.ui.welcome.carouselContent
@@ -82,7 +84,30 @@ fun ShelfPalNavHost(
         }
 
         composable<Route.Notifications> {
-            UpdatesScreen()
+            UpdatesScreen(
+                onCardClick = { params ->
+                    navHostController.navigate(
+                        Route.UpdatesDetail(
+                            items = params.items,
+                            title = params.title,
+                            subtitle = params.subtitle
+                        )
+                    )
+                }
+            )
+        }
+
+        composable<Route.UpdatesDetail> { backStackEntry ->
+            val route = backStackEntry.toRoute<Route.UpdatesDetail>()
+
+            UpdatesDetailScreen(
+                params = UpdatesDetailParams(
+                    items = route.items,
+                    title = route.title,
+                    subtitle = route.subtitle
+                ),
+                onNavigateBack = { navHostController.popBackStack() },
+            )
         }
 
         composable<Route.Settings> {

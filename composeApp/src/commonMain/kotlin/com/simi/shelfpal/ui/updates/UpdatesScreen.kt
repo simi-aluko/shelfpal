@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
+import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
 import com.simi.shelfpal.ui.updates.composables.RecentActivity
 import com.simi.shelfpal.ui.updates.composables.UpdatesShimmer
 import com.simi.shelfpal.ui.updates.composables.UpdatesSummary
@@ -25,6 +26,7 @@ import shelfpal.composeapp.generated.resources.shelf_updates_subtitle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdatesScreen(
+    onCardClick: (UpdatesDetailParams) -> Unit = {},
     viewModel: UpdatesViewModel = viewModel { UpdatesViewModel() }
 ) {
     val summary: ShelfPalUpdate? by viewModel.aiSummary.collectAsStateWithLifecycle()
@@ -56,7 +58,7 @@ fun UpdatesScreen(
                         }
                         item {
                             Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-                            RecentActivity(updates = recentActivity)
+                            RecentActivity(updates = recentActivity, onCardClick = onCardClick)
                             Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
                         }
                     }

@@ -1,6 +1,7 @@
 package com.simi.shelfpal.ui.updates.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,11 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.simi.shelfpal.data.database.entities.ExpiryStatus
 import com.simi.shelfpal.ui.shared.composables.DefaultCard
 import com.simi.shelfpal.ui.theme.Dimens
-import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.onTertiaryContainerLight
+import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
 import com.simi.shelfpal.ui.updates.ShelfPalUpdate
 import com.simi.shelfpal.ui.updates.ShelfPalUpdateItem
 import com.simi.shelfpal.ui.updates.UpdateHeaderIcon
@@ -45,9 +43,25 @@ import shelfpal.composeapp.generated.resources.related_items
 @Composable
 fun UpdatesCard(
     data: ShelfPalUpdate,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCardClick: ((UpdatesDetailParams) -> Unit)? = null,
 ) {
-    DefaultCard(modifier = modifier) {
+    val clickModifier = if (onCardClick != null) {
+        modifier.clickable {
+            data.items?.map { it.id }?.let {
+                println("Debug: Clicking on card with items: $it")
+                onCardClick(
+                    UpdatesDetailParams(
+                        items = it,
+                        title = data.title,
+                        subtitle = data.subtitle
+                    )
+                )
+            }
+        }
+    } else modifier
+
+    DefaultCard(modifier = clickModifier) {
         Column(
             modifier = Modifier.padding(Dimens.spacingSmallMedium)
         ) {
@@ -78,10 +92,6 @@ fun UpdatesCard(
                     }
                 }
             }
-            UpdatesCardTimestamp(
-                timestamp = data.timestamp,
-                modifier = Modifier.padding(top = Dimens.spacingSmallMedium)
-            )
         }
     }
 }
@@ -194,21 +204,6 @@ private fun UpdatesBadge(
     }
 }
 
-@Composable
-private fun UpdatesCardTimestamp(
-    timestamp: String?,
-    modifier: Modifier = Modifier
-) {
-    timestamp?.let {
-        Text(
-            text = timestamp,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.outline,
-            modifier = modifier
-        )
-    }
-}
-
 @Preview
 @Composable
 private fun UpdatesCardPreview() {
@@ -216,8 +211,6 @@ private fun UpdatesCardPreview() {
         data = ShelfPalUpdate(
             title = "Update Title",
             subtitle = "Update Subtitle",
-            status = ExpiryStatus.EXPIRED,
-            timestamp = "12:00 PM",
             isNew = true,
             items = listOf(
                 ShelfPalUpdateItem(

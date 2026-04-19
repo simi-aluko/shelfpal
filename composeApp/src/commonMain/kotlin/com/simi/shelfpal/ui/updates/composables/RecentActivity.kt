@@ -8,12 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.simi.shelfpal.data.database.entities.ExpiryStatus
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onSecondaryContainerLight
 import com.simi.shelfpal.ui.theme.onTertiaryContainerLight
 import com.simi.shelfpal.ui.theme.secondaryContainerLight
 import com.simi.shelfpal.ui.theme.tertiaryContainerLight
+import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
 import com.simi.shelfpal.ui.updates.ShelfPalUpdate
 import com.simi.shelfpal.ui.updates.ShelfPalUpdateItem
 import com.simi.shelfpal.ui.updates.UpdateHeaderIcon
@@ -27,7 +27,8 @@ import shelfpal.composeapp.generated.resources.recent_activity
 @Composable
 fun RecentActivity(
     updates: List<ShelfPalUpdate>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCardClick: ((UpdatesDetailParams) -> Unit)? = null,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -38,7 +39,7 @@ fun RecentActivity(
         Spacer(modifier = Modifier.height(Dimens.spacingSmallMedium))
         Column(verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium)) {
             updates.forEach { update ->
-                UpdatesCard(data = update)
+                UpdatesCard(data = update, onCardClick = onCardClick)
             }
         }
     }
@@ -52,8 +53,6 @@ private fun RecentActivityPreview() {
             ShelfPalUpdate(
                 title = "Items Expiring Soon",
                 subtitle = "Organic Milk expires in 2 days",
-                status = ExpiryStatus.EXPIRING_TODAY,
-                timestamp = "Mar 9, 11:19 PM",
                 isNew = true,
                 items = listOf(
                     ShelfPalUpdateItem(1, "Organic Milk", "Beverages")
@@ -67,8 +66,6 @@ private fun RecentActivityPreview() {
             ShelfPalUpdate(
                 title = "Weekly Summary",
                 subtitle = "You have 4 items tracked this week",
-                status = ExpiryStatus.EXPIRING_IN_A_WEEK,
-                timestamp = "Mar 8, 12:19 AM",
                 isNew = false,
                 items = listOf(
                     ShelfPalUpdateItem(1, "Organic Milk", "Beverages"),

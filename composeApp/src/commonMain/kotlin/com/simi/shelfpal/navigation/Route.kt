@@ -25,4 +25,11 @@ sealed class Route {
 
     @Serializable
     object Settings : Route()
+
+    @Serializable
+    data class UpdatesDetail(
+        val items: List<Long>,
+        val title: String,
+        val subtitle: String,
+    ) : Route()
 }

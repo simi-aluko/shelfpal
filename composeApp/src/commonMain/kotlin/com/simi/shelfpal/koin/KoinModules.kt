@@ -1,7 +1,6 @@
 package com.simi.shelfpal.koin
 
 import com.simi.shelfpal.data.database.AppDatabase
-import com.simi.shelfpal.data.database.daos.ExpiryUpdatesDao
 import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
 import com.simi.shelfpal.data.settings.ShelfPalSettings
 import com.simi.shelfpal.notification.NotificationManager
@@ -42,16 +41,12 @@ val commonModules = module {
     }
     single {
         NotificationManager(
-            shelfPalItemsDao = get(),
-            expiryUpdatesDao = get()
+            shelfPalItemsDao = get()
         )
-    }
-    factory<ExpiryUpdatesDao> {
-        get<AppDatabase>().getExpiryUpdatesDao()
     }
     factory<UpdatesRepository> {
         UpdatesRepositoryImpl(
-            updatesDao = get()
+            shelfPalItemsDao = get()
         )
     }
 

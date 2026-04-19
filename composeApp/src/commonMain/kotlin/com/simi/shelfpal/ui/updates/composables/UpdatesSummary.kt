@@ -7,7 +7,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.simi.shelfpal.data.database.entities.ExpiryStatus
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.primaryContainerLight
 import com.simi.shelfpal.ui.theme.tertiaryLight
@@ -43,8 +42,6 @@ private fun UpdatesSummaryPreview() {
         data = ShelfPalUpdate(
             title = "Update Title",
             subtitle = "Update Subtitle",
-            status = ExpiryStatus.EXPIRED,
-            timestamp = null,
             isNew = null,
             items = null,
             headerIcon = UpdateHeaderIcon(

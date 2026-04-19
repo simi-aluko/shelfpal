@@ -40,4 +40,13 @@ interface ShelfPalItemsDao {
 
     @Query("SELECT * FROM $shelfItemsTable")
     suspend fun getItems(): List<ShelfPalItem>
+
+    @Query("SELECT * FROM $shelfItemsTable WHERE id IN (:items)")
+    fun getItems(items: List<Long>): Flow<List<ShelfPalItem>>
+
+    @Query("UPDATE $shelfItemsTable SET used = 1 WHERE id = :id")
+    suspend fun markAsUsed(id: Long)
+
+    @Query("UPDATE $shelfItemsTable SET used = 1 WHERE id IN (:id)")
+    suspend fun markAsUsed(id: List<Long>)
 }

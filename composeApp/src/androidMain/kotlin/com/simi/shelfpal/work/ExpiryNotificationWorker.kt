@@ -16,6 +16,13 @@ class ExpiryNotificationWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
 
+    companion object {
+        val workRequest: PeriodicWorkRequest = PeriodicWorkRequestBuilder<ExpiryNotificationWorker>(
+            repeatInterval = 1,
+            repeatIntervalTimeUnit = TimeUnit.DAYS
+        ).build()
+    }
+
     override suspend fun doWork(): Result {
         with(get<NotificationManager>()) {
             getExpiryNotifications(context.getString(R.string.app_name))
@@ -24,8 +31,3 @@ class ExpiryNotificationWorker(
         return Result.success()
     }
 }
-
-val expiryNotificationWorkRequest: PeriodicWorkRequest = PeriodicWorkRequestBuilder<ExpiryNotificationWorker>(
-    repeatInterval = 1,
-    repeatIntervalTimeUnit = TimeUnit.DAYS
-).build()

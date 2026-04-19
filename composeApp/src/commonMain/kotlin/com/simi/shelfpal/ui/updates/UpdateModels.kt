@@ -1,15 +1,12 @@
 package com.simi.shelfpal.ui.updates
 
 import androidx.compose.ui.graphics.Color
-import com.simi.shelfpal.data.database.entities.ExpiryStatus
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.DrawableResource
 
 data class ShelfPalUpdate(
     val title: String,
     val subtitle: String,
-    val status: ExpiryStatus?,
-    val timestamp: String?,
     val isNew: Boolean?,
     val items: List<ShelfPalUpdateItem>?,
     val headerIcon: UpdateHeaderIcon

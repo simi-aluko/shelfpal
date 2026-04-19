@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "90a544fa62f5245ff6ec2d94a87ff1df",
+    "identityHash": "8d7dbbe0de54d5ba6e71ea1162fd1678",
     "entities": [
       {
         "tableName": "shelf_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productImageUrl` TEXT, `productExpiryImageUrl` TEXT, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `expiryDay` INTEGER, `expiryMonth` INTEGER, `expiryYear` INTEGER, `hasDay` INTEGER NOT NULL, `notifyMonthBefore` INTEGER NOT NULL, `notifyWeekBefore` INTEGER NOT NULL, `notifyDayBefore` INTEGER NOT NULL, `notifyOnDay` INTEGER NOT NULL, `customDaysBefore` INTEGER, `hasExpired` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productImageUrl` TEXT, `productExpiryImageUrl` TEXT, `used` INTEGER NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `expiryDay` INTEGER, `expiryMonth` INTEGER, `expiryYear` INTEGER, `hasDay` INTEGER NOT NULL, `notifyMonthBefore` INTEGER NOT NULL, `notifyWeekBefore` INTEGER NOT NULL, `notifyDayBefore` INTEGER NOT NULL, `notifyOnDay` INTEGER NOT NULL, `customDaysBefore` INTEGER, `hasExpired` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -23,6 +23,12 @@
             "fieldPath": "productExpiryImageUrl",
             "columnName": "productExpiryImageUrl",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "used",
+            "columnName": "used",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "basicInfo.name",
@@ -99,101 +105,11 @@
             "id"
           ]
         }
-      },
-      {
-        "tableName": "expiry_updates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `itemId` INTEGER NOT NULL, `expiryStatus` INTEGER NOT NULL, `monthReviewed` INTEGER NOT NULL, `weekReviewed` INTEGER NOT NULL, `todayReviewed` INTEGER NOT NULL, `customDurationReviewed` INTEGER NOT NULL, `expiredReviewed` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, FOREIGN KEY(`itemId`) REFERENCES `shelf_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "itemId",
-            "columnName": "itemId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "expiryStatus",
-            "columnName": "expiryStatus",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "monthReviewed",
-            "columnName": "monthReviewed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "weekReviewed",
-            "columnName": "weekReviewed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "todayReviewed",
-            "columnName": "todayReviewed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "customDurationReviewed",
-            "columnName": "customDurationReviewed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "expiredReviewed",
-            "columnName": "expiredReviewed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "updatedAt",
-            "columnName": "updatedAt",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_expiry_updates_itemId",
-            "unique": true,
-            "columnNames": [
-              "itemId"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_expiry_updates_itemId` ON `${TABLE_NAME}` (`itemId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "shelf_items",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "itemId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '90a544fa62f5245ff6ec2d94a87ff1df')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8d7dbbe0de54d5ba6e71ea1162fd1678')"
     ]
   }
 }
