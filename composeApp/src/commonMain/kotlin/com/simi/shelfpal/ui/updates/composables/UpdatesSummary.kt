@@ -20,7 +20,8 @@ import shelfpal.composeapp.generated.resources.shelf_summary
 
 @Composable
 fun UpdatesSummary(
-    data: ShelfPalUpdate
+    data: ShelfPalUpdate,
+    loading: Boolean
 ) {
     Column {
         Text(
@@ -29,9 +30,13 @@ fun UpdatesSummary(
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(Dimens.spacingSmallMedium))
-        UpdatesCard(
-            data = data
-        )
+        if (loading) {
+            UpdatesCardShimmer(showRelatedItems = false)
+        } else {
+            UpdatesCard(
+                data = data
+            )
+        }
     }
 }
 
@@ -49,6 +54,7 @@ private fun UpdatesSummaryPreview() {
                 tint = tertiaryLight,
                 backgroundColor = primaryContainerLight,
             )
-        )
+        ),
+        loading = true
     )
 }

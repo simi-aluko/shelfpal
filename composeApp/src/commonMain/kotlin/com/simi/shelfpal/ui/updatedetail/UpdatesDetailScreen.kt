@@ -40,19 +40,16 @@ import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.outlineVariantLight
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.mark_as_used
 
 @Composable
 fun UpdatesDetailScreen(
     params: UpdatesDetailParams,
     onNavigateBack: () -> Unit,
     onItemClick: (Long) -> Unit = {},
-    viewModel: UpdatesDetailViewModel = viewModel {
-        UpdatesDetailViewModel(
-            items = params.items,
-            title = params.title,
-            subtitle = params.subtitle
-        )
-    },
+    viewModel: UpdatesDetailViewModel = viewModel { UpdatesDetailViewModel(params) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -65,7 +62,7 @@ fun UpdatesDetailScreen(
             )
         },
         bottomBar = {
-            if (state.items.isNotEmpty()) {
+            if (state.items.isNotEmpty() && params.showActions) {
                 Surface(shadowElevation = Dimens.elevationMedium) {
                     Button(
                         onClick = { viewModel.markAllAsUsed() },
@@ -96,6 +93,7 @@ fun UpdatesDetailScreen(
             ) {
                 items(state.items.size) { index ->
                     UpdateDetailItemRow(
+                        showActions = params.showActions,
                         item = state.items[index],
                         onMarkAsUsed = { viewModel.markAsUsed(state.items[index].id) },
                         onItemClick = { onItemClick(state.items[index].id) }
@@ -108,6 +106,7 @@ fun UpdatesDetailScreen(
 
 @Composable
 private fun UpdateDetailItemRow(
+    showActions: Boolean = true,
     item: UpdatesDetailItem,
     onMarkAsUsed: () -> Unit,
     onItemClick: () -> Unit = {},
@@ -154,15 +153,18 @@ private fun UpdateDetailItemRow(
                 )
             }
             Spacer(modifier = Modifier.width(Dimens.spacingSmall))
-            OutlinedButton(
-                onClick = onMarkAsUsed,
-                shape = RoundedCornerShape(Dimens.radiusCircle),
-            ) {
-                Text(
-                    text = "Mark as Used",
-                    fontSize = Dimens.textSizeXSmall,
-                )
+            if (showActions) {
+                OutlinedButton(
+                    onClick = onMarkAsUsed,
+                    shape = RoundedCornerShape(Dimens.radiusCircle),
+                ) {
+                    Text(
+                        text = stringResource(Res.string.mark_as_used),
+                        fontSize = Dimens.textSizeXSmall,
+                    )
+                }
             }
         }
     }
 }
+

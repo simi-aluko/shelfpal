@@ -27,7 +27,9 @@ import shelfpal.composeapp.generated.resources.arrowback
     subtitle: String? = null,
     onNavigateBack: (() -> Unit)? = null,
     actionIcon: DrawableResource? = null,
-    actionIconClick: () -> Unit = {}
+    actionIcon2: DrawableResource? = null,
+    actionIconClick: () -> Unit = {},
+    actionIcon2Click: () -> Unit = {}
 ) {
     TopAppBar(
         navigationIcon = {
@@ -63,6 +65,17 @@ import shelfpal.composeapp.generated.resources.arrowback
                 ) {
                     Icon(
                         imageVector = vectorResource(actionIcon),
+                        contentDescription = null,
+                        modifier = Modifier.size(Dimens.iconSizeMediumLarge)
+                    )
+                }
+            }
+            actionIcon2?.let {
+                IconButton(
+                    onClick = actionIcon2Click
+                ) {
+                    Icon(
+                        imageVector = vectorResource(actionIcon2),
                         contentDescription = null,
                         modifier = Modifier.size(Dimens.iconSizeMediumLarge)
                     )

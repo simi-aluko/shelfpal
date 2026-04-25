@@ -119,14 +119,6 @@ fun UpdatesCardShimmer(
                     }
                 }
             }
-
-            // Timestamp Shimmer
-            ShimmerBox(
-                modifier = Modifier
-                    .padding(top = Dimens.spacingSmallMedium)
-                    .width(120.dp)
-                    .height(Dimens.textSizeXSmall.value.dp)
-            )
         }
     }
 }

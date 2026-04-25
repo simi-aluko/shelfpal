@@ -145,6 +145,11 @@
     <string name="shelf_summary">Shelf summary</string>
     <string name="recent_activity">Recent activity</string>
     <string name="related_items">Related Items:</string>
+    <string name="mark_as_used">Mark as Used</string>
+    <string name="expired_items">Expired Items</string>
+    <string name="expired_items_subtitle">Shelf items that have expired</string>
+    <string name="used_items">Used Items</string>
+    <string name="used_items_subtitle">Items you have marked as used"</string>
 
     <!-- Settings screen -->
     <string name="push_notifications">Push notifications</string>

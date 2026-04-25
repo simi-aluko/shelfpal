@@ -20,4 +20,12 @@ data class UpdatesDetailParams(
     val items: List<Long>,
     val title: String,
     val subtitle: String,
+    val showActions: Boolean = true,
+    val entrySource: UpdateDetailsEntrySource = UpdateDetailsEntrySource.RECENT_ACTIVITY
 )
+
+enum class UpdateDetailsEntrySource {
+    RECENT_ACTIVITY,
+    EXPIRED_MENU,
+    USED_MENU
+}

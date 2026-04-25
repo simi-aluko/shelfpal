@@ -12,5 +12,7 @@ interface UpdatesRepository {
 
     suspend fun markAllAsUsed(itemIds: List<Long>)
 
+    suspend fun getExpiredItems(month: Int, year: Int): Flow<List<ShelfPalItem>>
 
+    suspend fun getUsedItems(): Flow<List<ShelfPalItem>>
 }

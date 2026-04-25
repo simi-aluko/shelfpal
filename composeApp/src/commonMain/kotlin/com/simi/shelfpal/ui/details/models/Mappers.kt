@@ -2,8 +2,8 @@ package com.simi.shelfpal.ui.details.models
 
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
-import com.simi.shelfpal.ui.home.models.getExpiredStatus
 import com.simi.shelfpal.ui.shared.getDisplayMonths
+import com.simi.shelfpal.ui.shared.getExpiredStatus
 import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.LocalDate

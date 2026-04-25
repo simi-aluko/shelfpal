@@ -86,12 +86,14 @@ fun ShelfPalNavHost(
 
         composable<Route.Notifications> {
             UpdatesScreen(
-                onCardClick = { params ->
+                onNavigateToDetailClick = { params ->
                     navHostController.navigate(
                         Route.UpdatesDetail(
                             items = params.items,
                             title = params.title,
-                            subtitle = params.subtitle
+                            subtitle = params.subtitle,
+                            showActions = params.showActions,
+                            entrySource = params.entrySource
                         )
                     )
                 },
@@ -106,7 +108,9 @@ fun ShelfPalNavHost(
                 params = UpdatesDetailParams(
                     items = route.items,
                     title = route.title,
-                    subtitle = route.subtitle
+                    subtitle = route.subtitle,
+                    showActions = route.showActions,
+                    entrySource = route.entrySource
                 ),
                 onNavigateBack = { navHostController.popBackStack() },
                 onItemClick = { id -> navHostController.navigate(ItemDetails(id, showActions = false)) }

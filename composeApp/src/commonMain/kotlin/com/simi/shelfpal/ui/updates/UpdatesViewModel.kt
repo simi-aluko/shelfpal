@@ -16,7 +16,7 @@ import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import kotlinx.datetime.daysUntil
 import kotlinx.serialization.json.Json
@@ -24,7 +24,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.ai
-import shelfpal.composeapp.generated.resources.close
 import shelfpal.composeapp.generated.resources.info
 import shelfpal.composeapp.generated.resources.warning
 
@@ -34,8 +33,8 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
     private val firebaseConnector: FirebaseConnector by inject()
     private val shelfPalSettings: ShelfPalSettings by inject()
 
-    private val _updates = MutableStateFlow<List<ShelfPalUpdate>>(emptyList())
-    val updates = _updates.asStateFlow()
+    private val _recentActivity = MutableStateFlow<List<ShelfPalUpdate>>(emptyList())
+    val recentActivity = _recentActivity.asStateFlow()
 
     private val _aiSummary = MutableStateFlow<ShelfPalUpdate?>(null)
     val aiSummary = _aiSummary.asStateFlow()
@@ -50,18 +49,16 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
                 with(updatesRepository) {
                     val thisYear = getLocalDateTime().year
                     val nextYear = thisYear + 1
-                    merge(getUpdates(thisYear), /*getUpdates(nextYear)*/).collect { items ->
+
+                    getUpdates(thisYear).zip(getUpdates(nextYear)) { thisYearItems, nextYearItems ->
+                        thisYearItems + nextYearItems
+                    }.collect { items ->
                         val today = items.getUpdate(from = 0, to = 0)
                         val week = items.getUpdate(from = 1, to = 7)
                         val month = items.getUpdate(from = 8, to = 31)
                         val halfAYear = items.getUpdate(from = 32, to = 180)
-                        val expired = items.filter {
-                            it.expiryInfo.getExpiryDate()?.let {
-                                getLocalDateTime().date.daysUntil(it) < 0
-                            } ?: false
-                        }
                         initSummary(today, week, month, halfAYear)
-                        initUpdates(today, week, month, halfAYear, expired)
+                        initUpdates(today, week, month, halfAYear)
                         _loadingState.value = LoadingState(isLoading = false, isError = false)
                     }
                 }
@@ -102,7 +99,6 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
         week: List<ShelfPalItem>,
         month: List<ShelfPalItem>,
         custom: List<ShelfPalItem>,
-        expired: List<ShelfPalItem>,
     ) {
         val todayUpdate = today.toShelfPalUpdate(
             "Due Today",
@@ -140,22 +136,12 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
                 backgroundColor = Color.Gray.copy(alpha = 0.6f)
             )
         )
-        val expiredUpdate = expired.toShelfPalUpdate(
-            "Expired Items",
-            "${expired.count()} items have recently expired",
-            UpdateHeaderIcon(
-                icon = Res.drawable.close,
-                tint = Color.White,
-                backgroundColor = Color.Red.copy(alpha = 0.6f)
-            )
-        )
 
-        _updates.value = listOf(
+        _recentActivity.value = listOf(
             todayUpdate,
             weekUpdate,
             monthUpdate,
-            customUpdate,
-            expiredUpdate,
+            customUpdate
         ).filter { it.items.orEmpty().isNotEmpty() }
     }
 

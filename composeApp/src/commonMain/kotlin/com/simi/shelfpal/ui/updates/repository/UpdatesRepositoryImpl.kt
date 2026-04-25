@@ -20,4 +20,15 @@ class UpdatesRepositoryImpl(
 
     override suspend fun markAllAsUsed(itemIds: List<Long>) = shelfPalItemsDao.markAsUsed(itemIds)
 
+    override suspend fun getExpiredItems(month: Int, year: Int) = shelfPalItemsDao.getExpiredItems(
+        month = month,
+        year = year
+    )
+
+    override suspend fun getUsedItems() = shelfPalItemsDao.getItems(
+        category = null,
+        month = null,
+        year = null,
+        used = true
+    )
 }

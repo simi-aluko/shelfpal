@@ -3,13 +3,13 @@ package com.simi.shelfpal.ui.home.models
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
+import com.simi.shelfpal.ui.shared.getExpiredStatus
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
-import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -57,44 +57,6 @@ private fun getExpiryText(expiryInfo: ProductExpiryInfo): String {
             else -> ""
         }
     } ?: ""
-}
-
-@OptIn(ExperimentalTime::class)
-fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
-    val now = Clock.System.now()
-    val localTimeZone = TimeZone.currentSystemDefault()
-    val localDateTime = now.toLocalDateTime(localTimeZone)
-
-    val currentYear = localDateTime.year
-    val expiryMonth = expiryInfo.expiryMonth
-    val expiryDay = expiryInfo.expiryDay
-
-    return expiryInfo.expiryYear?.let { expiryYear ->
-        when {
-            currentYear > expiryYear -> true
-            currentYear == expiryYear -> {
-                if (expiryMonth != null) {
-                    if (localDateTime.month.number > expiryMonth) {
-                        true
-                    } else if (localDateTime.month.number < expiryMonth) {
-                        false
-                    } else {
-                        // TODO: If day is today, it has not expired. but should use yellow color to signal it is soon
-                        // day == expiry, not yet expired. but less than 2 weeks. yellow color
-                        // day > expiry then expired. red color
-                        if(expiryDay != null && localDateTime.day > expiryDay) {
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                } else {
-                    false
-                }
-            }
-            else -> false
-        }
-    } ?: false
 }
 
 private fun getDurationRemaining(expiryInfo: ProductExpiryInfo): String {
