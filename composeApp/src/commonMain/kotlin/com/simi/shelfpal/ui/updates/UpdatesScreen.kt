@@ -84,11 +84,9 @@ fun UpdatesScreen(
             LazyColumn (
                 modifier = Modifier.padding(horizontal = Dimens.spacingMedium)
             ) {
-                summary?.let {
-                    item {
-                        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
-                        UpdatesSummary(data = it, loading = loadingState.isLoading)
-                    }
+                item {
+                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
+                    UpdatesSummary(data = summary, loading = loadingState.isLoading)
                 }
                 item {
                     Spacer(modifier = Modifier.padding(Dimens.spacingSmall))

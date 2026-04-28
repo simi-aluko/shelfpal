@@ -1,13 +1,19 @@
 package com.simi.shelfpal.ui.updates.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onSecondaryContainerLight
 import com.simi.shelfpal.ui.theme.onTertiaryContainerLight
@@ -20,10 +26,10 @@ import com.simi.shelfpal.ui.updates.UpdateHeaderIcon
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.no_recent_activity
 import shelfpal.composeapp.generated.resources.notifications_24px
 import shelfpal.composeapp.generated.resources.recent_activity
 
-// TODO: Handle empty activity
 @Composable
 fun RecentActivity(
     updates: List<ShelfPalUpdate>,
@@ -38,11 +44,31 @@ fun RecentActivity(
             fontWeight = FontWeight.Medium,
         )
         Spacer(modifier = Modifier.height(Dimens.spacingSmallMedium))
-        Column(verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium)) {
-            updates.forEach { update ->
-                UpdatesCard(data = update, onCardClick = onCardClick, onItemClick = onItemClick)
+        if (updates.isEmpty()) {
+            EmptyRecentActivity()
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium)) {
+                updates.forEach { update ->
+                    UpdatesCard(data = update, onCardClick = onCardClick, onItemClick = onItemClick)
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun EmptyRecentActivity() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.spacingLarge),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(Res.string.no_recent_activity),
+            textAlign = TextAlign.Center,
+            color = Color.Gray
+        )
     }
 }
 

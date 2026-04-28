@@ -3,6 +3,7 @@ package com.simi.shelfpal.ui.updatedetail
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,19 +32,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.home.composables.getProductCategoryImage
 import com.simi.shelfpal.ui.shared.composables.TopBar
+import com.simi.shelfpal.ui.shared.getExpiredBorderColor
+import com.simi.shelfpal.ui.shared.getExpiredContainerColor
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.outlineVariantLight
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.mark_as_used
+import shelfpal.composeapp.generated.resources.no_expired_items
+import shelfpal.composeapp.generated.resources.no_recent_activity
+import shelfpal.composeapp.generated.resources.no_used_items
 
 @Composable
 fun UpdatesDetailScreen(
@@ -83,21 +92,26 @@ fun UpdatesDetailScreen(
                 .padding(top = innerPadding.calculateTopPadding())
                 .padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = Dimens.spacingMedium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
-                contentPadding = PaddingValues(
-                    top = Dimens.spacingMedium,
-                    bottom = Dimens.spacingMedium
-                )
-            ) {
-                items(state.items.size) { index ->
-                    UpdateDetailItemRow(
-                        showActions = params.showActions,
-                        item = state.items[index],
-                        onMarkAsUsed = { viewModel.markAsUsed(state.items[index].id) },
-                        onItemClick = { onItemClick(state.items[index].id) }
+            if (state.items.isEmpty()) {
+                EmptyScreen(params.entrySource)
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = Dimens.spacingMedium),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
+                    contentPadding = PaddingValues(
+                        top = Dimens.spacingMedium,
+                        bottom = Dimens.spacingMedium
                     )
+                ) {
+                    items(state.items.size) { index ->
+                        UpdateDetailItemRow(
+                            showActions = params.showActions,
+                            item = state.items[index],
+                            expired = getExpired(entrySource = params.entrySource),
+                            onMarkAsUsed = { viewModel.markAsUsed(state.items[index].id) },
+                            onItemClick = { onItemClick(state.items[index].id) }
+                        )
+                    }
                 }
             }
         }
@@ -108,15 +122,21 @@ fun UpdatesDetailScreen(
 private fun UpdateDetailItemRow(
     showActions: Boolean = true,
     item: UpdatesDetailItem,
+    expired: Boolean?,
     onMarkAsUsed: () -> Unit,
     onItemClick: () -> Unit = {},
 ) {
     val categoryIcon = getProductCategoryImage(item.category)
+    val backgroundColor = expired?.let {
+        getExpiredContainerColor(it)
+    } ?: MaterialTheme.colorScheme.surfaceVariant
+    val iconBorderColor = expired?.let { getExpiredBorderColor(it) } ?: outlineVariantLight
+
 
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onItemClick() },
         colors = CardDefaults.cardColors(containerColor = onPrimaryLight),
-        border = BorderStroke(1.dp, outlineVariantLight),
+        border = BorderStroke(1.dp, backgroundColor),
         shape = RoundedCornerShape(Dimens.radiusMedium),
     ) {
         Row(
@@ -127,7 +147,8 @@ private fun UpdateDetailItemRow(
                 modifier = Modifier
                     .size(Dimens.iconSizeXLarge)
                     .clip(RoundedCornerShape(Dimens.spacingSmall))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .border(1.dp, iconBorderColor)
+                    .background(backgroundColor),
                 contentAlignment = Alignment.Center,
             ) {
                 Image(
@@ -168,3 +189,42 @@ private fun UpdateDetailItemRow(
     }
 }
 
+@Composable
+private fun EmptyScreen(entrySource: UpdateDetailsEntrySource) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(getEmptyTitle(entrySource)),
+            color = Color.Gray,
+        )
+    }
+}
+
+private fun getEmptyTitle(entrySource: UpdateDetailsEntrySource) = when(entrySource) {
+    UpdateDetailsEntrySource.RECENT_ACTIVITY -> Res.string.no_recent_activity
+    UpdateDetailsEntrySource.EXPIRED_MENU -> Res.string.no_expired_items
+    UpdateDetailsEntrySource.USED_MENU -> Res.string.no_used_items
+}
+
+private fun getExpired(entrySource: UpdateDetailsEntrySource) = when(entrySource) {
+    UpdateDetailsEntrySource.EXPIRED_MENU -> true
+    UpdateDetailsEntrySource.USED_MENU -> false
+    UpdateDetailsEntrySource.RECENT_ACTIVITY -> null
+
+}
+
+@Preview
+@Composable
+private fun UpdatesDetailScreenPreview() {
+    UpdateDetailItemRow(
+        item = UpdatesDetailItem(
+            id = 1,
+            name = "Milk",
+            category = "Dairy"
+        ),
+        expired = true,
+        onMarkAsUsed = {}
+    )
+}

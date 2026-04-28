@@ -149,7 +149,11 @@
     <string name="expired_items">Expired Items</string>
     <string name="expired_items_subtitle">Shelf items that have expired</string>
     <string name="used_items">Used Items</string>
-    <string name="used_items_subtitle">Items you have marked as used"</string>
+    <string name="used_items_subtitle">Items you have marked as used</string>
+    <string name="no_recent_activity">No recent activity</string>
+    <string name="no_expired_items">No expired items</string>
+    <string name="no_used_items">No used items</string>
+    <string name="empty_summary">Summary cannot be loaded at the moment</string>
 
     <!-- Settings screen -->
     <string name="push_notifications">Push notifications</string>
