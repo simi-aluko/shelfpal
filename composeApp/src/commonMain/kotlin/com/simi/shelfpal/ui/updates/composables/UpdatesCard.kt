@@ -32,12 +32,14 @@ import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
 import com.simi.shelfpal.ui.updates.ShelfPalUpdate
 import com.simi.shelfpal.ui.updates.ShelfPalUpdateItem
 import com.simi.shelfpal.ui.updates.UpdateHeaderIcon
+import com.simi.shelfpal.ui.updates.UpdateRecency
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.info
+import shelfpal.composeapp.generated.resources.new
 import shelfpal.composeapp.generated.resources.related_items
 
 @Composable
@@ -50,12 +52,12 @@ fun UpdatesCard(
     val clickModifier = if (onCardClick != null) {
         modifier.clickable {
             data.items?.map { it.id }?.let {
-                println("Debug: Clicking on card with items: $it")
                 onCardClick(
                     UpdatesDetailParams(
                         items = it,
                         title = data.title,
-                        subtitle = data.subtitle
+                        subtitle = data.subtitle,
+                        updateRecency = data.updateRecency
                     )
                 )
             }
@@ -178,7 +180,7 @@ private fun UpdatesCardTitle(
             color = MaterialTheme.colorScheme.onSurface
         )
         if (isNew == true) {
-            UpdatesBadge(text = "New")
+            UpdatesBadge(text = stringResource(Res.string.new))
         }
     }
 }
@@ -224,7 +226,8 @@ private fun UpdatesCardPreview() {
                 icon = Res.drawable.info,
                 tint = Color.White,
                 backgroundColor = Color.Red.copy(alpha = 0.5f)
-            )
+            ),
+            updateRecency = UpdateRecency.TODAY
         )
     )
 }

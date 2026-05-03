@@ -1,5 +1,6 @@
 package com.simi.shelfpal.ui.updatedetail
 
+import com.simi.shelfpal.ui.updates.UpdateRecency
 import kotlinx.serialization.Serializable
 
 
@@ -21,6 +22,7 @@ data class UpdatesDetailParams(
     val title: String,
     val subtitle: String,
     val showActions: Boolean = true,
+    val updateRecency: UpdateRecency? = null,
     val entrySource: UpdateDetailsEntrySource = UpdateDetailsEntrySource.RECENT_ACTIVITY
 )
 

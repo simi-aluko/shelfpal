@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.categories
-import shelfpal.composeapp.generated.resources.packed_closed_check
+import shelfpal.composeapp.generated.resources.settings
 import shelfpal.composeapp.generated.resources.shelfpal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +54,7 @@ fun HomeScreen(
         topBar = {
             TopBar(
                 title = stringResource(Res.string.shelfpal),
-                actionIcon = Res.drawable.packed_closed_check,
+                actionIcon = Res.drawable.settings,
                 actionIconClick = { navigateToSettings() }
             )
          },
@@ -65,10 +65,14 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         Surface(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
         ) {
             Column(
-                modifier = Modifier.padding(Dimens.spacingMedium)
+                modifier = Modifier.padding(
+                    top = Dimens.spacingMedium,
+                    start = Dimens.spacingMedium,
+                    end = Dimens.spacingMedium,
+                )
             ) {
                 TopRowFilter(
                     filters = filters,

@@ -8,6 +8,7 @@ data class ShelfPalUpdate(
     val title: String,
     val subtitle: String,
     val isNew: Boolean?,
+    val updateRecency: UpdateRecency? = null,
     val items: List<ShelfPalUpdateItem>?,
     val headerIcon: UpdateHeaderIcon
 )
@@ -35,3 +36,9 @@ data class LoadingState(
     val isError: Boolean = false
 )
 
+enum class UpdateRecency(val key: String) {
+    TODAY("today"),
+    WEEK("week"),
+    MONTH("month"),
+    CUSTOM("custom")
+}

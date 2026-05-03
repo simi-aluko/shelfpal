@@ -1,12 +1,12 @@
 package com.simi.shelfpal.ui.updates
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +45,10 @@ fun UpdatesScreen(
 
     val usedTitle = stringResource(Res.string.used_items)
     val usedSubtitle = stringResource(Res.string.used_items_subtitle)
+
+    LaunchedEffect(Unit) {
+        viewModel.init()
+    }
 
     Scaffold(
         topBar = {
@@ -85,13 +89,10 @@ fun UpdatesScreen(
                 modifier = Modifier.padding(horizontal = Dimens.spacingMedium)
             ) {
                 item {
-                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
                     UpdatesSummary(data = summary, loading = loadingState.isLoading)
                 }
                 item {
-                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
                     RecentActivity(updates = recentActivity, onCardClick = onNavigateToDetailClick, onItemClick = onItemClick)
-                    Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
                 }
             }
         }

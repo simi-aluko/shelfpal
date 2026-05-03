@@ -7,6 +7,8 @@ import com.russhwolf.settings.serialization.encodeValue
 import com.simi.shelfpal.data.models.ExpirySummary
 import com.simi.shelfpal.ui.updates.AiExpirySummary
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 
 private const val EXPIRY_SUMMARY_KEY = "expiry_summary"
@@ -29,4 +31,10 @@ class ShelfPalSettings : KoinComponent {
     fun saveAiSummary(summary: AiExpirySummary) {
         settings.encodeValue(AiExpirySummary.serializer(), EXPIRY_AI_SUMMARY, summary)
     }
+
+    fun saveUpdateItemIds(ids: Set<Long>, key: String) {
+        settings.encodeValue(SetSerializer(Long.serializer()), key, ids)
+    }
+
+    fun getUpdateItemIds(key: String) = settings.decodeValueOrNull(SetSerializer(Long.serializer()), key)
 }

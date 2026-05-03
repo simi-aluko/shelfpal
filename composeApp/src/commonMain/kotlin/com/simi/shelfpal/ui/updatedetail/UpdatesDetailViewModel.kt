@@ -3,6 +3,7 @@ package com.simi.shelfpal.ui.updatedetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
+import com.simi.shelfpal.data.settings.ShelfPalSettings
 import com.simi.shelfpal.ui.updates.repository.UpdatesRepository
 import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
@@ -20,17 +21,16 @@ class UpdatesDetailViewModel(
 ) : ViewModel(), KoinComponent {
 
     private val repository: UpdatesRepository by inject()
+    private val shelfPalSettings: ShelfPalSettings by inject()
 
     private val _state = MutableStateFlow(UpdatesDetailState())
     val state = _state.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            when (params.entrySource) {
-                UpdateDetailsEntrySource.RECENT_ACTIVITY -> initRecentActivityItems()
-                UpdateDetailsEntrySource.EXPIRED_MENU -> initializeExpiredItems()
-                UpdateDetailsEntrySource.USED_MENU -> initializeUsedItems()
-            }
+    suspend fun init() {
+        when (params.entrySource) {
+            UpdateDetailsEntrySource.RECENT_ACTIVITY -> initRecentActivityItems()
+            UpdateDetailsEntrySource.EXPIRED_MENU -> initializeExpiredItems()
+            UpdateDetailsEntrySource.USED_MENU -> initializeUsedItems()
         }
     }
 
@@ -58,6 +58,9 @@ class UpdatesDetailViewModel(
     }
 
     private suspend fun initRecentActivityItems() {
+        params.updateRecency?.key?.let {
+            shelfPalSettings.saveUpdateItemIds(params.items.toSet(), it)
+        }
         repository.getUpdates(params.items).collect {
             _state.value = UpdatesDetailState(
                 items = it.toUpdateDetailItem(),

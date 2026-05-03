@@ -154,6 +154,7 @@
     <string name="no_expired_items">No expired items</string>
     <string name="no_used_items">No used items</string>
     <string name="empty_summary">Summary cannot be loaded at the moment</string>
+    <string name="new">New</string>
 
     <!-- Settings screen -->
     <string name="push_notifications">Push notifications</string>

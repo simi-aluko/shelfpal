@@ -31,6 +31,7 @@ fun UpdatesSummary(
     loading: Boolean
 ) {
     Column {
+        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
         Text(
             text = stringResource(Res.string.shelf_summary),
             fontSize = Dimens.textSizeLarge,

@@ -93,7 +93,8 @@ fun ShelfPalNavHost(
                             title = params.title,
                             subtitle = params.subtitle,
                             showActions = params.showActions,
-                            entrySource = params.entrySource
+                            entrySource = params.entrySource,
+                            updateRecency = params.updateRecency
                         )
                     )
                 },
@@ -110,7 +111,8 @@ fun ShelfPalNavHost(
                     title = route.title,
                     subtitle = route.subtitle,
                     showActions = route.showActions,
-                    entrySource = route.entrySource
+                    entrySource = route.entrySource,
+                    updateRecency = route.updateRecency
                 ),
                 onNavigateBack = { navHostController.popBackStack() },
                 onItemClick = { id -> navHostController.navigate(ItemDetails(id, showActions = false)) }

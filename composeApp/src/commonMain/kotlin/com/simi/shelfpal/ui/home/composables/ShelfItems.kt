@@ -87,6 +87,9 @@ fun ShelfItems(
                     onItemClick = onItemClick
                 )
             }
+            item {
+                Spacer(modifier = Modifier.padding(Dimens.spacingExtraSmall))
+            }
         }
     }
 }
@@ -224,7 +227,7 @@ private fun EmptyList() {
             contentAlignment = Alignment.BottomCenter
         ) {
             Image(
-                modifier = Modifier.alpha(0.8f),
+                modifier = Modifier.alpha(0.6f).height(Dimens.imageSizeHero),
                 painter = painterResource(Res.drawable.surprise),
                 contentDescription = "Your shelf is empty"
             )

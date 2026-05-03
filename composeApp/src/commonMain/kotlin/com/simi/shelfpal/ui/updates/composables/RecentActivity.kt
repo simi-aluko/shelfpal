@@ -38,6 +38,7 @@ fun RecentActivity(
     onItemClick: (Long) -> Unit = {},
 ) {
     Column(modifier = modifier) {
+        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
         Text(
             text = stringResource(Res.string.recent_activity),
             fontSize = Dimens.textSizeLarge,
@@ -53,6 +54,7 @@ fun RecentActivity(
                 }
             }
         }
+        Spacer(modifier = Modifier.padding(Dimens.spacingSmall))
     }
 }
 

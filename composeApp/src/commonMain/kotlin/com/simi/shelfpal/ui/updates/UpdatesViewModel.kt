@@ -42,7 +42,7 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
     private val _loadingState= MutableStateFlow(LoadingState())
     val loadingState = _loadingState.asStateFlow()
 
-    init {
+    fun init() {
         viewModelScope.launch {
             _loadingState.value = LoadingState(isLoading = true)
             try {
@@ -57,8 +57,8 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
                         val week = items.getUpdate(from = 1, to = 7)
                         val month = items.getUpdate(from = 8, to = 31)
                         val halfAYear = items.getUpdate(from = 32, to = 180)
-                        initSummary(today, week, month, halfAYear)
                         initUpdates(today, week, month, halfAYear)
+                        initSummary(today, week, month, halfAYear)
                         _loadingState.value = LoadingState(isLoading = false, isError = false)
                     }
                 }
@@ -73,14 +73,16 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
         title: String,
         subtitle: String,
         headerIcon: UpdateHeaderIcon,
+        updateRecency: UpdateRecency
     ): ShelfPalUpdate {
 
         return ShelfPalUpdate(
             title = title,
             subtitle = subtitle,
-            isNew = null,
+            isNew = hasNewItem(map { it.id }, updateRecency.key),
             items = getItems(),
-            headerIcon = headerIcon
+            headerIcon = headerIcon,
+            updateRecency = updateRecency
         )
     }
 
@@ -101,40 +103,44 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
         custom: List<ShelfPalItem>,
     ) {
         val todayUpdate = today.toShelfPalUpdate(
-            "Due Today",
-            "${today.count()} items expiring today",
-            UpdateHeaderIcon(
+            title = "Due Today",
+            subtitle = "${today.count()} items expiring today",
+            headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.warning,
                 tint = Color.White,
                 backgroundColor = Color.Red.copy(alpha = 0.6f)
-            )
+            ),
+            updateRecency = UpdateRecency.TODAY
         )
         val weekUpdate = week.toShelfPalUpdate(
-            "Due within a Week",
-            "You have ${week.count()} item(s) expiring within a week",
-            UpdateHeaderIcon(
+            title = "Due within a Week",
+            subtitle = "You have ${week.count()} item(s) expiring within a week",
+            headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.info,
                 tint = Color.White,
                 backgroundColor = Color.Red.copy(alpha = 0.6f)
-            )
+            ),
+            updateRecency = UpdateRecency.WEEK
         )
         val monthUpdate = month.toShelfPalUpdate(
-            "Due within a Month",
-            "You have ${month.count()} items expiring within a month",
-            UpdateHeaderIcon(
+            title = "Due within a Month",
+            subtitle = "You have ${month.count()} items expiring within a month",
+            headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.info,
                 tint = Color.White,
                 backgroundColor = Color.Green.copy(alpha = 0.6f)
-            )
+            ),
+            updateRecency = UpdateRecency.MONTH
         )
         val customUpdate = custom.toShelfPalUpdate(
-            "Due in 6 Months",
-            "You have ${custom.count()} items expiring within 6 months",
-            UpdateHeaderIcon(
+            title = "Due in 6 Months",
+            subtitle = "You have ${custom.count()} items expiring within 6 months",
+            headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.info,
                 tint = Color.White,
                 backgroundColor = Color.Gray.copy(alpha = 0.6f)
-            )
+            ),
+            updateRecency = UpdateRecency.CUSTOM
         )
 
         _recentActivity.value = listOf(
@@ -149,6 +155,12 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
         item.expiryInfo.getExpiryDate()?.let {
             getLocalDateTime().date.daysUntil(it) in from..to
         } ?: false
+    }
+
+    private fun hasNewItem(newItems: List<Long>, key: String): Boolean {
+        val savedItems = shelfPalSettings.getUpdateItemIds(key).orEmpty()
+        val hasNew = !savedItems.containsAll(newItems)
+        return hasNew
     }
 
 
