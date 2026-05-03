@@ -120,7 +120,9 @@ fun ShelfPalNavHost(
         }
 
         composable<Route.Settings> {
-            SettingsScreen()
+            SettingsScreen(
+                onNavigateBack = { navHostController.popBackStack() },
+            )
         }
     }
 }

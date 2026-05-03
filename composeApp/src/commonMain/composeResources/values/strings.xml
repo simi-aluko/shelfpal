@@ -159,4 +159,11 @@
     <!-- Settings screen -->
     <string name="push_notifications">Push notifications</string>
     <string name="notification_subtitle">Get notified about expiring items</string>
+    <string name="export_shelf_data">Export</string>
+    <string name="export_shelf_data_subtitle">Download your shelf data</string>
+    <string name="give_feedback">Give Feedback</string>
+    <string name="give_feedback_subtitle">Share your thoughts with us</string>
+    <string name="report_bug">Report a Bug</string>
+    <string name="report_bug_subtitle">This will help us fix issues you've encountered</string>
+    <string name="version">version: %1$s</string>
 </resources>
