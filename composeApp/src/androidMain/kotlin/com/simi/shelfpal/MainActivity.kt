@@ -6,14 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.WorkManager
 import com.mmk.kmpnotifier.permission.permissionUtil
-import com.simi.shelfpal.work.ExpiryNotificationWorker
+import com.simi.shelfpal.notification.AndroidBackgroundScheduler
+import org.koin.core.component.KoinComponent
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), KoinComponent {
 
-    val permissionUtil by permissionUtil()
+    private val permissionUtil by permissionUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -21,16 +20,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             App()
         }
-
         permissionUtil.askNotificationPermission()
-
-        WorkManager.getInstance(this).apply {
-            enqueueUniquePeriodicWork(
-                uniqueWorkName = "expiry_notification",
-                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
-                ExpiryNotificationWorker.workRequest
-            )
-        }
+        AndroidBackgroundScheduler(this).startScheduler()
     }
 }
 

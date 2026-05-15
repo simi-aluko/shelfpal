@@ -3,15 +3,14 @@ package com.simi.shelfpal
 import android.content.Context
 import com.simi.shelfpal.data.database.AppDatabase
 import com.simi.shelfpal.data.database.getDatabaseBuilder
-import com.simi.shelfpal.data.firebase.FirebaseConnector
 import com.simi.shelfpal.data.database.getRoomDatabase
+import com.simi.shelfpal.data.firebase.FirebaseConnector
 import com.simi.shelfpal.data.firebase.FirebaseConnectorImpl
 import com.simi.shelfpal.koin.commonModules
-import org.koin.android.ext.koin.androidApplication
+import com.simi.shelfpal.notification.AndroidBackgroundScheduler
+import com.simi.shelfpal.notification.BackgroundScheduler
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.KoinApplication.Companion.init
 import org.koin.core.context.startKoin
-import org.koin.core.module.Module
 import org.koin.dsl.module
 
 class KoinModules(context: Context) {
@@ -27,6 +26,9 @@ class KoinModules(context: Context) {
                         getRoomDatabase(
                             builder = getDatabaseBuilder(get())
                         )
+                    }
+                    factory<BackgroundScheduler> {
+                        AndroidBackgroundScheduler(get())
                     }
                 },
                 commonModules

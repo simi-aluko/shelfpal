@@ -121,6 +121,9 @@ private fun BottomSheetContent(
                 is Filter.Year -> YearFilterItem(
                     year = filter
                 )
+                is Filter.ItemStatus -> ItemStatusItem(
+                    itemStatus = filter
+                )
             }
         }
     }
@@ -162,6 +165,19 @@ private fun YearFilterItem(
         title = year.title,
         rightIcon = year.rightIcon,
         onClick = year.onClick
+    )
+}
+
+@Composable
+private fun ItemStatusItem(
+    itemStatus: Filter.ItemStatus
+) {
+    FilterItemCard(
+        selected = itemStatus.selected,
+        leftIcon = itemStatus.leftIcon,
+        title = itemStatus.title,
+        rightIcon = itemStatus.rightIcon,
+        onClick = itemStatus.onClick
     )
 }
 

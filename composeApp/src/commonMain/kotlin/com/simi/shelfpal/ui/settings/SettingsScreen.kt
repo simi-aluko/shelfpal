@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.settings.composables.AppExperience
 import com.simi.shelfpal.ui.settings.composables.AppInformation
 import com.simi.shelfpal.ui.settings.composables.ExportExpiryData
@@ -26,7 +29,11 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit,
     onGiveFeedback: () -> Unit = {},
     onReportBug: () -> Unit = {},
+    viewModel: SettingsViewModel = viewModel()
 ) {
+
+    val notificationToggle by viewModel.notificationToggle.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             TopBar(
@@ -49,7 +56,12 @@ fun SettingsScreen(
                     ),
                 verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
             ) {
-                NotificationSettings(false)
+                NotificationSettings(
+                    checked = notificationToggle,
+                    onCheckChanged = {
+                        viewModel.toggleNotification(it)
+                    }
+                )
                 ExportExpiryData {  }
                 AppExperience(
                     onGiveFeedback = onGiveFeedback,

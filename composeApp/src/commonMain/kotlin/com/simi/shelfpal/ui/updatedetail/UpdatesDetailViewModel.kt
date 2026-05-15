@@ -4,14 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.settings.ShelfPalSettings
+import com.simi.shelfpal.ui.shared.filterExpired
 import com.simi.shelfpal.ui.updates.repository.UpdatesRepository
-import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.daysUntil
 import kotlinx.datetime.number
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -77,11 +76,7 @@ class UpdatesDetailViewModel(
             month = month,
             year = year
         ).collect { items ->
-            val expiredItems = items.filter {
-                it.expiryInfo.getExpiryDate()?.let {
-                    getLocalDateTime().date.daysUntil(it) < 0
-                } ?: false
-            }
+            val expiredItems = items.filterExpired()
             _state.value = UpdatesDetailState(
                 items = expiredItems.toUpdateDetailItem(),
                 title = params.title,

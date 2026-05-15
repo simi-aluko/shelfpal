@@ -10,6 +10,7 @@ import com.simi.shelfpal.ui.home.models.ViewMetaData
 import com.simi.shelfpal.ui.home.models.ViewStates.BottomSheet
 import com.simi.shelfpal.ui.home.models.toHomeShelfItem
 import com.simi.shelfpal.ui.home.repository.HomeRepository
+import com.simi.shelfpal.ui.shared.filterExpired
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +21,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.getStringArray
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import shelfpal.composeapp.generated.resources.Res
@@ -29,12 +30,17 @@ import shelfpal.composeapp.generated.resources.all_months
 import shelfpal.composeapp.generated.resources.all_years
 import shelfpal.composeapp.generated.resources.category_all_categories
 import shelfpal.composeapp.generated.resources.chevrondown
+import shelfpal.composeapp.generated.resources.expired
 import shelfpal.composeapp.generated.resources.expiry_month
 import shelfpal.composeapp.generated.resources.expiry_year
+import shelfpal.composeapp.generated.resources.item_status
+import shelfpal.composeapp.generated.resources.item_statuses
 import shelfpal.composeapp.generated.resources.product_category
 import shelfpal.composeapp.generated.resources.select_category
+import shelfpal.composeapp.generated.resources.select_item_status
 import shelfpal.composeapp.generated.resources.select_month
 import shelfpal.composeapp.generated.resources.select_year
+import shelfpal.composeapp.generated.resources.used
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -54,10 +60,17 @@ class HomeViewModel(
         homeRepository.getItems(
             category = viewMetaData.getFilterCategory(),
             month = viewMetaData.getFilterMonth(),
-            year = viewMetaData.getFilterYear()
+            year = viewMetaData.getFilterYear(),
+            used = viewMetaData.selectedItemStatus == getString(Res.string.used)
         )
     }.map { items ->
-        items.map {
+        val homeItems = when {
+            viewMetaData.selectedItemStatus == getString(Res.string.expired) -> {
+                items.filterExpired()
+            }
+            else ->  items
+        }
+        homeItems.map {
             it.toHomeShelfItem()
         }
     }.stateIn(viewModelScope, WhileSubscribed(), emptyList())
@@ -71,13 +84,14 @@ class HomeViewModel(
     private suspend fun initializeFilters() {
         val now = Clock.System.now()
         val localTimeZone = TimeZone.currentSystemDefault()
-        val currentTime = now.toLocalDateTime(localTimeZone)
 
         viewMetaData.selectedMonth = getString(Res.string.all_months)
 
         viewMetaData.selectedYear = getString(Res.string.all_years)
 
         viewMetaData.selectedCategory = getString(Res.string.category_all_categories)
+
+        viewMetaData.selectedItemStatus = getStringArray(Res.array.item_statuses).first()
 
         _filters.value = setOf(
             Filter.Category(
@@ -91,7 +105,11 @@ class HomeViewModel(
             Filter.Year(
                 title = viewMetaData.selectedYear.orEmpty(),
                 rightIcon = Res.drawable.chevrondown
-            )
+            ),
+            Filter.ItemStatus(
+                title = viewMetaData.selectedItemStatus.orEmpty(),
+                rightIcon = Res.drawable.chevrondown
+            ),
         )
     }
 
@@ -125,6 +143,16 @@ class HomeViewModel(
                         subtitle = Res.string.select_year
                     ),
                     filters = getYearList()
+                )
+            }
+            is Filter.ItemStatus -> {
+                _bottomSheet.value = BottomSheet(
+                    showBottomSheet = true,
+                    bottomSheetHeaderViewModel = BottomSheetHeaderViewModel(
+                        title = Res.string.item_status,
+                        subtitle = Res.string.select_item_status
+                    ),
+                    filters = getItemStatuses()
                 )
             }
         }
@@ -196,5 +224,25 @@ class HomeViewModel(
                     }
                 )
             }
+    }
+
+    private suspend fun getItemStatuses(): List<Filter.ItemStatus> {
+        return getStringArray(Res.array.item_statuses).map { status ->
+            Filter.ItemStatus(
+                title = status,
+                selected = status == viewMetaData.selectedItemStatus,
+                onClick = {
+                    _bottomSheet.value = _bottomSheet.value?.copy(showBottomSheet = false)
+                    viewMetaData.selectedItemStatus = status
+                    _filters.value = _filters.value.map {
+                        if (it is Filter.ItemStatus) {
+                            it.copy(title = status)
+                        } else {
+                            it
+                        }
+                    }.toSet()
+                }
+            )
+        }
     }
 }

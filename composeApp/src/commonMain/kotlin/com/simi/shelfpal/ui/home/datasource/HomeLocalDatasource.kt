@@ -7,10 +7,12 @@ class HomeLocalDatasource(private val dao: ShelfPalItemsDao) {
     fun getAllItems(
         category: String?,
         month: Int?,
-        year: Int?
+        year: Int?,
+        used: Boolean
     ) = dao.getItems(
         category = category,
         month = month,
-        year = year
+        year = year,
+        used = used
     )
 }

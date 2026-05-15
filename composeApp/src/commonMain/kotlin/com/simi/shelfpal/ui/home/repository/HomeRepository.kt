@@ -7,6 +7,7 @@ interface HomeRepository {
     fun getItems(
         category: String?,
         month: Int?,
-        year: Int?
+        year: Int?,
+        used: Boolean
     ): Flow<List<ShelfPalItem>>
 }

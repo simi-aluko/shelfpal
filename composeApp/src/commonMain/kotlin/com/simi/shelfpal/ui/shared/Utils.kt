@@ -2,6 +2,7 @@ package com.simi.shelfpal.ui.shared
 
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
+import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
 import com.simi.shelfpal.ui.theme.errorContainerLight
 import com.simi.shelfpal.ui.theme.errorDark
@@ -9,8 +10,11 @@ import com.simi.shelfpal.ui.theme.errorLight
 import com.simi.shelfpal.ui.theme.inversePrimaryLight
 import com.simi.shelfpal.ui.theme.primaryContainerLight
 import com.simi.shelfpal.ui.theme.tertiaryLight
+import com.simi.shelfpal.utils.getExpiryDate
+import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -76,5 +80,11 @@ fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
             }
             else -> false
         }
+    } ?: false
+}
+
+fun List<ShelfPalItem>.filterExpired() = this.filter {
+    it.expiryInfo.getExpiryDate()?.let {
+        getLocalDateTime().date.daysUntil(it) < 0
     } ?: false
 }

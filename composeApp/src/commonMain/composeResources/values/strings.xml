@@ -116,6 +116,9 @@
     <string name="expiry_year">Expiry year</string>
     <string name="all_months">All months</string>
     <string name="all_years">All years</string>
+    <string name="all_statuses">All statuses</string>
+    <string name="item_status">Item status</string>
+    <string name="select_item_status">Select item status</string>
 
     <!-- Item Detail -->
     <string name="item_detail_expiry_date_">Expiry date:</string>
@@ -166,4 +169,13 @@
     <string name="report_bug">Report a Bug</string>
     <string name="report_bug_subtitle">This will help us fix issues you've encountered</string>
     <string name="version">version: %1$s</string>
+
+   <!-- Item statuses -->
+   <string-array name="item_statuses">
+        <item>Not expired, Not used</item>
+        <item>Used</item>
+        <item>Expired</item>
+   </string-array>
+    <string name="used">Used</string>
+    <string name="expired">Expired</string>
 </resources>

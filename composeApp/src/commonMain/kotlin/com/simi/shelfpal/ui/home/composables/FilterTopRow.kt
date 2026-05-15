@@ -49,6 +49,10 @@ fun TopRowFilter(
                         year = item,
                         onFilterClick = onFilterClick
                     )
+                    is Filter.ItemStatus -> ItemStatusFilter(
+                        itemStatus = item,
+                        onFilterClick = onFilterClick
+                    )
                 }
             }
         }
@@ -96,6 +100,21 @@ private fun YearFilter(
         rightIcon = year.rightIcon,
         onClick = {
             onFilterClick(year)
+        }
+    )
+}
+
+@Composable
+private fun ItemStatusFilter(
+    itemStatus: Filter.ItemStatus,
+    onFilterClick: (Filter.ItemStatus) -> Unit
+) {
+    FilterCard(
+        title = itemStatus.title,
+        leftIcon = itemStatus.leftIcon,
+        rightIcon = itemStatus.rightIcon,
+        onClick = {
+            onFilterClick(itemStatus)
         }
     )
 }

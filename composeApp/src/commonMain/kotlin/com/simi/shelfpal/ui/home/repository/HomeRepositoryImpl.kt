@@ -9,10 +9,12 @@ class HomeRepositoryImpl(
     override fun getItems(
         category: String?,
         month: Int?,
-        year: Int?
+        year: Int?,
+        used: Boolean
     ) = homeLocalDatasource.getAllItems(
         category = category,
         month = month,
-        year = year
+        year = year,
+        used = used
     )
 }

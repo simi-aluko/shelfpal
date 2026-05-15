@@ -23,4 +23,12 @@ sealed class Filter {
         val selected: Boolean = false,
         val onClick: () -> Unit = {}
     ) : Filter()
+
+    data class ItemStatus(
+        val title: String,
+        val rightIcon: DrawableResource? = null,
+        val leftIcon: DrawableResource? = null,
+        val selected: Boolean = false,
+        val onClick: () -> Unit = {}
+    ) : Filter()
 }

@@ -20,6 +20,7 @@ data class ViewMetaData(
     var selectedMonth: String? = null,
     var selectedYear: String? = null,
     var selectedCategory: String? = null,
+    var selectedItemStatus: String? = null,
     var categories: List<String> = emptyList()
 ) {
     fun getFilterMonth(): Int? {
