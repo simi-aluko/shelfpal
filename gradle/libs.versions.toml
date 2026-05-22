@@ -30,6 +30,7 @@ sqlite = "2.6.2"
 ksp = "2.3.3"
 work = "2.11.1"
 kmpNofifier = "1.6.1"
+kmpWebview = "2.0.3"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -66,6 +67,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpNofifier" }
+kmp-webview = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "kmpWebview"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

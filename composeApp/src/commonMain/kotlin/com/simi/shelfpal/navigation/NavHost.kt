@@ -17,6 +17,7 @@ import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
 import com.simi.shelfpal.ui.settings.SettingsScreen
+import com.simi.shelfpal.ui.settings.WebviewScreen
 import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
 import com.simi.shelfpal.ui.updatedetail.UpdatesDetailScreen
 import com.simi.shelfpal.ui.updates.UpdatesScreen
@@ -122,6 +123,23 @@ fun ShelfPalNavHost(
         composable<Route.Settings> {
             SettingsScreen(
                 onNavigateBack = { navHostController.popBackStack() },
+                launchWebview = {
+                    navHostController.navigate(
+                        Route.Webview(
+                            title = it.title,
+                            url = it.url
+                        )
+                    )
+                }
+            )
+        }
+
+        composable<Route.Webview> {
+            val route = it.toRoute<Route.Webview>()
+            WebviewScreen(
+                title = route.title,
+                url = route.url,
+                onNavigateBack = { navHostController.popBackStack() }
             )
         }
     }

@@ -37,4 +37,10 @@ sealed class Route {
         val entrySource: UpdateDetailsEntrySource,
         val updateRecency: UpdateRecency? = null
     ) : Route()
+
+    @Serializable
+    data class Webview(
+        val title: String,
+        val url: String
+    ) : Route()
 }

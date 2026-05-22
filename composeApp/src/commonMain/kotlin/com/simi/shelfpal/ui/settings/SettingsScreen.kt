@@ -13,26 +13,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.simi.shelfpal.navigation.Route.Webview
 import com.simi.shelfpal.ui.settings.composables.AppExperience
 import com.simi.shelfpal.ui.settings.composables.AppInformation
-import com.simi.shelfpal.ui.settings.composables.ExportExpiryData
 import com.simi.shelfpal.ui.settings.composables.NotificationSettings
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.give_feedback
+import shelfpal.composeapp.generated.resources.report_bug
 import shelfpal.composeapp.generated.resources.settings
+
+private const val feedbackUrl = "https://forms.gle/bwuT4hA57jcwp9p9A"
+private const val bugReportUrl = "https://forms.gle/7pHMnbFjVX7m73od9"
 
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
-    onGiveFeedback: () -> Unit = {},
-    onReportBug: () -> Unit = {},
+    launchWebview: (Webview) -> Unit = {},
     viewModel: SettingsViewModel = viewModel()
 ) {
 
     val notificationToggle by viewModel.notificationToggle.collectAsStateWithLifecycle()
+    val feedbackTitle = stringResource(Res.string.give_feedback)
+    val reportBugTitle = stringResource(Res.string.report_bug)
 
     Scaffold(
         topBar = {
@@ -62,10 +68,23 @@ fun SettingsScreen(
                         viewModel.toggleNotification(it)
                     }
                 )
-                ExportExpiryData {  }
                 AppExperience(
-                    onGiveFeedback = onGiveFeedback,
-                    onReportBug = onReportBug,
+                    onGiveFeedback = {
+                        launchWebview(
+                            Webview(
+                                title = feedbackTitle,
+                                url = feedbackUrl
+                            )
+                        )
+                    },
+                    onReportBug = {
+                        launchWebview(
+                            Webview(
+                                title = reportBugTitle,
+                                url = bugReportUrl
+                            )
+                        )
+                    },
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 AppInformation(
