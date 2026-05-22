@@ -68,7 +68,7 @@ class HomeViewModel(
             viewMetaData.selectedItemStatus == getString(Res.string.expired) -> {
                 items.filterExpired()
             }
-            else ->  items
+            else ->  items - items.filterExpired()
         }
         homeItems.map {
             it.toHomeShelfItem()

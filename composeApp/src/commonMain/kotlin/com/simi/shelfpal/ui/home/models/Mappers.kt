@@ -21,7 +21,8 @@ fun ShelfPalItem.toHomeShelfItem(): HomeShelfItem = HomeShelfItem(
     category = basicInfo.category,
     expiryText = getExpiryText(expiryInfo),
     expired = getExpiredStatus(expiryInfo),
-    durationRemaining = getDurationRemaining(expiryInfo),
+    used = used,
+    durationRemaining = getDurationRemaining(expiryInfo, used),
     expiryYear = expiryInfo.expiryYear
 )
 
@@ -59,7 +60,9 @@ private fun getExpiryText(expiryInfo: ProductExpiryInfo): String {
     } ?: ""
 }
 
-private fun getDurationRemaining(expiryInfo: ProductExpiryInfo): String {
+private fun getDurationRemaining(expiryInfo: ProductExpiryInfo, used: Boolean): String {
+    if (used) return "Used"
+
     if (getExpiredStatus(expiryInfo)) {
         return getFormattedDaysRemaining(-1)
     }

@@ -17,9 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.ui.home.composables.getProductCategoryImage
-import com.simi.shelfpal.ui.shared.getExpiredBorderColor
-import com.simi.shelfpal.ui.shared.getExpiredContainerColor
-import com.simi.shelfpal.ui.shared.getExpiredLabelColor
+import com.simi.shelfpal.ui.shared.ItemColorStatus
+import com.simi.shelfpal.ui.shared.getStatusBorderColor
+import com.simi.shelfpal.ui.shared.getStatusContainerColor
+import com.simi.shelfpal.ui.shared.getStatusLabelColor
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.updates.ShelfPalUpdateItem
 import org.jetbrains.compose.resources.painterResource
@@ -29,7 +30,7 @@ import shelfpal.composeapp.generated.resources.chevron_right
 
 @Composable
 fun UpdatesPill(
-    expired: Boolean = false,
+    status: ItemColorStatus = ItemColorStatus.PENDING,
     data: ShelfPalUpdateItem,
     onItemClick: (Long) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -39,10 +40,10 @@ fun UpdatesPill(
             .clip(RoundedCornerShape(Dimens.radiusCircle))
             .border(
                 width = 1.dp,
-                color = getExpiredBorderColor(expired),
+                color = getStatusBorderColor(status),
                 shape = RoundedCornerShape(Dimens.radiusCircle)
             )
-            .background(getExpiredContainerColor(expired))
+            .background(getStatusContainerColor(status))
             .clickable { onItemClick(data.id) }
             .padding(
                 start = Dimens.spacingSmallMedium,
@@ -61,13 +62,13 @@ fun UpdatesPill(
         Text(
             text = data.title,
             fontSize = Dimens.textSizeXSmall,
-            color = getExpiredLabelColor(expired)
+            color = getStatusLabelColor(status)
         )
         Icon(
             painter = painterResource(Res.drawable.chevron_right),
             contentDescription = null,
             modifier = Modifier.size(Dimens.iconSizeSmall),
-            tint = getExpiredLabelColor(expired)
+            tint = getStatusLabelColor(status)
         )
     }
 }

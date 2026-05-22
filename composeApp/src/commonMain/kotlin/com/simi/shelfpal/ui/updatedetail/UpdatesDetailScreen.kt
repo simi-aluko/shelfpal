@@ -40,8 +40,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.home.composables.getProductCategoryImage
 import com.simi.shelfpal.ui.shared.composables.TopBar
-import com.simi.shelfpal.ui.shared.getExpiredBorderColor
-import com.simi.shelfpal.ui.shared.getExpiredContainerColor
+import com.simi.shelfpal.ui.shared.ItemColorStatus
+import com.simi.shelfpal.ui.shared.getStatusBorderColor
+import com.simi.shelfpal.ui.shared.getStatusContainerColor
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.outlineVariantLight
@@ -112,7 +113,7 @@ fun UpdatesDetailScreen(
                         UpdateDetailItemRow(
                             showActions = params.showActions,
                             item = state.items[index],
-                            expired = getExpired(entrySource = params.entrySource),
+                            status = getItemStatus(entrySource = params.entrySource),
                             onMarkAsUsed = { viewModel.markAsUsed(state.items[index].id) },
                             onItemClick = { onItemClick(state.items[index].id) }
                         )
@@ -127,15 +128,15 @@ fun UpdatesDetailScreen(
 private fun UpdateDetailItemRow(
     showActions: Boolean = true,
     item: UpdatesDetailItem,
-    expired: Boolean?,
+    status: ItemColorStatus?,
     onMarkAsUsed: () -> Unit,
     onItemClick: () -> Unit = {},
 ) {
     val categoryIcon = getProductCategoryImage(item.category)
-    val backgroundColor = expired?.let {
-        getExpiredContainerColor(it)
+    val backgroundColor = status?.let {
+        getStatusContainerColor(it)
     } ?: MaterialTheme.colorScheme.surfaceVariant
-    val iconBorderColor = expired?.let { getExpiredBorderColor(it) } ?: outlineVariantLight
+    val iconBorderColor = status?.let { getStatusBorderColor(it) } ?: outlineVariantLight
 
 
     Card(
@@ -213,11 +214,10 @@ private fun getEmptyTitle(entrySource: UpdateDetailsEntrySource) = when(entrySou
     UpdateDetailsEntrySource.USED_MENU -> Res.string.no_used_items
 }
 
-private fun getExpired(entrySource: UpdateDetailsEntrySource) = when(entrySource) {
-    UpdateDetailsEntrySource.EXPIRED_MENU -> true
-    UpdateDetailsEntrySource.USED_MENU -> false
+private fun getItemStatus(entrySource: UpdateDetailsEntrySource): ItemColorStatus? = when (entrySource) {
+    UpdateDetailsEntrySource.EXPIRED_MENU -> ItemColorStatus.EXPIRED
+    UpdateDetailsEntrySource.USED_MENU -> ItemColorStatus.USED
     UpdateDetailsEntrySource.RECENT_ACTIVITY -> null
-
 }
 
 @Preview
@@ -229,7 +229,7 @@ private fun UpdatesDetailScreenPreview() {
             name = "Milk",
             category = "Dairy"
         ),
-        expired = true,
+        status = ItemColorStatus.EXPIRED,
         onMarkAsUsed = {}
     )
 }

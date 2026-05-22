@@ -76,6 +76,10 @@ val surfaceContainerHighestDark = Color(0xFF33362E)
 
 val colorOrange = Color(0xFFFFA500)
 
+val warningLight = Color(0xFF7A5900)
+val warningContainerLight = Color(0xFFFFF0C2)
+val warningDark = Color(0xFFFFCA28)
+
 
 
 

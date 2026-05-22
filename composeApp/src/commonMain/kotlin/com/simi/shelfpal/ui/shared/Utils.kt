@@ -10,6 +10,9 @@ import com.simi.shelfpal.ui.theme.errorLight
 import com.simi.shelfpal.ui.theme.inversePrimaryLight
 import com.simi.shelfpal.ui.theme.primaryContainerLight
 import com.simi.shelfpal.ui.theme.tertiaryLight
+import com.simi.shelfpal.ui.theme.warningContainerLight
+import com.simi.shelfpal.ui.theme.warningDark
+import com.simi.shelfpal.ui.theme.warningLight
 import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.Month
@@ -27,22 +30,30 @@ fun getDisplayMonths() = Month.entries
         month.name.capitalizeFirstChar()
     }
 
-fun getExpiredBorderColor(expired: Boolean) = if (expired) {
-    errorDark
-} else {
-    inversePrimaryLight
+enum class ItemColorStatus { EXPIRED, USED, PENDING }
+
+fun getItemColorStatus(expired: Boolean, used: Boolean): ItemColorStatus = when {
+    expired -> ItemColorStatus.EXPIRED
+    used -> ItemColorStatus.USED
+    else -> ItemColorStatus.PENDING
 }
 
-fun getExpiredContainerColor(expired: Boolean) = if (expired) {
-    errorContainerLight
-} else {
-    primaryContainerLight
+fun getStatusBorderColor(status: ItemColorStatus) = when (status) {
+    ItemColorStatus.EXPIRED -> errorDark
+    ItemColorStatus.USED -> warningDark
+    ItemColorStatus.PENDING -> inversePrimaryLight
 }
 
-fun getExpiredLabelColor(expired: Boolean) = if (expired) {
-    errorLight
-} else {
-    tertiaryLight
+fun getStatusContainerColor(status: ItemColorStatus) = when (status) {
+    ItemColorStatus.EXPIRED -> errorContainerLight
+    ItemColorStatus.USED -> warningContainerLight
+    ItemColorStatus.PENDING -> primaryContainerLight
+}
+
+fun getStatusLabelColor(status: ItemColorStatus) = when (status) {
+    ItemColorStatus.EXPIRED -> errorLight
+    ItemColorStatus.USED -> warningLight
+    ItemColorStatus.PENDING -> tertiaryLight
 }
 
 @OptIn(ExperimentalTime::class)

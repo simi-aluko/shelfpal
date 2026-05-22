@@ -29,9 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.ui.home.models.HomeShelfItem
-import com.simi.shelfpal.ui.shared.getExpiredBorderColor
-import com.simi.shelfpal.ui.shared.getExpiredContainerColor
-import com.simi.shelfpal.ui.shared.getExpiredLabelColor
+import com.simi.shelfpal.ui.shared.ItemColorStatus
+import com.simi.shelfpal.ui.shared.getItemColorStatus
+import com.simi.shelfpal.ui.shared.getStatusBorderColor
+import com.simi.shelfpal.ui.shared.getStatusContainerColor
+import com.simi.shelfpal.ui.shared.getStatusLabelColor
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryLight
 import com.simi.shelfpal.ui.theme.outlineVariantLight
@@ -99,6 +101,7 @@ private fun ShelfItem(
     homeShelfItem: HomeShelfItem,
     onItemClick: (Long) -> Unit
 ) {
+    val status = getItemColorStatus(homeShelfItem.expired, homeShelfItem.used)
     OutlinedCard(
         modifier = Modifier.clickable { onItemClick(homeShelfItem.id) },
         colors = CardDefaults.cardColors(containerColor = onPrimaryLight),
@@ -109,7 +112,7 @@ private fun ShelfItem(
             modifier = Modifier.padding(Dimens.spacingSmall)
         ) {
             ProductImage(
-                expired = homeShelfItem.expired,
+                status = status,
                 icon = getProductCategoryImage(homeShelfItem.category)
             )
             Spacer(modifier = Modifier.width(Dimens.spacingSmall))
@@ -119,7 +122,7 @@ private fun ShelfItem(
             )
             Spacer(modifier = Modifier.weight(1f))
             ExpiredLabel(
-                expired = homeShelfItem.expired,
+                status = status,
                 label = homeShelfItem.durationRemaining
             )
         }
@@ -152,31 +155,24 @@ private fun ProductInfo(
 
 @Composable
 private fun ProductImage(
-    expired: Boolean,
+    status: ItemColorStatus,
     icon: DrawableResource
 ) {
-    Card (
+    Card(
         shape = RoundedCornerShape(Dimens.spacingSmall),
         modifier = Modifier.size(Dimens.iconSizeXLarge),
-        border = BorderStroke(1.dp,
-            getExpiredBorderColor(expired)
-        )
+        border = BorderStroke(1.dp, getStatusBorderColor(status))
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    getExpiredContainerColor(
-                        expired
-                    )
-                ),
+                .background(getStatusContainerColor(status)),
         ) {
             Image(
                 modifier = Modifier.height(Dimens.iconSizeMedium),
                 painter = painterResource(icon),
                 contentDescription = null,
-
             )
         }
     }
@@ -184,32 +180,24 @@ private fun ProductImage(
 
 @Composable
 private fun ExpiredLabel(
-    expired: Boolean,
+    status: ItemColorStatus,
     label: String
 ) {
-    Card (
+    Card(
         shape = RoundedCornerShape(50),
-        border = BorderStroke(1.dp,
-            getExpiredBorderColor(expired)
-        )
+        border = BorderStroke(1.dp, getStatusBorderColor(status))
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .background(
-                    getExpiredContainerColor(
-                        expired
-                    )
-                )
+                .background(getStatusContainerColor(status))
                 .padding(horizontal = Dimens.spacingSmallMedium),
         ) {
             Text(
                 text = label,
                 fontSize = Dimens.textSizeSmall,
                 fontWeight = Bold,
-                color = getExpiredLabelColor(
-                    expired
-                )
+                color = getStatusLabelColor(status)
             )
         }
     }
@@ -279,6 +267,7 @@ private fun ShelfItemPreview() {
         category = stringResource(Res.string.category_fresh_fruits_and_vegetables),
         expiryText = "Expires Nov 4",
         expired = false,
+        used = false,
         durationRemaining = "2 days",
         expiryYear = 2025
     )
