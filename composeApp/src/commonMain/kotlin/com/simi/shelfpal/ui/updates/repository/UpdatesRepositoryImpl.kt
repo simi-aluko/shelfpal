@@ -16,9 +16,9 @@ class UpdatesRepositoryImpl(
 
     override suspend fun getUpdates(items: List<Long>) = shelfPalItemsDao.getItems(items)
 
-    override suspend fun markAsUsed(itemId: Long) = shelfPalItemsDao.markAsUsed(itemId)
+    override suspend fun markAsUsed(itemId: Long, timestamp: Long) = shelfPalItemsDao.markAsUsed(itemId, timestamp)
 
-    override suspend fun markAllAsUsed(itemIds: List<Long>) = shelfPalItemsDao.markAsUsed(itemIds)
+    override suspend fun markAllAsUsed(itemIds: List<Long>, timestamp: Long) = shelfPalItemsDao.markAsUsed(itemIds, timestamp)
 
     override suspend fun getExpiredItems(month: Int, year: Int) = shelfPalItemsDao.getExpiredItems(
         month = month,

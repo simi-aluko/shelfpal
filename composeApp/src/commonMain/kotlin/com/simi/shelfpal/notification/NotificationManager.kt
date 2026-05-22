@@ -2,6 +2,7 @@ package com.simi.shelfpal.notification
 
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.simi.shelfpal.data.database.daos.ShelfPalItemsDao
+import com.simi.shelfpal.ui.shared.getExpiredStatus
 import kotlin.random.Random
 
 class NotificationManager(
@@ -12,6 +13,14 @@ class NotificationManager(
         .getItems()
         .mapNotNull { it.toExpiryNotification(title) }
         .toSet()
+
+    suspend fun disableExpiredItemReminders() {
+        shelfPalItemsDao.getItems()
+            .filter { getExpiredStatus(it.expiryInfo) }
+            .forEach {
+                shelfPalItemsDao.disableReminders(it.id)
+            }
+    }
 
     fun sendNotification(notification: ExpiryNotification) {
         val notifier = NotifierManager.getLocalNotifier()

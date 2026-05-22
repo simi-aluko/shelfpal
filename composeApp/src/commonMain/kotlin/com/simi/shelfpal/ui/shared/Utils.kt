@@ -15,6 +15,7 @@ import com.simi.shelfpal.ui.theme.warningDark
 import com.simi.shelfpal.ui.theme.warningLight
 import com.simi.shelfpal.utils.getExpiryDate
 import com.simi.shelfpal.utils.getLocalDateTime
+import kotlinx.datetime.Instant
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
@@ -92,6 +93,14 @@ fun getExpiredStatus(expiryInfo: ProductExpiryInfo): Boolean {
             else -> false
         }
     } ?: false
+}
+
+@OptIn(ExperimentalTime::class)
+fun formatEpochMillis(millis: Long): String {
+    val instant = Instant.fromEpochMilliseconds(millis)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    val month = getDisplayMonths()[localDateTime.month.number - 1]
+    return "${localDateTime.dayOfMonth} $month, ${localDateTime.year}"
 }
 
 fun List<ShelfPalItem>.filterExpired() = this.filter {

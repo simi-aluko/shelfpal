@@ -21,11 +21,39 @@ interface ShelfPalItemsDao {
     @Delete
     suspend fun deleteById(item: ShelfPalItem)
 
-    @Query("UPDATE $shelfItemsTable SET used = 1 WHERE id = :id")
-    suspend fun markAsUsed(id: Long)
+    @Query("""
+        UPDATE $shelfItemsTable
+        SET used = 1, 
+            usedDate = :timestamp,
+            notifyMonthBefore = 0, 
+            notifyWeekBefore = 0, 
+            notifyDayBefore = 0, 
+            notifyOnDay = 0
+        WHERE id = :id
+    """)
+    suspend fun markAsUsed(id: Long, timestamp: Long)
 
-    @Query("UPDATE $shelfItemsTable SET used = 1 WHERE id IN (:id)")
-    suspend fun markAsUsed(id: List<Long>)
+    @Query("""
+        UPDATE $shelfItemsTable
+        SET used = 1, 
+            usedDate = :timestamp,
+            notifyMonthBefore = 0, 
+            notifyWeekBefore = 0, 
+            notifyDayBefore = 0, 
+            notifyOnDay = 0
+        WHERE id IN (:ids)
+    """)
+    suspend fun markAsUsed(ids: List<Long>, timestamp: Long)
+
+    @Query("""
+        UPDATE $shelfItemsTable
+        SET notifyMonthBefore = 0, 
+            notifyWeekBefore = 0, 
+            notifyDayBefore = 0, 
+            notifyOnDay = 0
+        WHERE id = :id
+    """)
+    suspend fun disableReminders(id: Long)
 
     /**
      *  START REGION: GETTING ITEMS

@@ -268,6 +268,7 @@ private fun ShelfItemPreview() {
         expiryText = "Expires Nov 4",
         expired = false,
         used = false,
+        usedDate = null,
         durationRemaining = "2 days",
         expiryYear = 2025
     )

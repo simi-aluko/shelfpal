@@ -2,6 +2,7 @@ package com.simi.shelfpal.ui.details.models
 
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
+import com.simi.shelfpal.ui.shared.formatEpochMillis
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import com.simi.shelfpal.ui.shared.getExpiredStatus
 import com.simi.shelfpal.utils.getExpiryDate
@@ -15,7 +16,7 @@ fun ShelfPalItem.toViewModel() = ViewStates.ItemDetail(
     itemDetailHeader = ItemDetailHeader(
         title = basicInfo.name,
         subtitle = basicInfo.category,
-        actionIcon = if (getExpiredStatus(expiryInfo)) {
+        actionIcon = if (getExpiredStatus(expiryInfo) || used) {
             null
         } else {
             Res.drawable.edit
@@ -23,14 +24,17 @@ fun ShelfPalItem.toViewModel() = ViewStates.ItemDetail(
     ),
     itemDetailExpiryInfo = ItemDetailExpiryInfo(
         expiryDate = expiryInfo.toDisplayDate(),
-        timeRemaining = expiryInfo.toDetailedTimeRemaining(),
-        hasExpired = getExpiredStatus(expiryInfo)
+        timeRemaining = expiryInfo.toDetailedTimeRemaining().takeIf { !used },
+        hasExpired = getExpiredStatus(expiryInfo),
+        addedDate = if (createdDate > 0) formatEpochMillis(createdDate) else "",
+        usedDate = usedDate?.let { formatEpochMillis(it) },
+        isUsed = used
     ),
     itemDetailImages = ItemDetailImages(
         productImageUrl = productImageUrl.orEmpty(),
         expiryImageUrl = productExpiryImageUrl.orEmpty()
     ),
-    reminderSettings = reminderSettings.copy(hasExpired = getExpiredStatus(expiryInfo))
+    reminderSettings = reminderSettings.copy(hasExpired = getExpiredStatus(expiryInfo) || used)
 )
 
 private fun ProductExpiryInfo.toDisplayDate(): String {
@@ -53,7 +57,7 @@ private fun ProductExpiryInfo.toDisplayDate(): String {
     return "$day$month$year"
 }
 
-private fun ProductExpiryInfo.toDetailedTimeRemaining(): String? {
+fun ProductExpiryInfo.toDetailedTimeRemaining(): String? {
     // with nullable day, month and year, return exact time remaining
     // e.g. 2 years, 3 months and 2 days
     // date from today or date in the past when it expired.

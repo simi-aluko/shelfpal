@@ -30,3 +30,6 @@ fun ProductExpiryInfo.getExpiryDate(): LocalDate? {
         }
     }
 }
+
+@OptIn(ExperimentalTime::class)
+fun getLocalTimestamp() = Clock.System.now().toEpochMilliseconds()

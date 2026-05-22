@@ -30,7 +30,10 @@ data class ItemDetailImages(
 data class ItemDetailExpiryInfo(
     val expiryDate: String = "",
     val timeRemaining: String? = null,
-    val hasExpired: Boolean = false
+    val hasExpired: Boolean = false,
+    val addedDate: String = "",
+    val usedDate: String? = null,
+    val isUsed: Boolean = false
 )
 
 data class ViewMetaData(

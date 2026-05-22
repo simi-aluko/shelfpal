@@ -1,5 +1,6 @@
 package com.simi.shelfpal.data.database.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -16,6 +17,8 @@ data class ShelfPalItem(
     val productImageUrl: String? = null,
     val productExpiryImageUrl: String? = null,
     val used: Boolean = false,
+    @ColumnInfo(defaultValue = "0") val createdDate: Long = 0,
+    @ColumnInfo(defaultValue = "NULL") val usedDate: Long? = null,
     @Embedded val basicInfo: ProductBasicInfo,
     @Embedded val expiryInfo: ProductExpiryInfo,
     @Embedded val reminderSettings: ShelfPalItemReminderSettings = ShelfPalItemReminderSettings()

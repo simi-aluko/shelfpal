@@ -7,6 +7,7 @@ import com.simi.shelfpal.data.settings.ShelfPalSettings
 import com.simi.shelfpal.ui.shared.filterExpired
 import com.simi.shelfpal.ui.updates.repository.UpdatesRepository
 import com.simi.shelfpal.utils.getLocalDateTime
+import com.simi.shelfpal.utils.getLocalTimestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.number
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.ExperimentalTime
 
 class UpdatesDetailViewModel(
     val params: UpdatesDetailParams,
@@ -33,17 +35,19 @@ class UpdatesDetailViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun markAsUsed(itemId: Long) {
         viewModelScope.launch {
-            repository.markAsUsed(itemId)
+            repository.markAsUsed(itemId, getLocalTimestamp())
             _state.update { it.copy(items = it.items.filter { item -> item.id != itemId }) }
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun markAllAsUsed() {
         viewModelScope.launch {
             val ids = _state.value.items.map { it.id }
-            repository.markAllAsUsed(ids)
+            repository.markAllAsUsed(ids, getLocalTimestamp())
             _state.update { it.copy(items = emptyList()) }
         }
     }

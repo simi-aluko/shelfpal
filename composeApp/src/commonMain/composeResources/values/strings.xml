@@ -123,6 +123,8 @@
     <!-- Item Detail -->
     <string name="item_detail_expiry_date_">Expiry date:</string>
     <string name="item_detail_time_remaining_">Time left:</string>
+    <string name="item_detail_added_date_">Added:</string>
+    <string name="item_detail_used_on_">Used on:</string>
     <string name="error_loading_image">Error loading image, click to retry.</string>
     <string name="one_month_before">One month before</string>
     <string name="one_week_before">One week before</string>

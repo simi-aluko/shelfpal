@@ -2,7 +2,9 @@ package com.simi.shelfpal.ui.home.models
 
 import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.data.models.ProductExpiryInfo
+import com.simi.shelfpal.ui.details.models.toDetailedTimeRemaining
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
+import com.simi.shelfpal.ui.shared.formatEpochMillis
 import com.simi.shelfpal.ui.shared.getExpiredStatus
 import com.simi.shelfpal.utils.getLocalDateTime
 import kotlinx.datetime.DateTimeUnit
@@ -19,16 +21,22 @@ fun ShelfPalItem.toHomeShelfItem(): HomeShelfItem = HomeShelfItem(
     id = id,
     productName = basicInfo.name,
     category = basicInfo.category,
-    expiryText = getExpiryText(expiryInfo),
+    expiryText = getExpiryText(expiryInfo, used, usedDate),
     expired = getExpiredStatus(expiryInfo),
     used = used,
+    usedDate = usedDate,
     durationRemaining = getDurationRemaining(expiryInfo, used),
     expiryYear = expiryInfo.expiryYear
 )
 
 
 @OptIn(ExperimentalTime::class)
-private fun getExpiryText(expiryInfo: ProductExpiryInfo): String {
+private fun getExpiryText(expiryInfo: ProductExpiryInfo, used: Boolean, usedDate: Long?): String {
+
+    if (used && usedDate != null) return "Used on ${formatEpochMillis(usedDate)}"
+
+    if (getExpiredStatus(expiryInfo)) return expiryInfo.toDetailedTimeRemaining() ?: "Expired"
+
     val now = Clock.System.now()
     val localTimeZone = TimeZone.currentSystemDefault()
     val localDateTime = now.toLocalDateTime(localTimeZone)

@@ -25,6 +25,7 @@ class ExpiryNotificationWorker(
 
     override suspend fun doWork(): Result {
         with(get<NotificationManager>()) {
+            disableExpiredItemReminders()
             getExpiryNotifications(context.getString(R.string.app_name))
                 .forEach { sendNotification(it) }
         }

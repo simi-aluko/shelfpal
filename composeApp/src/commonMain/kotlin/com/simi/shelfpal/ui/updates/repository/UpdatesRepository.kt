@@ -8,9 +8,9 @@ interface UpdatesRepository {
 
     suspend fun getUpdates(items: List<Long>): Flow<List<ShelfPalItem>>
 
-    suspend fun markAsUsed(itemId: Long)
+    suspend fun markAsUsed(itemId: Long, timestamp: Long)
 
-    suspend fun markAllAsUsed(itemIds: List<Long>)
+    suspend fun markAllAsUsed(itemIds: List<Long>, timestamp: Long)
 
     suspend fun getExpiredItems(month: Int, year: Int): Flow<List<ShelfPalItem>>
 

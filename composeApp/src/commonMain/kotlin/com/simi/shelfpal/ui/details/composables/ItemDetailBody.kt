@@ -24,11 +24,14 @@ import com.simi.shelfpal.ui.theme.AppTheme
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.errorLight
 import com.simi.shelfpal.ui.theme.tertiaryLight
+import com.simi.shelfpal.ui.theme.warningLight
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.item_detail_added_date_
 import shelfpal.composeapp.generated.resources.item_detail_expiry_date_
 import shelfpal.composeapp.generated.resources.item_detail_time_remaining_
+import shelfpal.composeapp.generated.resources.item_detail_used_on_
 
 @Composable
 fun ItemDetailBody(
@@ -57,17 +60,33 @@ private fun ExpiryInfo(
     data: ItemDetailExpiryInfo
 ) {
     Column {
+        if (data.addedDate.isNotEmpty()) {
+            ItemDetailExpiryInfoRow(
+                title = stringResource(Res.string.item_detail_added_date_),
+                value = data.addedDate,
+                valueColor = Color.Black
+            )
+            Spacer(modifier = Modifier.size(Dimens.spacingSmall))
+        }
         ItemDetailExpiryInfoRow(
             title = stringResource(Res.string.item_detail_expiry_date_),
             value = data.expiryDate,
-            hasExpired = data.hasExpired
+            valueColor = errorLight
         )
-        Spacer(modifier = Modifier.size(Dimens.spacingSmall))
         data.timeRemaining?.let {
+            Spacer(modifier = Modifier.size(Dimens.spacingSmall))
             ItemDetailExpiryInfoRow(
                 title = stringResource(Res.string.item_detail_time_remaining_),
-                value = data.timeRemaining,
-                hasExpired = data.hasExpired
+                value = it,
+                valueColor = errorLight
+            )
+        }
+        data.usedDate?.let {
+            Spacer(modifier = Modifier.size(Dimens.spacingSmall))
+            ItemDetailExpiryInfoRow(
+                title = stringResource(Res.string.item_detail_used_on_),
+                value = it,
+                valueColor = tertiaryLight
             )
         }
     }
@@ -77,7 +96,7 @@ private fun ExpiryInfo(
 private fun ItemDetailExpiryInfoRow(
     title: String,
     value: String,
-    hasExpired: Boolean
+    valueColor: Color
 ) {
     Row {
         ItemDetailTitle(
@@ -87,7 +106,7 @@ private fun ItemDetailExpiryInfoRow(
         Spacer(modifier = Modifier.size(Dimens.spacingSmall))
         ItemDetailTitleBody(
             text = value,
-            hasExpired = hasExpired,
+            color = valueColor,
             modifier = Modifier.weight(1.5f)
         )
     }
@@ -111,15 +130,9 @@ private fun ItemDetailTitle(
 @Composable
 private fun ItemDetailTitleBody(
     text: String,
-    hasExpired: Boolean,
+    color: Color,
     modifier: Modifier
 ) {
-    val color = if (hasExpired) {
-        errorLight
-    } else {
-        tertiaryLight
-    }
-
     Text(
         modifier = modifier,
         text = text,

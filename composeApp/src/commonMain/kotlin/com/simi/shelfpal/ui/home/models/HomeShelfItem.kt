@@ -7,6 +7,7 @@ data class HomeShelfItem(
     val expiryText: String,
     val expired: Boolean,
     val used: Boolean,
+    val usedDate: Long?,
     val durationRemaining: String,
     val expiryYear: Int?
 )
