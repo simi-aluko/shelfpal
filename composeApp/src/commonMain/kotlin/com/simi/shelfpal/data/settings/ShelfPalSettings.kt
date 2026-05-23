@@ -14,6 +14,7 @@ import org.koin.core.component.KoinComponent
 private const val EXPIRY_SUMMARY_KEY = "expiry_summary"
 private const val EXPIRY_AI_SUMMARY = "expiry_ai_summary"
 private const val NOTIFICATION_TOGGLE = "notification_toggle"
+private const val FILTERS_KEY = "filters"
 
 @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
 class ShelfPalSettings : KoinComponent {

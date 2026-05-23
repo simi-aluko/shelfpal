@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.getStringArray
 import org.koin.core.component.KoinComponent
@@ -41,7 +40,6 @@ import shelfpal.composeapp.generated.resources.select_item_status
 import shelfpal.composeapp.generated.resources.select_month
 import shelfpal.composeapp.generated.resources.select_year
 import shelfpal.composeapp.generated.resources.used
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
@@ -70,9 +68,7 @@ class HomeViewModel(
             }
             else ->  items - items.filterExpired()
         }
-        homeItems.map {
-            it.toHomeShelfItem()
-        }
+        homeItems.map { it.toHomeShelfItem() }
     }.stateIn(viewModelScope, WhileSubscribed(), emptyList())
 
     suspend fun initializeScreen(categories: List<String>) {
@@ -82,9 +78,6 @@ class HomeViewModel(
 
     @OptIn(ExperimentalTime::class)
     private suspend fun initializeFilters() {
-        val now = Clock.System.now()
-        val localTimeZone = TimeZone.currentSystemDefault()
-
         viewMetaData.selectedMonth = getString(Res.string.all_months)
 
         viewMetaData.selectedYear = getString(Res.string.all_years)
@@ -93,7 +86,7 @@ class HomeViewModel(
 
         viewMetaData.selectedItemStatus = getStringArray(Res.array.item_statuses).first()
 
-        _filters.value = setOf(
+        val updatedFilters = setOf(
             Filter.Category(
                 title = viewMetaData.selectedCategory.orEmpty(),
                 rightIcon = Res.drawable.chevrondown
@@ -111,6 +104,7 @@ class HomeViewModel(
                 rightIcon = Res.drawable.chevrondown
             ),
         )
+        updateFilter(updatedFilters)
     }
 
     suspend fun onFilterClick(filter: Filter) {
@@ -172,13 +166,14 @@ class HomeViewModel(
                     onClick = {
                         _bottomSheet.value = _bottomSheet.value?.copy(showBottomSheet = false)
                         viewMetaData.selectedMonth = month
-                        _filters.value = _filters.value.map {
+                        val updatedFilters = _filters.value.map {
                             if (it is Filter.Month) {
                                 it.copy(title = month)
                             } else {
                                 it
                             }
                         }.toSet()
+                        updateFilter(updatedFilters)
                     }
                 )
             }
@@ -192,13 +187,14 @@ class HomeViewModel(
                 onClick = {
                     _bottomSheet.value = _bottomSheet.value?.copy(showBottomSheet = false)
                     viewMetaData.selectedCategory = category
-                    _filters.value = _filters.value.map {
+                    val updatedFilters = _filters.value.map {
                         if (it is Filter.Category) {
                             it.copy(title = category)
                         } else {
                             it
                         }
                     }.toSet()
+                    updateFilter(updatedFilters)
                 }
             )
         }
@@ -214,13 +210,14 @@ class HomeViewModel(
                     onClick = {
                         _bottomSheet.value = _bottomSheet.value?.copy(showBottomSheet = false)
                         viewMetaData.selectedYear = year
-                        _filters.value = _filters.value.map {
+                        val updatedFilters = _filters.value.map {
                             if (it is Filter.Year) {
                                 it.copy(title = year)
                             } else {
                                 it
                             }
                         }.toSet()
+                        updateFilter(updatedFilters)
                     }
                 )
             }
@@ -234,15 +231,20 @@ class HomeViewModel(
                 onClick = {
                     _bottomSheet.value = _bottomSheet.value?.copy(showBottomSheet = false)
                     viewMetaData.selectedItemStatus = status
-                    _filters.value = _filters.value.map {
+                    val updatedFilters = _filters.value.map {
                         if (it is Filter.ItemStatus) {
                             it.copy(title = status)
                         } else {
                             it
                         }
                     }.toSet()
+                    updateFilter(updatedFilters)
                 }
             )
         }
+    }
+
+    private fun updateFilter(filters: Set<Filter>) {
+        _filters.value = filters
     }
 }
