@@ -2,6 +2,7 @@ package com.simi.shelfpal.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simi.shelfpal.data.settings.ShelfPalSettings
 import com.simi.shelfpal.ui.addEditItem.utils.getSelectableYearList
 import com.simi.shelfpal.ui.home.composables.BottomSheetHeaderViewModel
 import com.simi.shelfpal.ui.home.models.Filter
@@ -46,6 +47,7 @@ class HomeViewModel(
     private val viewMetaData: ViewMetaData = ViewMetaData()
 ) : ViewModel(), KoinComponent {
     private val homeRepository by inject<HomeRepository>()
+    private val settings by inject<ShelfPalSettings>()
 
     private val _bottomSheet = MutableStateFlow<BottomSheet?>(null)
     val bottomSheet = _bottomSheet.asStateFlow()
@@ -78,17 +80,25 @@ class HomeViewModel(
 
     @OptIn(ExperimentalTime::class)
     private suspend fun initializeFilters() {
-        viewMetaData.selectedMonth = getString(Res.string.all_months)
+        viewMetaData.selectedMonth = settings.getString(FILTER_MONTH_KEY)
+            ?: getString(Res.string.all_months)
 
-        viewMetaData.selectedYear = getString(Res.string.all_years)
+        viewMetaData.selectedYear = settings.getString(FILTER_YEAR_KEY)
+            ?: getString(Res.string.all_years)
 
-        viewMetaData.selectedCategory = getString(Res.string.category_all_categories)
+        viewMetaData.selectedCategory = settings.getString(FILTER_CATEGORY_KEY)
+            ?: getString(Res.string.category_all_categories)
 
-        viewMetaData.selectedItemStatus = getStringArray(Res.array.item_statuses).first()
+        viewMetaData.selectedItemStatus = settings.getString(FILTER_ITEM_STATUS_KEY)
+            ?: getStringArray(Res.array.item_statuses).first()
 
         val updatedFilters = setOf(
             Filter.Category(
                 title = viewMetaData.selectedCategory.orEmpty(),
+                rightIcon = Res.drawable.chevrondown
+            ),
+            Filter.ItemStatus(
+                title = viewMetaData.selectedItemStatus.orEmpty(),
                 rightIcon = Res.drawable.chevrondown
             ),
             Filter.Month(
@@ -97,10 +107,6 @@ class HomeViewModel(
             ),
             Filter.Year(
                 title = viewMetaData.selectedYear.orEmpty(),
-                rightIcon = Res.drawable.chevrondown
-            ),
-            Filter.ItemStatus(
-                title = viewMetaData.selectedItemStatus.orEmpty(),
                 rightIcon = Res.drawable.chevrondown
             ),
         )
@@ -245,6 +251,21 @@ class HomeViewModel(
     }
 
     private fun updateFilter(filters: Set<Filter>) {
+        filters.forEach {
+            when (it) {
+                is Filter.Category -> settings.saveString(FILTER_CATEGORY_KEY, it.title)
+                is Filter.Month -> settings.saveString(FILTER_MONTH_KEY, it.title)
+                is Filter.Year -> settings.saveString(FILTER_YEAR_KEY, it.title)
+                is Filter.ItemStatus -> settings.saveString(FILTER_ITEM_STATUS_KEY, it.title)
+            }
+        }
         _filters.value = filters
+    }
+
+    companion object {
+        private const val FILTER_YEAR_KEY = "filter_year_key"
+        private const val FILTER_MONTH_KEY = "filter_month_key"
+        private const val FILTER_CATEGORY_KEY = "filter_category_key"
+        private const val FILTER_ITEM_STATUS_KEY = "filter_item_status_key"
     }
 }

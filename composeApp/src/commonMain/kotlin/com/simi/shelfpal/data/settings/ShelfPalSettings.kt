@@ -45,4 +45,7 @@ class ShelfPalSettings : KoinComponent {
     }
 
     fun getNotificationToggle() = settings.getBoolean(NOTIFICATION_TOGGLE, true)
+
+    fun saveString(key: String, value: String) = settings.putString(key, value)
+    fun getString(key: String) = settings.getStringOrNull(key)
 }

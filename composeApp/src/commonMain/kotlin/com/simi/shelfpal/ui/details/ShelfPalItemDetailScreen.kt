@@ -78,10 +78,6 @@ fun ShelfPalItemDetailScreen(
                 )
                 if (showActions) {
                     ItemDetailActions(
-                        hasExpired = itemDetail.reminderSettings.hasExpired,
-                        onTestClick = {
-                            // TODO: Implement the test notification
-                        },
                         onDeleteClick = {
                             coroutineScope.launch {
                                 viewModel.deleteItem()

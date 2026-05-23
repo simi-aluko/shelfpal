@@ -31,7 +31,7 @@ fun TopRowFilter(
     onFilterClick: (Filter) -> Unit
 ) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmallMedium),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingMicro),
         verticalAlignment = Alignment.CenterVertically
     ) {
         filters.forEach { item ->
@@ -127,8 +127,9 @@ private fun FilterCard(
     onClick: () -> Unit
 ) {
     ElevatedCard(
-        shape = RoundedCornerShape(Dimens.radiusExtraLarge),
+        shape = RoundedCornerShape(Dimens.radiusCircle),
         modifier = Modifier
+            .padding(horizontal = Dimens.spacingExtraSmall)
             .clickable(
                 enabled = true,
                 onClick = onClick
