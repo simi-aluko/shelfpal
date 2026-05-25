@@ -34,7 +34,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     AppTheme {
         val navController = rememberNavController()
-        val startDestination = BottomNavDestination.HOME
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
@@ -55,7 +54,6 @@ fun App() {
         ) {
             ShelfPalNavHost(
                 navHostController = navController,
-                startDestination = startDestination.route,
                 modifier = Modifier.padding(bottom = it.calculateBottomPadding())
             )
         }
