@@ -6,23 +6,23 @@
 
     <!-- Welcome carousel -->
     <string name="carousel_title_1">Welcome to ShelfPal</string>
-    <string name="carousel_subtitle_1">Stop throwing money and products in the bin</string>
-    <string name="carousel_body_1">We help you track every expiry date—from food to medicine to cosmetics—so you never lose track or waste an item again. Start saving today.</string>
+    <string name="carousel_subtitle_1">Simplified inventory, tracking and reminders.</string>
+    <string name="carousel_body_1">We help you make the most of your food, grocery items, and products which you may not need that could otherwise go to waste.</string>
     <string name="carousel_cta_1">Next</string>
 
-    <string name="carousel_title_2">Scan &amp; Forget</string>
-    <string name="carousel_subtitle_2">The fastest way to log your items</string>
-    <string name="carousel_body_2">Simply point your camera at the packaging or receipt. Our Auto-Capture detects the product and expiry date instantly.</string>
+    <string name="carousel_title_2">Capture &amp; Forget</string>
+    <string name="carousel_subtitle_2">Adding items is easy and improving</string>
+    <string name="carousel_body_2">With the help of AI, ShelfPal automatically reads your item name, category and expiry information, making it easy for you to save items.</string>
     <string name="carousel_cta_2">Next</string>
 
     <string name="carousel_title_3">Always Know What's Next</string>
-    <string name="carousel_subtitle_3">Stay organized and get reminders—even without signal</string>
-    <string name="carousel_body_3">See all items color-coded by urgency on your Dashboard. Get customizable alerts 🔔 right before they expire. Your data is safe and accessible 100% offline.</string>
+    <string name="carousel_subtitle_3">Stay organized and get reminders</string>
+    <string name="carousel_body_3">From helpful filters, to color coded items by urgency and status, to setting custom reminders.</string>
     <string name="carousel_cta_3">Continue</string>
 
     <string name="carousel_title_4">Ready to Get Started?</string>
-    <string name="carousel_subtitle_4">We just need two quick permissions</string>
-    <string name="carousel_body_4">To enable instant scanning and reminders, please grant Camera and Notification access on the next screen. You can change these later.</string>
+    <string name="carousel_subtitle_4">Grant permissions to make the most of ShelfPal</string>
+    <string name="carousel_body_4">To easily add items and get reminders, please grant ShelfPal Camera and Notification access. This can be changed at anytime in Settings.</string>
     <string name="carousel_cta_4">Start Tracking Now</string>
 
     <string name="carousel_header_image">Carousel header image</string>
