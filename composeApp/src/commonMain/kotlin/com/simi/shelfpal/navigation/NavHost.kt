@@ -29,6 +29,7 @@ fun ShelfPalNavHost(
     modifier: Modifier = Modifier,
     navHostController: NavHostController = rememberNavController(),
     startDestination: Route = Welcome,
+    onOnboardingComplete: () -> Unit = {},
 ) {
     NavHost(
         modifier = modifier,
@@ -39,7 +40,12 @@ fun ShelfPalNavHost(
             WelcomeScreen(
                 content = carouselContent,
                 navigateToHome = {
-                    navHostController.navigate(Home)
+                    onOnboardingComplete()
+                    navHostController.navigate(Home) {
+                        popUpTo(Welcome) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

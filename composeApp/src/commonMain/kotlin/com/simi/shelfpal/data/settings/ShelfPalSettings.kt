@@ -15,6 +15,7 @@ private const val EXPIRY_SUMMARY_KEY = "expiry_summary"
 private const val EXPIRY_AI_SUMMARY = "expiry_ai_summary"
 private const val NOTIFICATION_TOGGLE = "notification_toggle"
 private const val FILTERS_KEY = "filters"
+private const val ONBOARDING_COMPLETE = "onboarding_complete"
 
 @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
 class ShelfPalSettings : KoinComponent {
@@ -45,6 +46,10 @@ class ShelfPalSettings : KoinComponent {
     }
 
     fun getNotificationToggle() = settings.getBoolean(NOTIFICATION_TOGGLE, true)
+
+    fun hasCompletedOnboarding() = settings.getBoolean(ONBOARDING_COMPLETE, false)
+
+    fun saveOnboardingCompleted() = settings.putBoolean(ONBOARDING_COMPLETE, true)
 
     fun saveString(key: String, value: String) = settings.putString(key, value)
     fun getString(key: String) = settings.getStringOrNull(key)

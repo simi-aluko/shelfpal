@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -22,7 +23,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.PayloadData
+import com.simi.shelfpal.data.settings.ShelfPalSettings
 import com.simi.shelfpal.navigation.BottomNavDestination
+import com.simi.shelfpal.navigation.Route
 import com.simi.shelfpal.navigation.ShelfPalNavHost
 import com.simi.shelfpal.ui.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
@@ -41,6 +44,11 @@ fun App() {
             currentDestination?.hasRoute(it.route::class) == true
         }
 
+        val settings = remember { ShelfPalSettings() }
+        val startDestination = remember {
+            if (settings.hasCompletedOnboarding()) Route.Home else Route.Welcome
+        }
+
         InitializeNotificationListener(navController)
 
         Scaffold(
@@ -54,6 +62,8 @@ fun App() {
         ) {
             ShelfPalNavHost(
                 navHostController = navController,
+                startDestination = startDestination,
+                onOnboardingComplete = { settings.saveOnboardingCompleted() },
                 modifier = Modifier.padding(bottom = it.calculateBottomPadding())
             )
         }
