@@ -19,9 +19,14 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +34,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.simi.shelfpal.ui.shared.composables.LoadingScreen
 import com.simi.shelfpal.ui.theme.AppTheme
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.theme.onPrimaryLight
@@ -48,25 +56,52 @@ import shelfpal.composeapp.generated.resources.carousel_subtitle_1
 import shelfpal.composeapp.generated.resources.carousel_title_1
 import shelfpal.composeapp.generated.resources.notifications_24px
 import shelfpal.composeapp.generated.resources.packed_closed_check
+import shelfpal.composeapp.generated.resources.sign_in_error
 import shelfpal.composeapp.generated.resources.skip
 
 @Composable
 fun WelcomeScreen(
     content: List<CarouselPage>,
-    navigateToHome: () -> Unit = {}
+    navigateToHome: () -> Unit = {},
+    viewModel: WelcomeViewModel = viewModel { WelcomeViewModel() }
 ) {
-    Scaffold {
-        WelcomeScreenContent(
-            content = content,
-            navigateToHome = navigateToHome
-        )
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val errorMessage = stringResource(Res.string.sign_in_error)
+
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is WelcomeViewModel.UiState.Success -> navigateToHome()
+            is WelcomeViewModel.UiState.Error -> {
+                snackbarHostState.showSnackbar(errorMessage)
+                viewModel.clearError()
+            }
+            else -> {}
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) {
+        val isLoading = uiState is WelcomeViewModel.UiState.Loading
+        Box(modifier = Modifier.fillMaxSize()) {
+            WelcomeScreenContent(
+                content = content,
+                isLoading = isLoading,
+                onSignIn = { viewModel.signInAnonymously() }
+            )
+            if (isLoading) {
+                LoadingScreen()
+            }
+        }
     }
 }
 
 @Composable
 private fun WelcomeScreenContent(
     content: List<CarouselPage>,
-    navigateToHome: () -> Unit = {}
+    isLoading: Boolean = false,
+    onSignIn: () -> Unit = {}
 ) {
     val pagerState = rememberPagerState(pageCount = { content.size })
     val scope = rememberCoroutineScope()
@@ -76,7 +111,7 @@ private fun WelcomeScreenContent(
             .fillMaxSize()
             .padding(Dimens.spacingMedium)
     ) {
-        SkipWelcome { navigateToHome() }
+        SkipWelcome(enabled = !isLoading) { onSignIn() }
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
@@ -84,13 +119,14 @@ private fun WelcomeScreenContent(
             CarouselContent(content[it])
         }
         CarouselProgressCta(
-            ctaTitle = content[pagerState.currentPage].ctaTitle
+            ctaTitle = content[pagerState.currentPage].ctaTitle,
+            enabled = !isLoading
         ) {
             val nextPage = pagerState.currentPage + 1
             if (nextPage < content.size) {
                 scope.launch { pagerState.animateScrollToPage(nextPage) }
-            } else if (nextPage == pagerState.pageCount) {
-                navigateToHome()
+            } else {
+                onSignIn()
             }
         }
         Spacer(modifier = Modifier.size(Dimens.spacingMedium))
@@ -122,9 +158,10 @@ private fun CarouselContent(
 }
 
 @Composable
-private fun CarouselProgressCta(ctaTitle: StringResource, onClick: () -> Unit) {
+private fun CarouselProgressCta(ctaTitle: StringResource, enabled: Boolean = true, onClick: () -> Unit) {
     ElevatedButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = primaryLight,
@@ -198,6 +235,7 @@ private fun CarouselContentBody(
 
 @Composable
 private fun SkipWelcome(
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Row(
@@ -208,6 +246,7 @@ private fun SkipWelcome(
     ) {
         TextButton(
             onClick = onClick,
+            enabled = enabled,
         ) {
             Text(
                 text = stringResource(Res.string.skip),

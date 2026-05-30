@@ -27,6 +27,7 @@
 
     <string name="carousel_header_image">Carousel header image</string>
     <string name="skip">Skip</string>
+    <string name="sign_in_error">Something went wrong. Try again later.</string>
     
     <!-- Categories -->
     <string name="category_fresh_fruits_and_vegetables">Fresh fruits and vegetables</string>
@@ -180,4 +181,7 @@
    </string-array>
     <string name="used">Used</string>
     <string name="expired">Expired</string>
+
+   <!-- Loading -->
+   <string name="loading_please_wait">Loading, please wait...</string>
 </resources>
