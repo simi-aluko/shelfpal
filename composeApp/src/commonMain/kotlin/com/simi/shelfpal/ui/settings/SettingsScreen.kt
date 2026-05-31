@@ -50,15 +50,16 @@ fun SettingsScreen(
     ) { innerPadding ->
         Surface(
             modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding())
+                .padding(innerPadding)
                 .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        horizontal = Dimens.spacingSmallMedium,
-                        vertical = Dimens.spacingMedium
+                        start = Dimens.spacingSmallMedium,
+                        end = Dimens.spacingSmallMedium,
+                        top = Dimens.spacingMedium
                     ),
                 verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
             ) {

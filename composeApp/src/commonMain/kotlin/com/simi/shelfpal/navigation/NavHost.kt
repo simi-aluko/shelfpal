@@ -53,6 +53,7 @@ fun ShelfPalNavHost(
         }
         composable<Home> {
             HomeScreen(
+                navController = navHostController,
                 navigateToAddItem = {
                     navHostController.navigate(AddEditItem())
                 },
@@ -95,6 +96,7 @@ fun ShelfPalNavHost(
 
         composable<Route.Notifications> {
             UpdatesScreen(
+                navController = navHostController,
                 onNavigateToDetailClick = { params ->
                     navHostController.navigate(
                         Route.UpdatesDetail(

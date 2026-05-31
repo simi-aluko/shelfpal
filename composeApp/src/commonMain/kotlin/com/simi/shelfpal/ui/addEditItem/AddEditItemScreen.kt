@@ -89,8 +89,9 @@ fun AddEditItemScreen(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(
-                        horizontal = Dimens.spacingMedium,
-                        vertical = Dimens.spacingLarge
+                        start = Dimens.spacingMedium,
+                        end = Dimens.spacingMedium,
+                        top = Dimens.spacingLarge
                     )
                     .verticalScroll(rememberScrollState())
             ) {
