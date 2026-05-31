@@ -1,7 +1,5 @@
 package com.simi.shelfpal.navigation
 
-import com.simi.shelfpal.ui.updatedetail.UpdateDetailsEntrySource
-import com.simi.shelfpal.ui.updates.UpdateRecency
 import kotlinx.serialization.Serializable
 
 sealed class Route {
@@ -34,8 +32,8 @@ sealed class Route {
         val title: String,
         val subtitle: String,
         val showActions: Boolean = true,
-        val entrySource: UpdateDetailsEntrySource,
-        val updateRecency: UpdateRecency? = null
+        val entrySource: String,
+        val updateRecency: String? = null
     ) : Route()
 
     @Serializable

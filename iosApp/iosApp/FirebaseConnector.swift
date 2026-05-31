@@ -73,6 +73,28 @@ final class IosFirebaseConnector: FirebaseConnector {
         case invalidImageData
     }
     
+    func getExpirySummary(prompt: String) async throws -> String? {
+        let summarySchema = Schema.object(
+            properties: [
+                "title": .string(),
+                "body": .string()
+            ]
+        )
+        let summaryModel = ai.generativeModel(
+            modelName: FirebaseConnectorKt.GEMINI_MODEL,
+            generationConfig: GenerationConfig(
+                responseMIMEType: FirebaseConnectorKt.JSON_RESPONSE_MIMETYPE,
+                responseSchema: summarySchema
+            )
+        )
+        do {
+            let response = try await summaryModel.generateContent(prompt)
+            return response.text
+        } catch {
+            throw error
+        }
+    }
+
     func getFirebaseData(image: KotlinByteArray) -> Firebase_storageData {
         return Firebase_storageData(data: image.toNSData())
     }

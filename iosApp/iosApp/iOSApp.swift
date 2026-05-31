@@ -36,9 +36,11 @@ struct iOSApp: App {
 
 
     init() {
+        IosBackgroundScheduler().registerTask()
         KoinModules().doInitKoin(
             firebaseConnector: IosFirebaseConnector()
         )
+        IosBackgroundScheduler().startScheduler()
     }
     
     var body: some Scene {

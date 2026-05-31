@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F8346CB12FCB9C8D003708B2 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F8346CB02FCB9C8D003708B2 /* FirebaseAuth */; };
 		F870CBEA2EBEC0BC004DF8E0 /* FirebaseAI in Frameworks */ = {isa = PBXBuildFile; productRef = F870CBE92EBEC0BC004DF8E0 /* FirebaseAI */; };
 		F870CBEC2EBEC0BC004DF8E0 /* FirebaseAILogic in Frameworks */ = {isa = PBXBuildFile; productRef = F870CBEB2EBEC0BC004DF8E0 /* FirebaseAILogic */; };
 		F870CBEE2EBEC0BC004DF8E0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F870CBED2EBEC0BC004DF8E0 /* FirebaseAnalytics */; };
@@ -56,6 +57,7 @@
 				F870CBEC2EBEC0BC004DF8E0 /* FirebaseAILogic in Frameworks */,
 				F870CBF22EBEC19A004DF8E0 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
 				F870CBEA2EBEC0BC004DF8E0 /* FirebaseAI in Frameworks */,
+				F8346CB12FCB9C8D003708B2 /* FirebaseAuth in Frameworks */,
 				F870CBEE2EBEC0BC004DF8E0 /* FirebaseAnalytics in Frameworks */,
 				F8B949662F0A7BBD00912BFF /* FirebaseStorage in Frameworks */,
 				F870CBF42EBEC19A004DF8E0 /* FirebaseCore in Frameworks */,
@@ -112,6 +114,7 @@
 				F870CBF32EBEC19A004DF8E0 /* FirebaseCore */,
 				F8B949652F0A7BBD00912BFF /* FirebaseStorage */,
 				F8DF46992F4A1EA700BDDAAA /* FirebaseMessaging */,
+				F8346CB02FCB9C8D003708B2 /* FirebaseAuth */,
 			);
 			productName = iosApp;
 			productReference = 4D554FCBC675BBD7AC98347E /* ShelfPal.app */;
@@ -182,7 +185,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export JAVA_HOME=/Applications/Android\\ Studio.app/Contents/jbr/Contents/Home/\nexport JDK_HOME=/Applications/Android\\ Studio.app/Contents/jbr/Contents/\n\nif [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "export JAVA_HOME=/Applications/Android\\ Studio.app/Contents/jbr/Contents/Home/\nexport JDK_HOME=/Applications/Android\\ Studio.app/Contents/jbr/Contents/\n\nif [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode --no-configuration-cache\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -417,6 +420,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F8346CB02FCB9C8D003708B2 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F870CBE82EBEC0BC004DF8E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
 		F870CBE92EBEC0BC004DF8E0 /* FirebaseAI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F870CBE82EBEC0BC004DF8E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

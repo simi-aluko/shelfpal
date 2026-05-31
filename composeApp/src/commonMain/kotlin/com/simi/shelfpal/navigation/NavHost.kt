@@ -18,8 +18,10 @@ import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
 import com.simi.shelfpal.ui.settings.SettingsScreen
 import com.simi.shelfpal.ui.settings.WebviewScreen
+import com.simi.shelfpal.ui.updatedetail.UpdateDetailsEntrySource
 import com.simi.shelfpal.ui.updatedetail.UpdatesDetailParams
 import com.simi.shelfpal.ui.updatedetail.UpdatesDetailScreen
+import com.simi.shelfpal.ui.updates.UpdateRecency
 import com.simi.shelfpal.ui.updates.UpdatesScreen
 import com.simi.shelfpal.ui.welcome.WelcomeScreen
 import com.simi.shelfpal.ui.welcome.carouselContent
@@ -100,8 +102,8 @@ fun ShelfPalNavHost(
                             title = params.title,
                             subtitle = params.subtitle,
                             showActions = params.showActions,
-                            entrySource = params.entrySource,
-                            updateRecency = params.updateRecency
+                            entrySource = params.entrySource.name,
+                            updateRecency = params.updateRecency?.name
                         )
                     )
                 },
@@ -118,8 +120,8 @@ fun ShelfPalNavHost(
                     title = route.title,
                     subtitle = route.subtitle,
                     showActions = route.showActions,
-                    entrySource = route.entrySource,
-                    updateRecency = route.updateRecency
+                    entrySource = UpdateDetailsEntrySource.valueOf(route.entrySource),
+                    updateRecency = route.updateRecency?.let { UpdateRecency.valueOf(it) }
                 ),
                 onNavigateBack = { navHostController.popBackStack() },
                 onItemClick = { id -> navHostController.navigate(ItemDetails(id, showActions = false)) }

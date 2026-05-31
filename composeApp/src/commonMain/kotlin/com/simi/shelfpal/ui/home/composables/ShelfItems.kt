@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.simi.shelfpal.ui.home.models.HomeShelfItem
 import com.simi.shelfpal.ui.shared.ItemColorStatus
@@ -229,13 +230,15 @@ private fun EmptyList() {
             ) {
                 Text(
                     text = stringResource(Res.string.empty_home_screen),
-                    fontSize = Dimens.textSizeXLarge,
-                    fontWeight = FontWeight.W300
+                    fontSize = Dimens.textSizeLarge,
+                    fontWeight = FontWeight.W300,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = stringResource(Res.string.empty_home_screen_subtitle),
                     fontSize = Dimens.textSizeSmall,
-                    fontWeight = FontWeight.W200
+                    fontWeight = FontWeight.W200,
+                    textAlign = TextAlign.Center
                 )
             }
         }

@@ -1,6 +1,5 @@
 package com.simi.shelfpal.data.firebase
 
-import com.simi.shelfpal.data.models.ExpirySummary
 import dev.gitlive.firebase.storage.Data
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
@@ -20,7 +19,7 @@ actual interface FirebaseConnector {
     ): String?
 
     actual fun getFirebaseData(image: ByteArray): Data
-    actual suspend fun getExpirySummary(data: ExpirySummary, prompt: String): String?
+    actual suspend fun getExpirySummary(prompt: String): String?
 }
 
 @OptIn(ExperimentalForeignApi::class)

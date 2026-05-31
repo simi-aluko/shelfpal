@@ -33,7 +33,7 @@ private const val bugReportUrl = "https://forms.gle/7pHMnbFjVX7m73od9"
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
     launchWebview: (Webview) -> Unit = {},
-    viewModel: SettingsViewModel = viewModel()
+    viewModel: SettingsViewModel = viewModel { SettingsViewModel() }
 ) {
 
     val notificationToggle by viewModel.notificationToggle.collectAsStateWithLifecycle()
