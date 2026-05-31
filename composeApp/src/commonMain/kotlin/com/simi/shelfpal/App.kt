@@ -2,7 +2,10 @@ package com.simi.shelfpal
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -24,19 +27,29 @@ fun App() {
         val startDestination = remember {
             if (settings.hasCompletedOnboarding()) Route.Home else Route.Welcome
         }
+        var pendingNotificationTab by remember { mutableStateOf<BottomNavDestination?>(null) }
 
-        InitializeNotificationListener(navController)
+        InitializeNotificationListener {
+            navigateToBottomNav(
+                navController,
+                BottomNavDestination.HOME
+            )
+            pendingNotificationTab = BottomNavDestination.NOTIFICATIONS
+        }
+
         ShelfPalNavHost(
             navHostController = navController,
             startDestination = startDestination,
-            onOnboardingComplete = { settings.saveOnboardingCompleted() }
+            onOnboardingComplete = { settings.saveOnboardingCompleted() },
+            pendingNotificationTab = pendingNotificationTab,
+            onPendingNotificationTabConsumed = { pendingNotificationTab = null }
         )
     }
 }
 
 @Composable
 private fun InitializeNotificationListener(
-    navController: NavController
+    onNavigateToNotifications: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         NotifierManager.getLocalNotifier().removeAll()
@@ -44,10 +57,7 @@ private fun InitializeNotificationListener(
         NotifierManager.addListener(object: NotifierManager.Listener {
             override fun onNotificationClicked(data: PayloadData) {
                 super.onNotificationClicked(data)
-                navigateToBottomNav(
-                    navController = navController,
-                    destination = BottomNavDestination.NOTIFICATIONS
-                )
+                onNavigateToNotifications()
             }
         })
     }

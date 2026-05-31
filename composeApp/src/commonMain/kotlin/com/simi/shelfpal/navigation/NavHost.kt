@@ -1,12 +1,16 @@
 package com.simi.shelfpal.navigation
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.simi.shelfpal.navigateToBottomNav
 import com.simi.shelfpal.navigation.Route.AddEditItem
 import com.simi.shelfpal.navigation.Route.Home
 import com.simi.shelfpal.navigation.Route.ImageCapture
@@ -15,6 +19,7 @@ import com.simi.shelfpal.navigation.Route.Welcome
 import com.simi.shelfpal.ui.addEditItem.AddEditItemScreen
 import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
+import com.simi.shelfpal.ui.home.composables.BottomNavBar
 import com.simi.shelfpal.ui.imagecapture.ImageCaptureScreen
 import com.simi.shelfpal.ui.settings.SettingsScreen
 import com.simi.shelfpal.ui.settings.WebviewScreen
@@ -32,6 +37,8 @@ fun ShelfPalNavHost(
     navHostController: NavHostController = rememberNavController(),
     startDestination: Route = Welcome,
     onOnboardingComplete: () -> Unit = {},
+    pendingNotificationTab: BottomNavDestination? = null,
+    onPendingNotificationTabConsumed: () -> Unit = {},
 ) {
     NavHost(
         modifier = modifier,
@@ -51,21 +58,15 @@ fun ShelfPalNavHost(
                 }
             )
         }
-        composable<Home> {
-            HomeScreen(
-                navController = navHostController,
-                navigateToAddItem = {
-                    navHostController.navigate(AddEditItem())
-                },
-                navigateToItemDetail = { id ->
-                    navHostController.navigate(ItemDetails(id))
-                },
-                navigateToSettings = {
-                    navHostController.navigate(Route.Settings)
-                }
-            )
 
+        composable<Home> {
+            BottomNavHost(
+                navController = navHostController,
+                pendingNotificationTab = pendingNotificationTab,
+                onPendingNotificationTabConsumed = onPendingNotificationTabConsumed,
+            )
         }
+
         composable<AddEditItem> { backStackEntry ->
             val addEditItemRoute = backStackEntry.toRoute<AddEditItem>()
 
@@ -76,6 +77,7 @@ fun ShelfPalNavHost(
                 navController = navHostController
             )
         }
+
         composable<ImageCapture> {
             ImageCaptureScreen(
                 navController = navHostController
@@ -94,22 +96,17 @@ fun ShelfPalNavHost(
             )
         }
 
-        composable<Route.Notifications> {
-            UpdatesScreen(
-                navController = navHostController,
-                onNavigateToDetailClick = { params ->
+        composable<Route.Settings> {
+            SettingsScreen(
+                onNavigateBack = { navHostController.popBackStack() },
+                launchWebview = {
                     navHostController.navigate(
-                        Route.UpdatesDetail(
-                            items = params.items,
-                            title = params.title,
-                            subtitle = params.subtitle,
-                            showActions = params.showActions,
-                            entrySource = params.entrySource.name,
-                            updateRecency = params.updateRecency?.name
+                        Route.Webview(
+                            title = it.title,
+                            url = it.url
                         )
                     )
-                },
-                onItemClick = { id -> navHostController.navigate(ItemDetails(id, showActions = false)) }
+                }
             )
         }
 
@@ -130,20 +127,6 @@ fun ShelfPalNavHost(
             )
         }
 
-        composable<Route.Settings> {
-            SettingsScreen(
-                onNavigateBack = { navHostController.popBackStack() },
-                launchWebview = {
-                    navHostController.navigate(
-                        Route.Webview(
-                            title = it.title,
-                            url = it.url
-                        )
-                    )
-                }
-            )
-        }
-
         composable<Route.Webview> {
             val route = it.toRoute<Route.Webview>()
             WebviewScreen(
@@ -151,6 +134,66 @@ fun ShelfPalNavHost(
                 url = route.url,
                 onNavigateBack = { navHostController.popBackStack() }
             )
+        }
+    }
+}
+
+@Composable
+private fun BottomNavHost(
+    navController: NavHostController,
+    pendingNotificationTab: BottomNavDestination?,
+    onPendingNotificationTabConsumed: () -> Unit,
+) {
+    val tabNavController = rememberNavController()
+
+    LaunchedEffect(pendingNotificationTab) {
+        if (pendingNotificationTab != null) {
+            navigateToBottomNav(tabNavController, pendingNotificationTab)
+            onPendingNotificationTabConsumed()
+        }
+    }
+
+    Scaffold(
+        bottomBar = { BottomNavBar(tabNavController) }
+    ) { innerPadding ->
+        NavHost(
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
+            navController = tabNavController,
+            startDestination = Home,
+        ) {
+            composable<Home> {
+                HomeScreen(
+                    navigateToAddItem = {
+                        navController.navigate(AddEditItem())
+                    },
+                    navigateToItemDetail = { id ->
+                        navController.navigate(ItemDetails(id))
+                    },
+                    navigateToSettings = {
+                        navController.navigate(Route.Settings)
+                    }
+                )
+            }
+
+            composable<Route.Notifications> {
+                UpdatesScreen(
+                    onNavigateToDetailClick = { params ->
+                        navController.navigate(
+                            Route.UpdatesDetail(
+                                items = params.items,
+                                title = params.title,
+                                subtitle = params.subtitle,
+                                showActions = params.showActions,
+                                entrySource = params.entrySource.name,
+                                updateRecency = params.updateRecency?.name
+                            )
+                        )
+                    },
+                    onItemClick = { id ->
+                        navController.navigate(ItemDetails(id, showActions = false))
+                    }
+                )
+            }
         }
     }
 }

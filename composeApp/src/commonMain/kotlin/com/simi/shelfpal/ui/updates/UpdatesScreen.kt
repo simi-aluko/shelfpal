@@ -11,9 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.simi.shelfpal.ui.home.composables.BottomNavBar
 import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.theme.Dimens
 import com.simi.shelfpal.ui.updatedetail.UpdateDetailsEntrySource
@@ -35,7 +32,6 @@ import shelfpal.composeapp.generated.resources.used_items_subtitle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdatesScreen(
-    navController: NavController,
     onNavigateToDetailClick: (UpdatesDetailParams) -> Unit = {},
     onItemClick: (Long) -> Unit = {},
     viewModel: UpdatesViewModel = viewModel { UpdatesViewModel() }
@@ -85,7 +81,6 @@ fun UpdatesScreen(
                 }
             )
         },
-        bottomBar = { BottomNavBar(navController) }
     ) { innerPadding ->
         Surface(
             modifier = Modifier.padding(top =innerPadding.calculateTopPadding())
@@ -107,5 +102,5 @@ fun UpdatesScreen(
 @Composable
 @Preview
 private fun UpdatesScreenPreview() {
-    UpdatesScreen(rememberNavController())
+    UpdatesScreen()
 }

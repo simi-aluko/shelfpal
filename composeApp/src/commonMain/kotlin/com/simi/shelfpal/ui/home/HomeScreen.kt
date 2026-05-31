@@ -15,10 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.simi.shelfpal.ui.home.composables.AddItemFAB
-import com.simi.shelfpal.ui.home.composables.BottomNavBar
 import com.simi.shelfpal.ui.home.composables.FilterBottomSheet
 import com.simi.shelfpal.ui.home.composables.ShelfItems
 import com.simi.shelfpal.ui.home.composables.TopRowFilter
@@ -37,7 +34,6 @@ import shelfpal.composeapp.generated.resources.shelfpal
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel { HomeViewModel() },
-    navController: NavController,
     navigateToAddItem: () -> Unit,
     navigateToItemDetail: (id: Long) -> Unit,
     navigateToSettings: () -> Unit,
@@ -67,11 +63,8 @@ fun HomeScreen(
                 navigateToAddItem()
             }
         },
-        bottomBar = { BottomNavBar(navController) }
     ) { innerPadding ->
-        Surface(
-            modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
-        ) {
+        Surface(modifier = Modifier.padding(top = innerPadding.calculateTopPadding())) {
             Column(
                 modifier = Modifier.padding(
                     top = Dimens.spacingMedium,
@@ -111,7 +104,6 @@ fun HomeScreen(
 @Preview
 private fun HomeScreenPreview() {
     HomeScreen(
-        navController = rememberNavController(),
         navigateToAddItem = {},
         navigateToItemDetail = {},
         navigateToSettings = {}
