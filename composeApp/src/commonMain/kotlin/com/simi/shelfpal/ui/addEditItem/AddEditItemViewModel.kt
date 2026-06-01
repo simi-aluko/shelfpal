@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Month
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.getStringArray
 import org.koin.core.component.KoinComponent
@@ -41,6 +42,10 @@ import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.add_item
 import shelfpal.composeapp.generated.resources.categories
 import shelfpal.composeapp.generated.resources.edit_item
+import shelfpal.composeapp.generated.resources.extracting_image_info
+import shelfpal.composeapp.generated.resources.failed_to_extract_image_info
+import shelfpal.composeapp.generated.resources.failed_to_save_item
+import shelfpal.composeapp.generated.resources.loading_please_wait
 import shelfpal.composeapp.generated.resources.select_expiry_day
 import shelfpal.composeapp.generated.resources.select_expiry_month
 import shelfpal.composeapp.generated.resources.select_expiry_year
@@ -49,6 +54,13 @@ import shelfpal.composeapp.generated.resources.select_product_category
 class AddEditItemViewModel(
     private val viewMetaData: ViewMetaData
 ): ViewModel(), KoinComponent {
+
+    sealed class ScreenState {
+        object Idle : ScreenState()
+        data class Loading(val title: StringResource) : ScreenState()
+        object SaveSuccess : ScreenState()
+        data class Error(val message: StringResource) : ScreenState()
+    }
 
     val firebaseConnector by inject<FirebaseConnector>()
     val repository by inject<AddItemRepository>()
@@ -64,6 +76,9 @@ class AddEditItemViewModel(
 
     private val _screenTitle = MutableStateFlow("")
     val screenTitle = _screenTitle.asStateFlow()
+
+    private val _screenState = MutableStateFlow<ScreenState>(ScreenState.Idle)
+    val screenState = _screenState.asStateFlow()
 
     suspend fun init() {
         viewMetaData.categories = getStringArray(Res.array.categories)
@@ -190,30 +205,43 @@ class AddEditItemViewModel(
         )
     }
 
-    suspend fun saveItem() {
+    fun saveItem() {
         validateItem()
         if (viewMetaData.isItemValid == true) {
-            val expiryInfoUrl = viewMetaData.expiryImage?.let {
-                repository.uploadImage(firebaseConnector.getFirebaseData(it), "expiry_image_${getLocalTimestamp()}")
-            }
-            val basicInfoUrl = viewMetaData.basicInfoImage?.let {
-                repository.uploadImage(firebaseConnector.getFirebaseData(it), "basic_info_image_${getLocalTimestamp()}")
-            }
+            viewModelScope.launch {
+                try {
+                    _screenState.value = ScreenState.Loading(Res.string.loading_please_wait)
+                    val expiryInfoUrl = viewMetaData.expiryImage?.let {
+                        repository.uploadImage(firebaseConnector.getFirebaseData(it), "expiry_image_${getLocalTimestamp()}")
+                    }
+                    val basicInfoUrl = viewMetaData.basicInfoImage?.let {
+                        repository.uploadImage(firebaseConnector.getFirebaseData(it), "basic_info_image_${getLocalTimestamp()}")
+                    }
 
-            val shelfPalItem = getShelPalItemFromViewModel(
-                addEditItemBasicInfo = _addEditItemBasicInfo.value,
-                addEditItemExpiryInfo = _addEditItemExpiryInfo.value,
-                basicInfoImageUrl = basicInfoUrl,
-                expiryInfoImageUrl = expiryInfoUrl
-            )
+                    val shelfPalItem = getShelPalItemFromViewModel(
+                        addEditItemBasicInfo = _addEditItemBasicInfo.value,
+                        addEditItemExpiryInfo = _addEditItemExpiryInfo.value,
+                        basicInfoImageUrl = basicInfoUrl,
+                        expiryInfoImageUrl = expiryInfoUrl
+                    )
 
-            if (viewMetaData.itemId != null) {
-                val updatedItem = shelfPalItem.copy(id = viewMetaData.itemId)
-                repository.updateItem(updatedItem)
-            } else {
-                repository.saveItem(shelfPalItem)
+                    if (viewMetaData.itemId != null) {
+                        val updatedItem = shelfPalItem.copy(id = viewMetaData.itemId)
+                        repository.updateItem(updatedItem)
+                    } else {
+                        repository.saveItem(shelfPalItem)
+                    }
+                    _screenState.value = ScreenState.SaveSuccess
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    _screenState.value = ScreenState.Error(Res.string.failed_to_save_item)
+                }
             }
         }
+    }
+
+    fun clearError() {
+        _screenState.value = ScreenState.Idle
     }
 
     fun updateCameraEntry(cameraEntry: CameraEntry) {
@@ -223,6 +251,7 @@ class AddEditItemViewModel(
     private fun getBasicInfoFromImage(imageData: ByteArray) {
         viewModelScope.launch {
             try {
+                _screenState.value = ScreenState.Loading(Res.string.extracting_image_info)
                 val response = firebaseConnector.getProductBasicInfoFromImage(
                     image = imageData,
                     prompt = getBasicInfoPrompt(viewMetaData.categories)
@@ -239,12 +268,13 @@ class AddEditItemViewModel(
                             isEdit = false
                         )
                     )
+                    _screenState.value = ScreenState.Idle
                 } else {
                     throw Exception("Null product basic info response from FirebaseAI")
                 }
             } catch (e: Exception) {
-                // todo: send error state
                 e.printStackTrace()
+                _screenState.value = ScreenState.Error(Res.string.failed_to_extract_image_info)
             }
         }
     }
@@ -254,6 +284,7 @@ class AddEditItemViewModel(
     ) {
         viewModelScope.launch {
             try {
+                _screenState.value = ScreenState.Loading(Res.string.extracting_image_info)
                 val response = firebaseConnector.getProductExpiryInfoFromImage(
                     image = imageData
                 )
@@ -279,12 +310,13 @@ class AddEditItemViewModel(
                             isEdit = false
                         )
                     )
+                    _screenState.value = ScreenState.Idle
                 } else {
                     throw Exception("Null product expiry info response from FirebaseAI")
                 }
             } catch (e: Exception) {
-                // todo: send error state
                 e.printStackTrace()
+                _screenState.value = ScreenState.Error(Res.string.failed_to_extract_image_info)
             }
         }
     }

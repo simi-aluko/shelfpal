@@ -184,4 +184,8 @@
 
    <!-- Loading -->
    <string name="loading_please_wait">Loading, please wait...</string>
+   <string name="saving_item_please_wait">Saving item, please wait...</string>
+   <string name="extracting_image_info">Extracting image info...</string>
+   <string name="failed_to_extract_image_info">Failed to extract image info. Please try again.</string>
+   <string name="failed_to_save_item">Failed to save item. Please try again.</string>
 </resources>

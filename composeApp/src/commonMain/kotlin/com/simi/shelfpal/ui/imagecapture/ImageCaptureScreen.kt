@@ -28,6 +28,7 @@ import com.kashif.cameraK.ui.CameraPreview
 import com.simi.shelfpal.ui.imagecapture.composables.CameraControls
 import com.simi.shelfpal.ui.imagecapture.composables.PermissionDenied
 import com.simi.shelfpal.ui.shared.IMAGE_CAPTURE_RESULT
+import com.simi.shelfpal.ui.shared.composables.LoadingScreen
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -140,6 +141,7 @@ private fun CameraContent(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val imageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
+    val isCapturing = remember { mutableStateOf(false) }
     val genericErrorMessage = stringResource(Res.string.generic_error)
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -163,10 +165,12 @@ private fun CameraContent(
                 cameraController = controller,
                 imageBitmap = imageBitmap.value,
                 onCapture = {
+                    isCapturing.value = true
                     coroutineScope.launch {
                         handleImageCapture(
                             cameraController = controller,
                             onErrorOccurred = {
+                                isCapturing.value = false
                                 coroutineScope.launch {
                                     snackBarHostState.showSnackbar(genericErrorMessage)
                                 }
@@ -183,6 +187,10 @@ private fun CameraContent(
                     imageBitmap.value = null
                 }
             )
+        }
+
+        if (isCapturing.value) {
+            LoadingScreen()
         }
     }
 }

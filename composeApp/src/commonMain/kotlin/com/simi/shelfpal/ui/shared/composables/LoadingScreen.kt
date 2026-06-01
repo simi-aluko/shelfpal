@@ -1,6 +1,8 @@
 package com.simi.shelfpal.ui.shared.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.simi.shelfpal.ui.theme.Dimens
@@ -23,16 +26,23 @@ import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.loading_please_wait
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(title: String = stringResource(Res.string.loading_please_wait)) {
     Column(
-        modifier = Modifier.fillMaxSize().background(backgroundLight.copy(alpha = 0.9f)),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundLight.copy(alpha = 0.9f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {}
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         CircularProgressIndicator(color = primaryLight)
         Spacer(modifier = Modifier.height(Dimens.spacingSmall))
         Text(
-            text = stringResource(Res.string.loading_please_wait),
+            text = title,
             color = primaryLight,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             style = MaterialTheme.typography.bodyMedium
