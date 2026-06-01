@@ -27,6 +27,7 @@ import com.simi.shelfpal.ui.addEditItem.utils.validateBasicInfo
 import com.simi.shelfpal.ui.addEditItem.utils.validateExpiryInfo
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
 import com.simi.shelfpal.ui.shared.getDisplayMonths
+import com.simi.shelfpal.utils.getLocalTimestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -193,10 +194,10 @@ class AddEditItemViewModel(
         validateItem()
         if (viewMetaData.isItemValid == true) {
             val expiryInfoUrl = viewMetaData.expiryImage?.let {
-                repository.uploadImage(firebaseConnector.getFirebaseData(it), "expiry_image")
+                repository.uploadImage(firebaseConnector.getFirebaseData(it), "expiry_image_${getLocalTimestamp()}")
             }
             val basicInfoUrl = viewMetaData.basicInfoImage?.let {
-                repository.uploadImage(firebaseConnector.getFirebaseData(it), "basic_info_image")
+                repository.uploadImage(firebaseConnector.getFirebaseData(it), "basic_info_image_${getLocalTimestamp()}")
             }
 
             val shelfPalItem = getShelPalItemFromViewModel(
