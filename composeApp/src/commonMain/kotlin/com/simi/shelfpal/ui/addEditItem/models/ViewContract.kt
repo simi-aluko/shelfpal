@@ -1,6 +1,7 @@
 package com.simi.shelfpal.ui.addEditItem.models
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.simi.shelfpal.data.database.entities.ShelfPalItem
 import com.simi.shelfpal.ui.addEditItem.AddItemBottomSheetType
 import com.simi.shelfpal.ui.addEditItem.CameraEntry
 import org.jetbrains.compose.resources.StringResource
@@ -38,7 +39,8 @@ data class ViewMetaData(
     var bottomSheetType: AddItemBottomSheetType? = null,
     var categories: List<String> = listOf(),
     var expiryImage: ByteArray? = null,
-    var basicInfoImage: ByteArray? = null
+    var basicInfoImage: ByteArray? = null,
+    var originalItem: ShelfPalItem? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

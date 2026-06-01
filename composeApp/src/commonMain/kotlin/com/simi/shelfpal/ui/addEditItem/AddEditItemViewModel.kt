@@ -45,7 +45,7 @@ import shelfpal.composeapp.generated.resources.edit_item
 import shelfpal.composeapp.generated.resources.extracting_image_info
 import shelfpal.composeapp.generated.resources.failed_to_extract_image_info
 import shelfpal.composeapp.generated.resources.failed_to_save_item
-import shelfpal.composeapp.generated.resources.loading_please_wait
+import shelfpal.composeapp.generated.resources.saving_item_please_wait
 import shelfpal.composeapp.generated.resources.select_expiry_day
 import shelfpal.composeapp.generated.resources.select_expiry_month
 import shelfpal.composeapp.generated.resources.select_expiry_year
@@ -86,6 +86,7 @@ class AddEditItemViewModel(
 
         viewMetaData.itemId?.let {
             repository.getItem(it).collect { shelfPalItem ->
+                viewMetaData.originalItem = shelfPalItem
                 _addEditItemBasicInfo.value = shelfPalItem?.toEditItemBasicInfo()
                     ?: AddEditItemBasicInfo()
                 _addEditItemExpiryInfo.value = shelfPalItem?.toEditItemExpiryInfo()
@@ -210,13 +211,13 @@ class AddEditItemViewModel(
         if (viewMetaData.isItemValid == true) {
             viewModelScope.launch {
                 try {
-                    _screenState.value = ScreenState.Loading(Res.string.loading_please_wait)
+                    _screenState.value = ScreenState.Loading(Res.string.saving_item_please_wait)
                     val expiryInfoUrl = viewMetaData.expiryImage?.let {
                         repository.uploadImage(firebaseConnector.getFirebaseData(it), "expiry_image_${getLocalTimestamp()}")
-                    }
+                    } ?: _addEditItemExpiryInfo.value.image.url
                     val basicInfoUrl = viewMetaData.basicInfoImage?.let {
                         repository.uploadImage(firebaseConnector.getFirebaseData(it), "basic_info_image_${getLocalTimestamp()}")
-                    }
+                    } ?: _addEditItemBasicInfo.value.image.url
 
                     val shelfPalItem = getShelPalItemFromViewModel(
                         addEditItemBasicInfo = _addEditItemBasicInfo.value,
@@ -226,7 +227,14 @@ class AddEditItemViewModel(
                     )
 
                     if (viewMetaData.itemId != null) {
-                        val updatedItem = shelfPalItem.copy(id = viewMetaData.itemId)
+                        val original = viewMetaData.originalItem
+                        val updatedItem = shelfPalItem.copy(
+                            id = viewMetaData.itemId,
+                            reminderSettings = original?.reminderSettings ?: shelfPalItem.reminderSettings,
+                            createdDate = original?.createdDate ?: shelfPalItem.createdDate,
+                            used = original?.used ?: shelfPalItem.used,
+                            usedDate = original?.usedDate ?: shelfPalItem.usedDate
+                        )
                         repository.updateItem(updatedItem)
                     } else {
                         repository.saveItem(shelfPalItem)
