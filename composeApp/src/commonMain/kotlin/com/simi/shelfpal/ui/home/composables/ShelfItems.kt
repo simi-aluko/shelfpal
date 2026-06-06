@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -118,11 +118,13 @@ private fun ShelfItem(
             )
             Spacer(modifier = Modifier.width(Dimens.spacingSmall))
             ProductInfo(
+                modifier = Modifier.weight(1f),
                 productName = homeShelfItem.productName,
                 expiryInfo = homeShelfItem.expiryText
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.width(Dimens.spacingMedium))
             ExpiredLabel(
+                modifier = Modifier.width(IntrinsicSize.Max),
                 status = status,
                 label = homeShelfItem.durationRemaining
             )
@@ -132,10 +134,12 @@ private fun ShelfItem(
 
 @Composable
 private fun ProductInfo(
+    modifier: Modifier = Modifier,
     productName: String,
     expiryInfo: String
 ) {
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -181,10 +185,12 @@ private fun ProductImage(
 
 @Composable
 private fun ExpiredLabel(
+    modifier: Modifier,
     status: ItemColorStatus,
     label: String
 ) {
     Card(
+        modifier = modifier,
         shape = RoundedCornerShape(50),
         border = BorderStroke(1.dp, getStatusBorderColor(status))
     ) {
@@ -266,7 +272,7 @@ fun getProductCategoryImage(category: String) = when (category) {
 private fun ShelfItemPreview() {
     val item = HomeShelfItem(
         id = 1,
-        productName = "Milk",
+        productName = "MilkMilkMilkMilkMilkMilkMilkMilkMilkMilk",
         category = stringResource(Res.string.category_fresh_fruits_and_vegetables),
         expiryText = "Expires Nov 4",
         expired = false,
@@ -275,10 +281,8 @@ private fun ShelfItemPreview() {
         durationRemaining = "2 days",
         expiryYear = 2025
     )
-    MaterialTheme {
-        ShelfItem(
-            homeShelfItem = item,
-            onItemClick = {}
-        )
-    }
+    ShelfItem(
+        homeShelfItem = item,
+        onItemClick = {}
+    )
 }

@@ -6,11 +6,12 @@ import com.simi.shelfpal.data.models.ProductExpiryInfo
 import com.simi.shelfpal.ui.addEditItem.models.AddEditItemImage
 import com.simi.shelfpal.ui.addEditItem.models.AddEditItemViewState
 import com.simi.shelfpal.ui.shared.capitalizeFirstChar
+import com.simi.shelfpal.ui.shared.capitalizeFirstCharInWords
 import com.simi.shelfpal.ui.shared.getDisplayMonths
 import com.simi.shelfpal.utils.getLocalTimestamp
-import kotlin.time.ExperimentalTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.number
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 fun getShelPalItemFromViewModel(
@@ -23,7 +24,7 @@ fun getShelPalItemFromViewModel(
     productExpiryImageUrl = expiryInfoImageUrl,
     createdDate = getLocalTimestamp(),
     basicInfo = ProductBasicInfo(
-        name = addEditItemBasicInfo.productName,
+        name = addEditItemBasicInfo.productName.capitalizeFirstCharInWords(),
         category = addEditItemBasicInfo.category
     ),
     expiryInfo = ProductExpiryInfo(

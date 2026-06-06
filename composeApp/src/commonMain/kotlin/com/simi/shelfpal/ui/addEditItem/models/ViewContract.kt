@@ -19,7 +19,7 @@ sealed class AddEditItemViewState {
         val day: String = "",
         val month: String = "",
         val year: String = "",
-        val hasDay: Boolean = false,
+        val hasDay: Boolean = true,
         val image: AddEditItemImage = AddEditItemImage(),
         val expiryInfoError: ExpiryInfoError = ExpiryInfoError()
     ) : AddEditItemViewState()

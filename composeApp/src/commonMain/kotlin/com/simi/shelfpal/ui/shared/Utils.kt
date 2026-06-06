@@ -26,6 +26,10 @@ import kotlin.time.ExperimentalTime
 
 fun String.capitalizeFirstChar() = this.toLowerCase(Locale.current).replaceFirstChar { it.uppercase() }
 
+fun String.capitalizeFirstCharInWords() = this.toLowerCase(Locale.current)
+    .split(" ")
+    .joinToString(separator = " ") { it.capitalizeFirstChar() }
+
 fun getDisplayMonths() = Month.entries
     .map { month ->
         month.name.capitalizeFirstChar()

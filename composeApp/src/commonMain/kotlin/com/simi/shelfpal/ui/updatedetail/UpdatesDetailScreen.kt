@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simi.shelfpal.ui.home.composables.getProductCategoryImage
-import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.shared.ItemColorStatus
+import com.simi.shelfpal.ui.shared.composables.TopBar
 import com.simi.shelfpal.ui.shared.getStatusBorderColor
 import com.simi.shelfpal.ui.shared.getStatusContainerColor
 import com.simi.shelfpal.ui.theme.Dimens
@@ -50,6 +50,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import shelfpal.composeapp.generated.resources.Res
+import shelfpal.composeapp.generated.resources.mark_all_as_used
 import shelfpal.composeapp.generated.resources.mark_as_used
 import shelfpal.composeapp.generated.resources.no_expired_items
 import shelfpal.composeapp.generated.resources.no_recent_activity
@@ -83,20 +84,22 @@ fun UpdatesDetailScreen(
                         onClick = { viewModel.markAllAsUsed() },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(Dimens.spacingMedium)
+                            .padding(
+                                top = Dimens.spacingMedium,
+                                start = Dimens.spacingMedium,
+                                end = Dimens.spacingMedium,
+                                bottom = Dimens.spacingXLarge
+                            )
                             .height(Dimens.buttonHeight),
-                        shape = RoundedCornerShape(Dimens.radiusLarge),
                     ) {
-                        Text(text = "Mark all as Used")
+                        Text(text = stringResource(Res.string.mark_all_as_used))
                     }
                 }
             }
         }
     ) { innerPadding ->
         Surface(
-            modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding())
-                .padding(bottom = innerPadding.calculateBottomPadding())
+            modifier = Modifier.padding(innerPadding)
         ) {
             if (state.items.isEmpty()) {
                 EmptyScreen(params.entrySource)

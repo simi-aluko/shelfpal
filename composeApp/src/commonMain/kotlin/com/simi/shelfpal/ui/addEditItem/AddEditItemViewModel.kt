@@ -300,13 +300,14 @@ class AddEditItemViewModel(
                     viewMetaData.expiryImage = imageData
                     val info = Json.decodeFromString<ProductExpiryInfo>(response)
                     val day = info.expiryDay
+                    val expiryDay = day.toString().takeIf {
+                        viewMetaData.hasDay && day != null
+                    } ?: ""
                     val month = info.expiryMonth
                     val year = info.expiryYear
 
                     _addEditItemExpiryInfo.value = _addEditItemExpiryInfo.value.copy(
-                        day = day.toString().takeIf {
-                            viewMetaData.hasDay && day != null
-                        } ?: "",
+                        day = expiryDay,
                         month = if (month != null && month in 1..12) {
                             Month.entries[month - 1].name.capitalizeFirstChar()
                         } else {
@@ -316,7 +317,8 @@ class AddEditItemViewModel(
                         image = AddEditItemImage(
                             bitmap = viewMetaData.expiryImage?.decodeToImageBitmap(),
                             isEdit = false
-                        )
+                        ),
+                        hasDay = expiryDay.isNotBlank()
                     )
                     _screenState.value = ScreenState.Idle
                 } else {

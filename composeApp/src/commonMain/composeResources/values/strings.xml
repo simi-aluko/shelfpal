@@ -152,6 +152,7 @@
     <string name="recent_activity">Recent activity</string>
     <string name="related_items">Related Items:</string>
     <string name="mark_as_used">Mark as Used</string>
+    <string name="mark_all_as_used">Mark all as used</string>"
     <string name="expired_items">Expired Items</string>
     <string name="expired_items_subtitle">Shelf items that have expired</string>
     <string name="used_items">Used Items</string>
@@ -185,6 +186,8 @@
    <!-- Loading -->
    <string name="loading_please_wait">Loading, please wait...</string>
    <string name="saving_item_please_wait">Saving item, please wait...</string>
+   <string name="invalid_date">Invalid date</string>
+   <string name="date_in_past">Date is in the past</string>
    <string name="extracting_image_info">Extracting image info...</string>
    <string name="failed_to_extract_image_info">Failed to extract image info. Please try again.</string>
    <string name="failed_to_save_item">Failed to save item. Please try again.</string>
