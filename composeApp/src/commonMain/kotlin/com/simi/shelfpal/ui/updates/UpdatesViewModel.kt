@@ -20,11 +20,20 @@ import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import kotlinx.datetime.daysUntil
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import shelfpal.composeapp.generated.resources.Res
 import shelfpal.composeapp.generated.resources.ai
 import shelfpal.composeapp.generated.resources.info
+import shelfpal.composeapp.generated.resources.updates_due_soon
+import shelfpal.composeapp.generated.resources.updates_due_soon_subtitle
+import shelfpal.composeapp.generated.resources.updates_due_today
+import shelfpal.composeapp.generated.resources.updates_due_today_subtitle
+import shelfpal.composeapp.generated.resources.updates_due_within_month
+import shelfpal.composeapp.generated.resources.updates_due_within_month_subtitle
+import shelfpal.composeapp.generated.resources.updates_due_within_week
+import shelfpal.composeapp.generated.resources.updates_due_within_week_subtitle
 import shelfpal.composeapp.generated.resources.warning
 
 class UpdatesViewModel : ViewModel(), KoinComponent {
@@ -96,15 +105,15 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    private fun initUpdates(
+    private suspend fun initUpdates(
         today: List<ShelfPalItem>,
         week: List<ShelfPalItem>,
         month: List<ShelfPalItem>,
         custom: List<ShelfPalItem>,
     ) {
         val todayUpdate = today.toShelfPalUpdate(
-            title = "Due Today",
-            subtitle = "${today.count()} items expiring today",
+            title = getString(Res.string.updates_due_today),
+            subtitle = getString(Res.string.updates_due_today_subtitle, today.count()),
             headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.warning,
                 tint = Color.White,
@@ -113,8 +122,8 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
             updateRecency = UpdateRecency.TODAY
         )
         val weekUpdate = week.toShelfPalUpdate(
-            title = "Due within a Week",
-            subtitle = "You have ${week.count()} item(s) expiring within a week",
+            title = getString(Res.string.updates_due_within_week),
+            subtitle = getString(Res.string.updates_due_within_week_subtitle, week.count()),
             headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.info,
                 tint = Color.White,
@@ -123,8 +132,8 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
             updateRecency = UpdateRecency.WEEK
         )
         val monthUpdate = month.toShelfPalUpdate(
-            title = "Due within a Month",
-            subtitle = "You have ${month.count()} items expiring within a month",
+            title = getString(Res.string.updates_due_within_month),
+            subtitle = getString(Res.string.updates_due_within_month_subtitle, month.count()),
             headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.info,
                 tint = Color.White,
@@ -133,8 +142,8 @@ class UpdatesViewModel : ViewModel(), KoinComponent {
             updateRecency = UpdateRecency.MONTH
         )
         val customUpdate = custom.toShelfPalUpdate(
-            title = "Due in 6 Months",
-            subtitle = "You have ${custom.count()} items expiring within 6 months",
+            title = getString(Res.string.updates_due_soon),
+            subtitle = getString(Res.string.updates_due_soon_subtitle, custom.count()),
             headerIcon = UpdateHeaderIcon(
                 icon = Res.drawable.info,
                 tint = Color.White,

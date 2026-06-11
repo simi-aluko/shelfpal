@@ -148,6 +148,14 @@
     <string name="shelf_updates_subtitle">Your expiry reminders and summaries</string>
 
     <!-- Updates screen -->
+    <string name="updates_due_today">Due Today</string>
+    <string name="updates_due_today_subtitle">%1$d item(s) expiring today</string>
+    <string name="updates_due_within_week">Due within a Week</string>
+    <string name="updates_due_within_week_subtitle">You have %1$d item(s) expiring within a week</string>
+    <string name="updates_due_within_month">Due within a Month</string>
+    <string name="updates_due_within_month_subtitle">You have %1$d item(s) expiring within a month</string>
+    <string name="updates_due_soon">Due soon</string>
+    <string name="updates_due_soon_subtitle">You have %1$d item(s) expiring soon</string>
     <string name="shelf_summary">Shelf summary</string>
     <string name="recent_activity">Recent activity</string>
     <string name="related_items">Related Items:</string>
