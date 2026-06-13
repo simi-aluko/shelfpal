@@ -55,7 +55,7 @@ fun CameraControls(
     var isTorchOn by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.composables.BottomControls(
+        BottomControls(
             modifier = Modifier.align(Alignment.BottomCenter),
             onCapture = onCapture,
             flashOn = isFlashOn,
@@ -70,7 +70,7 @@ fun CameraControls(
             }
         )
 
-        _root_ide_package_.com.simi.shelfpal.ui.imagecapture.composables.ImagePreview(
+        ImagePreview(
             imageBitmap = imageBitmap,
             onDismiss = onDismissImagePreview
         )

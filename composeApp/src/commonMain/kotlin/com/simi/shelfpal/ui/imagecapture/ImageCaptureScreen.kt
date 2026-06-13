@@ -1,7 +1,9 @@
 package com.simi.shelfpal.ui.imagecapture
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -10,6 +12,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.SavedStateHandle
@@ -25,10 +28,13 @@ import com.kashif.cameraK.permissions.Permissions
 import com.kashif.cameraK.permissions.providePermissions
 import com.kashif.cameraK.result.ImageCaptureResult
 import com.kashif.cameraK.ui.CameraPreview
+import com.simi.shelfpal.ui.addEditItem.CameraEntry
 import com.simi.shelfpal.ui.imagecapture.composables.CameraControls
+import com.simi.shelfpal.ui.imagecapture.composables.ImageCaptureTip
 import com.simi.shelfpal.ui.imagecapture.composables.PermissionDenied
 import com.simi.shelfpal.ui.shared.IMAGE_CAPTURE_RESULT
 import com.simi.shelfpal.ui.shared.composables.LoadingScreen
+import com.simi.shelfpal.ui.theme.Dimens
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -43,14 +49,15 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun ImageCaptureScreen(
-    navController: NavController
+    navController: NavController,
+    entrySource: CameraEntry
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
-    ) {
+    ) { scaffoldPadding ->
         val coroutineScope = rememberCoroutineScope()
 
         val permissions: Permissions = providePermissions()
@@ -98,6 +105,8 @@ fun ImageCaptureScreen(
                 cameraPermissionState = cameraPermissionState.value,
                 storagePermissionState = storagePermissionState.value,
                 permissionDeniedDrawable = permissionDeniedDrawable.value,
+                entrySource = entrySource,
+                scaffoldPadding = scaffoldPadding,
                 snackBarHostState = snackBarHostState,
                 savedStateHandle = it,
                 navController = navController
@@ -111,6 +120,8 @@ private fun ScreenContent(
     cameraController: MutableState<CameraController?>,
     cameraPermissionState: Boolean,
     storagePermissionState: Boolean,
+    entrySource: CameraEntry,
+    scaffoldPadding: PaddingValues,
     permissionDeniedDrawable: DrawableResource,
     snackBarHostState: SnackbarHostState,
     savedStateHandle: SavedStateHandle,
@@ -121,6 +132,8 @@ private fun ScreenContent(
             cameraController = cameraController,
             snackBarHostState = snackBarHostState,
             savedStateHandle = savedStateHandle,
+            entrySource = entrySource,
+            scaffoldPadding = scaffoldPadding,
             navigateBack = {
                 navController.popBackStack()
             }
@@ -134,9 +147,11 @@ private fun ScreenContent(
 
 @Composable
 private fun CameraContent(
+    scaffoldPadding: PaddingValues,
     cameraController: MutableState<CameraController?>,
     snackBarHostState: SnackbarHostState,
     savedStateHandle: SavedStateHandle,
+    entrySource: CameraEntry,
     navigateBack: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -159,7 +174,12 @@ private fun CameraContent(
                 cameraController.value = it
             }
         )
-
+        ImageCaptureTip(
+            modifier = Modifier.align(Alignment.TopCenter)
+                .padding(top = scaffoldPadding.calculateTopPadding())
+                .padding(Dimens.spacingMedium),
+            entrySource = entrySource
+        )
         cameraController.value?.let { controller ->
             CameraControls(
                 cameraController = controller,

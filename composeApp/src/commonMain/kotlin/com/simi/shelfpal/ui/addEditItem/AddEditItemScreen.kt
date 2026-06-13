@@ -49,7 +49,7 @@ import shelfpal.composeapp.generated.resources.close
 fun AddEditItemScreen(
     itemId: Long?,
     navigateBack: () -> Unit,
-    navigateToImageCapture: () -> Unit,
+    navigateToImageCapture: (CameraEntry) -> Unit,
     navController: NavController,
     viewModel: AddEditItemViewModel = viewModel {
         AddEditItemViewModel(
@@ -123,7 +123,7 @@ fun AddEditItemScreen(
                         },
                         onCameraClick = {
                             viewModel.updateCameraEntry(BASIC_INFO)
-                            navigateToImageCapture()
+                            navigateToImageCapture(BASIC_INFO)
                         },
                         onNameChange = {
                             viewModel.onNameChange(it)
@@ -140,7 +140,7 @@ fun AddEditItemScreen(
                         },
                         onCameraClick = {
                             viewModel.updateCameraEntry(EXPIRY_INFO)
-                            navigateToImageCapture()
+                            navigateToImageCapture(EXPIRY_INFO)
                         }
                     )
                     AddItemBottomSheet(

@@ -108,6 +108,8 @@
     <string name="turn_on_flash">Turn on flash</string>
     <string name="turn_off_flash">Turn off flash</string>
     <string name="generic_error">An error occurred. Please try again later.</string>
+    <string name="basic_info_camera_tip">Point the camera at the product's front label so the name is visible</string>
+    <string name="expiry_info_camera_tip">Point the camera at the expiry or best-before date on the packaging</string>
 
     <!-- Home screen -->
     <string name="empty_home_screen">Oops, nothing to display here</string>

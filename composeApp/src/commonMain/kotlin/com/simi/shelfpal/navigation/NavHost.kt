@@ -73,14 +73,16 @@ fun ShelfPalNavHost(
             AddEditItemScreen(
                 itemId = addEditItemRoute.id,
                 navigateBack = { navHostController.popBackStack() },
-                navigateToImageCapture = { navHostController.navigate(ImageCapture) },
+                navigateToImageCapture = { navHostController.navigate(ImageCapture(it)) },
                 navController = navHostController
             )
         }
 
         composable<ImageCapture> {
+            val route = it.toRoute<ImageCapture>()
             ImageCaptureScreen(
-                navController = navHostController
+                navController = navHostController,
+                entrySource = route.cameraEntry
             )
         }
 
