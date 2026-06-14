@@ -17,6 +17,7 @@ import com.simi.shelfpal.navigation.Route.ImageCapture
 import com.simi.shelfpal.navigation.Route.ItemDetails
 import com.simi.shelfpal.navigation.Route.Welcome
 import com.simi.shelfpal.ui.addEditItem.AddEditItemScreen
+import com.simi.shelfpal.ui.addEditItem.CameraEntry
 import com.simi.shelfpal.ui.details.ShelfPalItemDetailScreen
 import com.simi.shelfpal.ui.home.HomeScreen
 import com.simi.shelfpal.ui.home.composables.BottomNavBar
@@ -73,7 +74,7 @@ fun ShelfPalNavHost(
             AddEditItemScreen(
                 itemId = addEditItemRoute.id,
                 navigateBack = { navHostController.popBackStack() },
-                navigateToImageCapture = { navHostController.navigate(ImageCapture(it)) },
+                navigateToImageCapture = { navHostController.navigate(ImageCapture(it.name)) },
                 navController = navHostController
             )
         }
@@ -82,7 +83,7 @@ fun ShelfPalNavHost(
             val route = it.toRoute<ImageCapture>()
             ImageCaptureScreen(
                 navController = navHostController,
-                entrySource = route.cameraEntry
+                entrySource = CameraEntry.valueOf(route.cameraEntry)
             )
         }
 

@@ -1,6 +1,5 @@
 package com.simi.shelfpal.navigation
 
-import com.simi.shelfpal.ui.addEditItem.CameraEntry
 import kotlinx.serialization.Serializable
 
 sealed class Route {
@@ -16,7 +15,7 @@ sealed class Route {
     ) : Route()
 
     @Serializable
-    data class ImageCapture(val cameraEntry: CameraEntry) : Route()
+    data class ImageCapture(val cameraEntry: String) : Route()
 
     @Serializable
     data class ItemDetails(val id: Long, val showActions: Boolean = true) : Route()
